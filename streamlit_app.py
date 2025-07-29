@@ -8,6 +8,113 @@ from email.mime.multipart import MIMEMultipart
 import time
 import re
 
+# ==================== FUNCIONES DE VALIDACIÓN PROGRESIVA ====================
+
+def validate_step_1():
+    """Valida que se haya seleccionado al menos una opción en proteínas grasas"""
+    selections = (
+        st.session_state.get('huevos_embutidos', []) + 
+        st.session_state.get('carnes_grasas', []) + 
+        st.session_state.get('quesos_grasos', []) + 
+        st.session_state.get('lacteos_enteros', []) + 
+        st.session_state.get('pescados_grasos', [])
+    )
+    return len(selections) > 0
+
+def validate_step_2():
+    """Valida que se haya seleccionado al menos una opción en proteínas magras"""
+    selections = (
+        st.session_state.get('carnes_magras', []) + 
+        st.session_state.get('pescados_blancos', []) + 
+        st.session_state.get('quesos_magros', []) + 
+        st.session_state.get('lacteos_light', []) + 
+        st.session_state.get('otros_proteinas_magras', [])
+    )
+    return len(selections) > 0
+
+def validate_step_3():
+    """Valida que se haya seleccionado al menos una opción en grasas saludables"""
+    selections = (
+        st.session_state.get('grasas_naturales', []) + 
+        st.session_state.get('frutos_secos_semillas', []) + 
+        st.session_state.get('mantequillas_vegetales', [])
+    )
+    return len(selections) > 0
+
+def validate_step_4():
+    """Valida que se haya seleccionado al menos una opción en carbohidratos"""
+    selections = (
+        st.session_state.get('cereales_integrales', []) + 
+        st.session_state.get('tortillas_panes', []) + 
+        st.session_state.get('raices_tuberculos', []) + 
+        st.session_state.get('leguminosas', [])
+    )
+    return len(selections) > 0
+
+def validate_step_5():
+    """Valida que se haya seleccionado al menos una opción en vegetales"""
+    return len(st.session_state.get('vegetales_lista', [])) > 0
+
+def validate_step_6():
+    """Valida que se haya seleccionado al menos una opción en frutas"""
+    return len(st.session_state.get('frutas_lista', [])) > 0
+
+def validate_step_7():
+    """Valida aceites de cocción - opcional"""
+    return True  # Este paso es opcional
+
+def validate_step_8():
+    """Valida bebidas - opcional"""
+    return True  # Este paso es opcional
+
+def validate_step_9():
+    """Valida alergias/intolerancias - opcional"""
+    return True  # Este paso es opcional
+
+def validate_step_10():
+    """Valida antojos - opcional"""
+    return True  # Este paso es opcional
+
+def get_step_validator(step_number):
+    """Obtiene la función de validación para un paso específico"""
+    validators = {
+        1: validate_step_1,
+        2: validate_step_2, 
+        3: validate_step_3,
+        4: validate_step_4,
+        5: validate_step_5,
+        6: validate_step_6,
+        7: validate_step_7,
+        8: validate_step_8,
+        9: validate_step_9,
+        10: validate_step_10
+    }
+    return validators.get(step_number, lambda: True)
+
+def advance_to_next_step():
+    """Avanza al siguiente paso si la validación es exitosa"""
+    current_step = st.session_state.get('current_step', 1)
+    validator = get_step_validator(current_step)
+    
+    if validator():
+        # Marcar el paso actual como completado
+        st.session_state.step_completed[current_step] = True
+        # Avanzar al siguiente paso
+        if current_step < 10:
+            st.session_state.current_step = current_step + 1
+            st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
+        return True
+    else:
+        # Mostrar mensaje de error profesional
+        st.error("Para continuar, por favor selecciona al menos una opción en este grupo. Esto permitirá generar una evaluación nutricional personalizada y precisa.")
+        return False
+
+def go_to_previous_step():
+    """Retrocede al paso anterior"""
+    current_step = st.session_state.get('current_step', 1)
+    if current_step > 1:
+        st.session_state.current_step = current_step - 1
+
 # ==================== FUNCIONES DE VALIDACIÓN ESTRICTA ====================
 def validate_name(name):
     """
@@ -406,7 +513,22 @@ defaults = {
     "sexo": "Hombre",
     "fecha_llenado": datetime.now().strftime("%Y-%m-%d"),
     "acepto_terminos": False,
-    "authenticated": False  # Nueva variable para controlar el login
+    "authenticated": False,  # Nueva variable para controlar el login
+    # Variables para el flujo progresivo
+    "current_step": 1,
+    "step_completed": {
+        1: False,  # Proteínas grasas
+        2: False,  # Proteínas magras
+        3: False,  # Grasas saludables
+        4: False,  # Carbohidratos
+        5: False,  # Vegetales
+        6: False,  # Frutas
+        7: False,  # Aceites de cocción
+        8: False,  # Bebidas
+        9: False,  # Alergias/intolerancias
+        10: False  # Antojos
+    },
+    "max_unlocked_step": 1
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -700,43 +822,61 @@ if datos_personales_completos and st.session_state.datos_completos:
     </div>
     """, unsafe_allow_html=True)
 
-    # Navegación mejorada por pasos
-    st.markdown("""
+    # Navegación mejorada por pasos - Ahora refleja el progreso real
+    current_step = st.session_state.get('current_step', 1)
+    max_unlocked = st.session_state.get('max_unlocked_step', 1)
+    step_completed = st.session_state.get('step_completed', {})
+    
+    st.markdown(f"""
     <div class="content-card" style="background: #2A2A2A; border-left: 5px solid #F4C430;">
-        <h3 style="color: #F4C430; text-align: center; margin-bottom: 1rem;">🗺️ Guía de Navegación</h3>
+        <h3 style="color: #F4C430; text-align: center; margin-bottom: 1rem;">🗺️ Progreso del Cuestionario</h3>
         <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
             <div style="text-align: center; flex: 1; min-width: 120px;">
-                <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">1</div>
+                <div style="background: {'#F4C430' if current_step == 1 else '#27AE60' if step_completed.get(1, False) else '#666'}; color: {'#1E1E1E' if current_step == 1 or step_completed.get(1, False) else '#FFF'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">1</div>
                 <small>Proteínas Grasas</small>
             </div>
             <div style="text-align: center; flex: 1; min-width: 120px;">
-                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">2</div>
+                <div style="background: {'#F4C430' if current_step == 2 else '#27AE60' if step_completed.get(2, False) else '#666' if max_unlocked >= 2 else '#333'}; color: {'#1E1E1E' if current_step == 2 or step_completed.get(2, False) else '#FFF' if max_unlocked >= 2 else '#888'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">2</div>
                 <small>Proteínas Magras</small>
             </div>
             <div style="text-align: center; flex: 1; min-width: 120px;">
-                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">3</div>
+                <div style="background: {'#F4C430' if current_step == 3 else '#27AE60' if step_completed.get(3, False) else '#666' if max_unlocked >= 3 else '#333'}; color: {'#1E1E1E' if current_step == 3 or step_completed.get(3, False) else '#FFF' if max_unlocked >= 3 else '#888'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">3</div>
                 <small>Grasas Saludables</small>
             </div>
             <div style="text-align: center; flex: 1; min-width: 120px;">
-                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">4</div>
+                <div style="background: {'#F4C430' if current_step == 4 else '#27AE60' if step_completed.get(4, False) else '#666' if max_unlocked >= 4 else '#333'}; color: {'#1E1E1E' if current_step == 4 or step_completed.get(4, False) else '#FFF' if max_unlocked >= 4 else '#888'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">4</div>
                 <small>Carbohidratos</small>
             </div>
             <div style="text-align: center; flex: 1; min-width: 120px;">
-                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">5</div>
+                <div style="background: {'#F4C430' if current_step == 5 else '#27AE60' if step_completed.get(5, False) else '#666' if max_unlocked >= 5 else '#333'}; color: {'#1E1E1E' if current_step == 5 or step_completed.get(5, False) else '#FFF' if max_unlocked >= 5 else '#888'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">5</div>
                 <small>Vegetales</small>
             </div>
             <div style="text-align: center; flex: 1; min-width: 120px;">
-                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">6</div>
+                <div style="background: {'#F4C430' if current_step == 6 else '#27AE60' if step_completed.get(6, False) else '#666' if max_unlocked >= 6 else '#333'}; color: {'#1E1E1E' if current_step == 6 or step_completed.get(6, False) else '#FFF' if max_unlocked >= 6 else '#888'}; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">6</div>
                 <small>Frutas</small>
             </div>
+        </div>
+        <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
+            <small>Paso {current_step} de 10 - {'✅ Completado' if step_completed.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
+    # Mostrar solo el paso actual
+    current_step = st.session_state.get('current_step', 1)
+
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-    with st.expander("🥩 **PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO**", expanded=False):
+    if current_step == 1:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Actualizar progreso
-        progress.progress(17, text="Paso 1 de 6: Proteínas con más contenido graso")
+        progress.progress(10, text="Paso 1 de 10: Proteínas con más contenido graso")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -815,15 +955,30 @@ if datos_personales_completos and st.session_state.datos_completos:
                               len(st.session_state.get('pescados_grasos', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Esto nos ayudará a personalizar mejor tu plan.")
-        else:
-            st.warning("⚠️ **Nota:** No has seleccionado ningún alimento en este grupo. Si consumes alguno de estos alimentos, te recomendamos seleccionarlos.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior", disabled=True):
+                pass
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
-    with st.expander("🍗 **PASO 2: PROTEÍNA ANIMAL MAGRA**", expanded=False):
+    elif current_step == 2:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Actualizar progreso
-        progress.progress(33, text="Paso 2 de 6: Proteínas animales magras")
+        progress.progress(20, text="Paso 2 de 10: Proteínas animales magras")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -907,15 +1062,30 @@ if datos_personales_completos and st.session_state.datos_completos:
                               len(st.session_state.get('otros_proteinas_magras', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Las proteínas magras son fundamentales para tu plan.")
-        else:
-            st.warning("⚠️ **Nota:** No has seleccionado ningún alimento en este grupo. Las proteínas magras son muy importantes para una alimentación balanceada.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
-    with st.expander("🥑 **PASO 3: FUENTES DE GRASA SALUDABLE**", expanded=False):
+    elif current_step == 3:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🥑 PASO 3: FUENTES DE GRASA SALUDABLE
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Actualizar progreso
-        progress.progress(50, text="Paso 3 de 6: Fuentes de grasa saludable")
+        progress.progress(30, text="Paso 3 de 10: Fuentes de grasa saludable")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -973,15 +1143,30 @@ if datos_personales_completos and st.session_state.datos_completos:
                               len(st.session_state.get('mantequillas_vegetales', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} fuentes de grasa saludable. Estas son clave para un plan equilibrado.")
-        else:
-            st.warning("⚠️ **Nota:** Las grasas saludables son importantes para tu salud. Considera incluir algunas de estas opciones en tu alimentación.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
     # GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
-    with st.expander("🍞 **PASO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES**", expanded=False):
+    elif current_step == 4:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🍞 PASO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Actualizar progreso
-        progress.progress(67, text="Paso 4 de 6: Carbohidratos complejos y cereales")
+        progress.progress(40, text="Paso 4 de 10: Carbohidratos complejos y cereales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1053,15 +1238,30 @@ if datos_personales_completos and st.session_state.datos_completos:
                               len(st.session_state.get('leguminosas', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} fuentes de carbohidratos. Estos proporcionarán energía para tu plan.")
-        else:
-            st.warning("⚠️ **Nota:** Los carbohidratos son importantes para la energía. Considera incluir algunas opciones saludables.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
     # GRUPO 5: VEGETALES
-    with st.expander("🥬 **PASO 5: VEGETALES**", expanded=False):
+    elif current_step == 5:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🥬 PASO 5: VEGETALES
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Actualizar progreso
-        progress.progress(83, text="Paso 5 de 6: Vegetales")
+        progress.progress(50, text="Paso 5 de 10: Vegetales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1105,28 +1305,43 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.info(f"ℹ️ **Variedad básica:** Has seleccionado {vegetales_count} vegetales. Considera probar otros vegetales para enriquecer tu plan.")
         elif vegetales_count > 0:
             st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {vegetales_count} vegetales. Te recomendamos incluir más opciones.")
-        else:
-            st.error("❌ **Importante:** No has seleccionado ningún vegetal. Los vegetales son fundamentales para una alimentación saludable.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
     # GRUPO 6: FRUTAS
-    with st.expander("🍎 **PASO 6: FRUTAS**", expanded=False):
+    elif current_step == 6:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🍎 PASO 6: FRUTAS
+            </h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Actualizar progreso
-        progress.progress(100, text="Paso 6 de 6: Frutas - ¡Último paso!")
+        progress.progress(60, text="Paso 6 de 10: Frutas - ¡Completando grupos principales!")
         
         # Actualizar indicador visual
         st.markdown("""
         <div style="text-align: center; margin-bottom: 1rem;">
             <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">6</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">¡ÚLTIMO PASO!</h4>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">¡ÚLTIMO GRUPO PRINCIPAL!</h4>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
         ### 🎯 ¿Qué necesitamos saber?
-        En este último paso evaluaremos las **frutas** que disfrutas o toleras bien. 
+        En este último paso de los grupos principales evaluaremos las **frutas** que disfrutas o toleras bien. 
         Las frutas aportan vitaminas, antioxidantes, fibra y azúcares naturales para energía.
         
         **💡 Instrucción:** Marca TODAS las frutas que disfrutes o toleres, frescas, congeladas o en cualquier presentación natural.
@@ -1157,10 +1372,8 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.info(f"ℹ️ **Selección básica:** Has seleccionado {frutas_count} frutas. Considera incluir más opciones para mayor variedad.")
         elif frutas_count > 0:
             st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {frutas_count} frutas. Te sugerimos probar más opciones.")
-        else:
-            st.error("❌ **Importante:** Las frutas aportan vitaminas y antioxidantes esenciales. Te recomendamos incluir al menos algunas opciones.")
         
-        # Mensaje de finalización del cuestionario principal
+        # Mensaje de finalización de grupos principales
         st.markdown("""
         ---
         ### 🎊 ¡Felicitaciones!
@@ -1169,16 +1382,37 @@ if datos_personales_completos and st.session_state.datos_completos:
         """)
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
-    # APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA
-    with st.expander("🍳 **INFORMACIÓN ADICIONAL: ACEITES DE COCCIÓN PREFERIDOS**", expanded=False):
+    # APARTADO EXTRA 1: ACEITES DE COCCIÓN (PASO 7)
+    elif current_step == 7:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🍳 PASO 7: ACEITES DE COCCIÓN PREFERIDOS
+            </h2>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información Adicional - Opcional</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(70, text="Paso 7 de 10: Aceites de cocción (Opcional)")
+        
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
         ### 🎯 ¿Qué necesitamos saber?
         Queremos conocer los **aceites y grasas** que utilizas para cocinar, freír, hornear o saltear tus alimentos.
         Esto nos ayuda a adaptar las recetas a tus preferencias y métodos disponibles.
         
-        **💡 Instrucción:** Selecciona TODAS las opciones que sueles usar en tu cocina.
+        **💡 Instrucción:** Selecciona TODAS las opciones que sueles usar en tu cocina. (Este paso es opcional)
         """)
         
         st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
@@ -1202,16 +1436,37 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.info("ℹ️ **Nota:** Si no seleccionas ningún aceite, asumiremos métodos de cocción sin grasa añadida.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
-    # BEBIDAS SIN CALORÍAS
-    with st.expander("🥤 **INFORMACIÓN ADICIONAL: BEBIDAS PARA HIDRATACIÓN**", expanded=False):
+    # APARTADO EXTRA 2: BEBIDAS (PASO 8)
+    elif current_step == 8:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
+            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
+                🥤 PASO 8: BEBIDAS PARA HIDRATACIÓN
+            </h2>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información Adicional - Opcional</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(80, text="Paso 8 de 10: Bebidas para hidratación (Opcional)")
+        
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
         ### 🎯 ¿Qué necesitamos saber?
         Queremos conocer las **bebidas sin calorías** que consumes regularmente para mantenerte hidratado.
         Esto nos ayuda a incluir opciones de hidratación que realmente disfrutes en tu plan.
         
-        **💡 Instrucción:** Marca TODAS las bebidas que acostumbres tomar para hidratarte.
+        **💡 Instrucción:** Marca TODAS las bebidas que acostumbres tomar para hidratarte. (Este paso es opcional)
         """)
         
         st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
@@ -1236,9 +1491,30 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.info("ℹ️ **Nota:** La hidratación es fundamental. Te recomendamos incluir al menos agua natural en tu rutina diaria.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
-    # SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS
-    with st.expander("🚨 **INFORMACIÓN IMPORTANTE: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS**", expanded=False):
+    # APARTADO EXTRA 3: ALERGIAS/INTOLERANCIAS (PASO 9)
+    elif current_step == 9:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
+            <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
+                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+            </h2>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información Crítica para tu Seguridad</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(90, text="Paso 9 de 10: Alergias e intolerancias (Crítico)")
+        
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
         st.markdown("""
@@ -1333,9 +1609,30 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.success("✅ **Sin restricciones:** No has reportado alergias o intolerancias. Esto nos da mayor flexibilidad para tu plan alimentario.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
 
-    # SECCIÓN DE ANTOJOS ALIMENTARIOS
-    with st.expander("😋 **EVALUACIÓN DE ANTOJOS ALIMENTARIOS**", expanded=False):
+    # APARTADO EXTRA 4: ANTOJOS (PASO 10)
+    elif current_step == 10:
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
+            <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
+                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+            </h2>
+            <p style="text-align: center; margin: 0; font-weight: bold;">¡Último Paso! - Información para Estrategias</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(100, text="Paso 10 de 10: Antojos alimentarios - ¡Último paso!")
+        
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
         ### 🧠 ¿Por qué evaluamos tus antojos?
@@ -1345,7 +1642,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         - Desarrollar un plan realista y sostenible a largo plazo
         
         **💡 Instrucción:** Marca los alimentos que frecuentemente se te antojan o deseas con intensidad, 
-        aunque no necesariamente los consumas con regularidad.
+        aunque no necesariamente los consumas con regularidad. (Este paso es opcional)
         """)
         
         st.markdown("---")
@@ -1450,9 +1747,21 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.success("🎉 **Sin antojos frecuentes:** Excelente autocontrol alimentario. Esto será una gran ventaja para tu plan.")
         
         st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación - En el último paso solo mostrar anterior y finalizar
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("🎉 Finalizar Evaluación"):
+                st.success("🎊 ¡Felicitaciones! Has completado toda la evaluación de patrones alimentarios.")
+                st.balloons()
+                # Marcar este paso como completado
+                st.session_state.step_completed[10] = True
 
     # RESULTADO FINAL: Análisis completo del nuevo cuestionario
-    with st.expander("📈 **RESULTADO FINAL: Tu Perfil Alimentario Completo**", expanded=True):
+    with st.expander("📈 **RESULTADO FINAL: Tu Perfil Alimentario Completo**", expanded=False):
         progress.progress(100, text="Análisis completo: Generando tu perfil alimentario personalizado")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
