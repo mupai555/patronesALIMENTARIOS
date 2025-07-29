@@ -734,7 +734,7 @@ if datos_personales_completos and st.session_state.datos_completos:
     """, unsafe_allow_html=True)
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-    with st.expander("🥩 **PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO**", expanded=True):
+    with st.expander("🥩 **PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO**", expanded=False):
         # Actualizar progreso
         progress.progress(17, text="Paso 1 de 6: Proteínas con más contenido graso")
         
@@ -760,7 +760,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         huevos_embutidos = st.multiselect(
             "¿Cuáles de estos huevos y embutidos consumes? (Puedes seleccionar varios)",
             ["Huevo entero", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano"],
-            default=st.session_state.get('huevos_embutidos', []),
+            key="huevos_embutidos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los que consumes. Es mejor incluir más opciones para personalizar mejor tu plan."
         )
@@ -771,7 +771,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estas carnes y cortes grasos consumes? (Puedes seleccionar varios)",
             ["Costilla de res", "Costilla de cerdo", "Ribeye", "T-bone", "New York", "Arrachera marinada", 
              "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa"],
-            default=st.session_state.get('carnes_grasas', []),
+            key="carnes_grasas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los cortes que consumes, aunque sea ocasionalmente."
         )
@@ -781,7 +781,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         quesos_grasos = st.multiselect(
             "¿Cuáles de estos quesos altos en grasa consumes? (Puedes seleccionar varios)",
             ["Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar"],
-            default=st.session_state.get('quesos_grasos', []),
+            key="quesos_grasos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los quesos que consumes en cualquier preparación."
         )
@@ -792,7 +792,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estos lácteos enteros consumes? (Puedes seleccionar varios)",
             ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", 
              "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)"],
-            default=st.session_state.get('lacteos_enteros', []),
+            key="lacteos_enteros",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los lácteos enteros que uses en tu alimentación diaria."
         )
@@ -802,20 +802,17 @@ if datos_personales_completos and st.session_state.datos_completos:
         pescados_grasos = st.multiselect(
             "¿Cuáles de estos pescados grasos consumes? (Puedes seleccionar varios)",
             ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha"],
-            default=st.session_state.get('pescados_grasos', []),
+            key="pescados_grasos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los pescados grasos que consumes, frescos o enlatados."
         )
 
-        # Guardar en session state
-        st.session_state.huevos_embutidos = huevos_embutidos
-        st.session_state.carnes_grasas = carnes_grasas
-        st.session_state.quesos_grasos = quesos_grasos
-        st.session_state.lacteos_enteros = lacteos_enteros
-        st.session_state.pescados_grasos = pescados_grasos
-        
         # Resumen del paso actual
-        total_seleccionados = len(huevos_embutidos) + len(carnes_grasas) + len(quesos_grasos) + len(lacteos_enteros) + len(pescados_grasos)
+        total_seleccionados = (len(st.session_state.get('huevos_embutidos', [])) + 
+                              len(st.session_state.get('carnes_grasas', [])) + 
+                              len(st.session_state.get('quesos_grasos', [])) + 
+                              len(st.session_state.get('lacteos_enteros', [])) + 
+                              len(st.session_state.get('pescados_grasos', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Esto nos ayudará a personalizar mejor tu plan.")
         else:
@@ -852,7 +849,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Pechuga de pollo sin piel", "Filete de res magro (aguayón, bola, sirloin sin grasa visible)", 
              "Lomo de cerdo", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", 
              "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)"],
-            default=st.session_state.get('carnes_magras', []),
+            key="carnes_magras",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todas las carnes magras que te resulten fáciles de consumir."
         )
@@ -862,7 +859,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         pescados_blancos = st.multiselect(
             "¿Cuáles de estos pescados blancos y bajos en grasa consumes? (Puedes seleccionar varios)",
             ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua"],
-            default=st.session_state.get('pescados_blancos', []),
+            key="pescados_blancos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los pescados blancos que consumes, frescos, congelados o enlatados."
         )
@@ -873,7 +870,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estos quesos bajos en grasa consumes? (Puedes seleccionar varios)",
             ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
              "Queso mozzarella light", "Queso fresco bajo en grasa"],
-            default=st.session_state.get('quesos_magros', []),
+            key="quesos_magros",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los quesos bajos en grasa que consumes."
         )
@@ -886,7 +883,7 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", 
              "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", 
              "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light"],
-            default=st.session_state.get('lacteos_light', []),
+            key="lacteos_light",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los lácteos light o reducidos que uses regularmente."
         )
@@ -897,20 +894,17 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estos otros productos consumes? (Puedes seleccionar varios)",
             ["Clara de huevo", "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", 
              "Salchicha de pechuga de pavo (light)"],
-            default=st.session_state.get('otros_proteinas_magras', []),
+            key="otros_proteinas_magras",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los productos proteicos magros que consumes."
         )
 
-        # Guardar en session state
-        st.session_state.carnes_magras = carnes_magras
-        st.session_state.pescados_blancos = pescados_blancos
-        st.session_state.quesos_magros = quesos_magros
-        st.session_state.lacteos_light = lacteos_light
-        st.session_state.otros_proteinas_magras = otros_proteinas_magras
-        
         # Resumen del paso actual
-        total_seleccionados = len(carnes_magras) + len(pescados_blancos) + len(quesos_magros) + len(lacteos_light) + len(otros_proteinas_magras)
+        total_seleccionados = (len(st.session_state.get('carnes_magras', [])) + 
+                              len(st.session_state.get('pescados_blancos', [])) + 
+                              len(st.session_state.get('quesos_magros', [])) + 
+                              len(st.session_state.get('lacteos_light', [])) + 
+                              len(st.session_state.get('otros_proteinas_magras', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Las proteínas magras son fundamentales para tu plan.")
         else:
@@ -946,7 +940,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estas grasas naturales consumes? (Puedes seleccionar varios)",
             ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
              "Coco fresco", "Leche de coco sin azúcar"],
-            default=st.session_state.get('grasas_naturales', []),
+            key="grasas_naturales",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todas las grasas naturales que consumes en cualquier preparación."
         )
@@ -957,7 +951,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estos frutos secos y semillas consumes? (Puedes seleccionar varios)",
             ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
              "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)"],
-            default=st.session_state.get('frutos_secos_semillas', []),
+            key="frutos_secos_semillas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los frutos secos y semillas que consumes como snack o en preparaciones."
         )
@@ -968,18 +962,15 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estas mantequillas y pastas vegetales consumes? (Puedes seleccionar varios)",
             ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
              "Mantequilla de nuez de la India"],
-            default=st.session_state.get('mantequillas_vegetales', []),
+            key="mantequillas_vegetales",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todas las mantequillas vegetales naturales que consumes."
         )
 
-        # Guardar en session state
-        st.session_state.grasas_naturales = grasas_naturales
-        st.session_state.frutos_secos_semillas = frutos_secos_semillas
-        st.session_state.mantequillas_vegetales = mantequillas_vegetales
-        
         # Resumen del paso actual
-        total_seleccionados = len(grasas_naturales) + len(frutos_secos_semillas) + len(mantequillas_vegetales)
+        total_seleccionados = (len(st.session_state.get('grasas_naturales', [])) + 
+                              len(st.session_state.get('frutos_secos_semillas', [])) + 
+                              len(st.session_state.get('mantequillas_vegetales', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} fuentes de grasa saludable. Estas son clave para un plan equilibrado.")
         else:
@@ -1016,7 +1007,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
              "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar"],
-            default=st.session_state.get('cereales_integrales', []),
+            key="cereales_integrales",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los cereales y granos que consumes regularmente."
         )
@@ -1028,7 +1019,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
              "Tortilla de avena", "Pan integral", "Pan multigrano", "Pan de centeno", 
              "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)"],
-            default=st.session_state.get('tortillas_panes', []),
+            key="tortillas_panes",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los tipos de tortillas y panes que consumes."
         )
@@ -1039,7 +1030,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estas raíces, tubérculos y derivados consumes? (Puedes seleccionar varios)",
             ["Papa cocida o al horno", "Camote cocido o al horno", "Yuca", "Plátano macho", 
              "Puré de papa", "Papas horneadas", "Papas en air fryer"],
-            default=st.session_state.get('raices_tuberculos', []),
+            key="raices_tuberculos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los tubérculos y raíces que consumes en diferentes preparaciones."
         )
@@ -1050,19 +1041,16 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estas leguminosas consumes? (Puedes seleccionar varios)",
             ["Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
              "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)"],
-            default=st.session_state.get('leguminosas', []),
+            key="leguminosas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todas las leguminosas que consumes, frescas, secas o enlatadas."
         )
 
-        # Guardar en session state
-        st.session_state.cereales_integrales = cereales_integrales
-        st.session_state.tortillas_panes = tortillas_panes
-        st.session_state.raices_tuberculos = raices_tuberculos
-        st.session_state.leguminosas = leguminosas
-        
         # Resumen del paso actual
-        total_seleccionados = len(cereales_integrales) + len(tortillas_panes) + len(raices_tuberculos) + len(leguminosas)
+        total_seleccionados = (len(st.session_state.get('cereales_integrales', [])) + 
+                              len(st.session_state.get('tortillas_panes', [])) + 
+                              len(st.session_state.get('raices_tuberculos', [])) + 
+                              len(st.session_state.get('leguminosas', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} fuentes de carbohidratos. Estos proporcionarán energía para tu plan.")
         else:
@@ -1102,23 +1090,21 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Tomate verde", "Cebolla blanca", "Cebolla morada", "Pimiento morrón (rojo, verde, amarillo, naranja)", 
              "Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
              "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza"],
-            default=st.session_state.get('vegetales_lista', []),
+            key="vegetales_lista",
             placeholder="🔽 Haz clic aquí para ver y seleccionar todos los vegetales que consumes",
             help="Selecciona todos los vegetales que consumes o toleras, en cualquier forma de preparación (crudo, cocido, salteado, etc.)"
         )
 
-        # Guardar en session state
-        st.session_state.vegetales_lista = vegetales_lista
-        
         # Resumen del paso actual con categorización
-        if len(vegetales_lista) >= 15:
-            st.success(f"✅ **¡Excelente diversidad!** Has seleccionado {len(vegetales_lista)} vegetales. Esto permitirá crear un plan muy variado y nutritivo.")
-        elif len(vegetales_lista) >= 8:
-            st.success(f"✅ **¡Buena variedad!** Has seleccionado {len(vegetales_lista)} vegetales. Tu plan tendrá buena diversidad nutricional.")
-        elif len(vegetales_lista) >= 3:
-            st.info(f"ℹ️ **Variedad básica:** Has seleccionado {len(vegetales_lista)} vegetales. Considera probar otros vegetales para enriquecer tu plan.")
-        elif len(vegetales_lista) > 0:
-            st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {len(vegetales_lista)} vegetales. Te recomendamos incluir más opciones.")
+        vegetales_count = len(st.session_state.get('vegetales_lista', []))
+        if vegetales_count >= 15:
+            st.success(f"✅ **¡Excelente diversidad!** Has seleccionado {vegetales_count} vegetales. Esto permitirá crear un plan muy variado y nutritivo.")
+        elif vegetales_count >= 8:
+            st.success(f"✅ **¡Buena variedad!** Has seleccionado {vegetales_count} vegetales. Tu plan tendrá buena diversidad nutricional.")
+        elif vegetales_count >= 3:
+            st.info(f"ℹ️ **Variedad básica:** Has seleccionado {vegetales_count} vegetales. Considera probar otros vegetales para enriquecer tu plan.")
+        elif vegetales_count > 0:
+            st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {vegetales_count} vegetales. Te recomendamos incluir más opciones.")
         else:
             st.error("❌ **Importante:** No has seleccionado ningún vegetal. Los vegetales son fundamentales para una alimentación saludable.")
         
@@ -1156,23 +1142,21 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Ciruela", "Granada", "Cereza", "Chabacano", "Lima", "Limón", "Guayaba", "Tuna", 
              "Níspero", "Mamey", "Pitahaya (dragon fruit)", "Tamarindo", "Coco (carne, rallado)", 
              "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light"],
-            default=st.session_state.get('frutas_lista', []),
+            key='frutas_lista',
             placeholder="🔽 Haz clic aquí para ver y seleccionar todas las frutas que disfrutas",
             help="Selecciona todas las frutas que disfrutas, en cualquier presentación natural (fresca, congelada, deshidratada sin azúcar, etc.)"
         )
 
-        # Guardar en session state
-        st.session_state.frutas_lista = frutas_lista
-        
         # Resumen del paso actual con categorización
-        if len(frutas_lista) >= 12:
-            st.success(f"🎉 **¡Fantástica variedad!** Has seleccionado {len(frutas_lista)} frutas. Tu plan tendrá una excelente diversidad de sabores y nutrientes.")
-        elif len(frutas_lista) >= 6:
-            st.success(f"✅ **¡Buena selección!** Has seleccionado {len(frutas_lista)} frutas. Esto permitirá variedad en tu plan alimentario.")
-        elif len(frutas_lista) >= 3:
-            st.info(f"ℹ️ **Selección básica:** Has seleccionado {len(frutas_lista)} frutas. Considera incluir más opciones para mayor variedad.")
-        elif len(frutas_lista) > 0:
-            st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {len(frutas_lista)} frutas. Te sugerimos probar más opciones.")
+        frutas_count = len(st.session_state.get('frutas_lista', []))
+        if frutas_count >= 12:
+            st.success(f"🎉 **¡Fantástica variedad!** Has seleccionado {frutas_count} frutas. Tu plan tendrá una excelente diversidad de sabores y nutrientes.")
+        elif frutas_count >= 6:
+            st.success(f"✅ **¡Buena selección!** Has seleccionado {frutas_count} frutas. Esto permitirá variedad en tu plan alimentario.")
+        elif frutas_count >= 3:
+            st.info(f"ℹ️ **Selección básica:** Has seleccionado {frutas_count} frutas. Considera incluir más opciones para mayor variedad.")
+        elif frutas_count > 0:
+            st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {frutas_count} frutas. Te sugerimos probar más opciones.")
         else:
             st.error("❌ **Importante:** Las frutas aportan vitaminas y antioxidantes esenciales. Te recomendamos incluir al menos algunas opciones.")
         
@@ -1205,17 +1189,15 @@ if datos_personales_completos and st.session_state.datos_completos:
              "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", 
              "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", 
              "❌ Prefiero cocinar sin aceite o con agua"],
-            default=st.session_state.get('aceites_coccion', []),
+            key='aceites_coccion',
             placeholder="🔽 Haz clic aquí para seleccionar los aceites que usas para cocinar",
             help="Selecciona todos los aceites y grasas que usas habitualmente en tu cocina."
         )
 
-        # Guardar en session state
-        st.session_state.aceites_coccion = aceites_coccion
-        
         # Resumen
-        if len(aceites_coccion) > 0:
-            st.success(f"✅ **Perfecto!** Has seleccionado {len(aceites_coccion)} opciones. Esto nos ayuda a personalizar las recetas según tus métodos de cocción.")
+        aceites_count = len(st.session_state.get('aceites_coccion', []))
+        if aceites_count > 0:
+            st.success(f"✅ **Perfecto!** Has seleccionado {aceites_count} opciones. Esto nos ayuda a personalizar las recetas según tus métodos de cocción.")
         else:
             st.info("ℹ️ **Nota:** Si no seleccionas ningún aceite, asumiremos métodos de cocción sin grasa añadida.")
         
@@ -1241,17 +1223,15 @@ if datos_personales_completos and st.session_state.datos_completos:
              "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", 
              "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", 
              "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)"],
-            default=st.session_state.get('bebidas_sin_calorias', []),
+            key='bebidas_sin_calorias',
             placeholder="🔽 Haz clic aquí para seleccionar las bebidas que consumes",
             help="Selecciona todas las bebidas sin calorías que acostumbres para hidratarte."
         )
 
-        # Guardar en session state
-        st.session_state.bebidas_sin_calorias = bebidas_sin_calorias
-        
         # Resumen
-        if len(bebidas_sin_calorias) > 0:
-            st.success(f"✅ **Excelente!** Has seleccionado {len(bebidas_sin_calorias)} opciones de hidratación. Esto enriquece las recomendaciones de tu plan.")
+        bebidas_count = len(st.session_state.get('bebidas_sin_calorias', []))
+        if bebidas_count > 0:
+            st.success(f"✅ **Excelente!** Has seleccionado {bebidas_count} opciones de hidratación. Esto enriquece las recomendaciones de tu plan.")
         else:
             st.info("ℹ️ **Nota:** La hidratación es fundamental. Te recomendamos incluir al menos agua natural en tu rutina diaria.")
         
@@ -1272,7 +1252,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         alergias_alimentarias = st.multiselect(
             "Selecciona TODAS las alergias alimentarias que tienes:",
             ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas"],
-            default=st.session_state.get('alergias_alimentarias', []),
+            key='alergias_alimentarias',
             placeholder="🔽 Selecciona si tienes alguna alergia alimentaria",
             help="Incluye cualquier alergia, desde leve hasta severa. Esto es crítico para tu seguridad."
         )
@@ -1290,7 +1270,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         intolerancias_digestivas = st.multiselect(
             "Selecciona las intolerancias o malestares digestivos que experimentas:",
             ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales"],
-            default=st.session_state.get('intolerancias_digestivas', []),
+            key='intolerancias_digestivas',
             placeholder="🔽 Selecciona si tienes intolerancias digestivas",
             help="Incluye alimentos que te causen malestar digestivo, gases, hinchazón, etc."
         )
@@ -1320,7 +1300,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "Selecciona los métodos de cocción que más usas o prefieres:",
             ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
              "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
-            default=st.session_state.get('metodos_coccion_accesibles', []),
+            key='metodos_coccion_accesibles',
             placeholder="🔽 Selecciona los métodos de cocción que usas",
             help="Incluye todos los métodos que uses regularmente o que tengas disponibles"
         )
@@ -1332,17 +1312,16 @@ if datos_personales_completos and st.session_state.datos_completos:
             help="Especifica cualquier otro método de cocción que uses"
         )
 
-        # Guardar en session state
-        st.session_state.alergias_alimentarias = alergias_alimentarias
+        # Guardar en session state (solo text inputs)
         st.session_state.otra_alergia = otra_alergia
-        st.session_state.intolerancias_digestivas = intolerancias_digestivas
         st.session_state.otra_intolerancia = otra_intolerancia
         st.session_state.alimento_adicional = alimento_adicional
-        st.session_state.metodos_coccion_accesibles = metodos_coccion_accesibles
         st.session_state.otro_metodo_coccion = otro_metodo_coccion
         
         # Resumen de restricciones
-        total_restricciones = len(alergias_alimentarias) + len(intolerancias_digestivas)
+        alergias_count = len(st.session_state.get('alergias_alimentarias', []))
+        intolerancias_count = len(st.session_state.get('intolerancias_digestivas', []))
+        total_restricciones = alergias_count + intolerancias_count
         if otra_alergia:
             total_restricciones += 1
         if otra_intolerancia:
@@ -1378,7 +1357,7 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Pastel (tres leches, chocolate, etc.)", "Galletas (Marías, Emperador, Chokis, etc.)", 
              "Helado / Nieve", "Flan / Gelatina", "Dulces tradicionales (cajeta, obleas, jamoncillo, glorias)", 
              "Cereal azucarado", "Leche condensada", "Churros"],
-            default=st.session_state.get('antojos_dulces', []),
+            key='antojos_dulces',
             placeholder="🔽 Selecciona los alimentos dulces que se te antojan",
             help="Incluye todos los dulces que frecuentemente deseas, aunque no los consumas seguido."
         )
@@ -1391,7 +1370,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Papas fritas (Sabritas, Ruffles, etc.)", "Cacahuates enchilados", "Frituras (Doritos, Cheetos, Takis, etc.)", 
              "Totopos con salsa", "Galletas saladas", "Cacahuates japoneses", "Chicharrón (de cerdo o harina)", 
              "Nachos con queso", "Queso derretido o gratinado"],
-            default=st.session_state.get('antojos_salados', []),
+            key='antojos_salados',
             placeholder="🔽 Selecciona los alimentos salados que se te antojan",
             help="Incluye todas las botanas y snacks salados que frecuentemente deseas."
         )
@@ -1404,7 +1383,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Tacos (pastor, asada, birria, etc.)", "Tortas (cubana, ahogada, etc.)", "Hamburguesas", "Hot dogs", 
              "Pizza", "Quesadillas fritas", "Tamales", "Pambazos", "Sopes / gorditas", "Elotes / esquites", 
              "Burritos", "Enchiladas", "Empanadas"],
-            default=st.session_state.get('antojos_comida_rapida', []),
+            key='antojos_comida_rapida',
             placeholder="🔽 Selecciona las comidas rápidas que se te antojan",
             help="Incluye toda la comida rápida o callejera que frecuentemente deseas."
         )
@@ -1418,7 +1397,7 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Malteadas / Frappés", "Agua de sabor con azúcar (jamaica, horchata, tamarindo)", 
              "Café con azúcar y leche", "Champurrado / atole", "Licuado de plátano con azúcar", 
              "Bebidas alcohólicas (cerveza, tequila, vino, etc.)"],
-            default=st.session_state.get('antojos_bebidas', []),
+            key='antojos_bebidas',
             placeholder="🔽 Selecciona las bebidas que se te antojan",
             help="Incluye todas las bebidas con calorías que frecuentemente deseas."
         )
@@ -1431,7 +1410,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Chiles en escabeche", "Salsas picantes", "Salsa Valentina, Tajín o Chamoy", 
              "Pepinos con chile y limón", "Mangos verdes con chile", "Gomitas enchiladas", 
              "Fruta con Miguelito o chile en polvo"],
-            default=st.session_state.get('antojos_picantes', []),
+            key='antojos_picantes',
             placeholder="🔽 Selecciona los alimentos picantes que se te antojan",
             help="Incluye todos los alimentos con chile o condimentos estimulantes que deseas."
         )
@@ -1446,16 +1425,18 @@ if datos_personales_completos and st.session_state.datos_completos:
             help="Describe cualquier otro antojo que no esté en las listas anteriores"
         )
 
-        # Guardar en session state
-        st.session_state.antojos_dulces = antojos_dulces
-        st.session_state.antojos_salados = antojos_salados
-        st.session_state.antojos_comida_rapida = antojos_comida_rapida
-        st.session_state.antojos_bebidas = antojos_bebidas
-        st.session_state.antojos_picantes = antojos_picantes
+        # Guardar en session state (solo text input)
         st.session_state.otros_antojos = otros_antojos
         
         # Análisis de antojos
-        total_antojos = len(antojos_dulces) + len(antojos_salados) + len(antojos_comida_rapida) + len(antojos_bebidas) + len(antojos_picantes)
+        antojos_dulces_count = len(st.session_state.get('antojos_dulces', []))
+        antojos_salados_count = len(st.session_state.get('antojos_salados', []))
+        antojos_comida_rapida_count = len(st.session_state.get('antojos_comida_rapida', []))
+        antojos_bebidas_count = len(st.session_state.get('antojos_bebidas', []))
+        antojos_picantes_count = len(st.session_state.get('antojos_picantes', []))
+        
+        total_antojos = (antojos_dulces_count + antojos_salados_count + 
+                        antojos_comida_rapida_count + antojos_bebidas_count + antojos_picantes_count)
         
         if total_antojos >= 15:
             st.warning(f"⚠️ **Muchos antojos identificados:** {total_antojos} tipos de antojos. Será importante desarrollar estrategias específicas de manejo.")
