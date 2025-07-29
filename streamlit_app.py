@@ -273,10 +273,19 @@ st.markdown("""
 .stTextInput label, .stNumberInput label, .stSelectbox label,
 .stRadio label, .stCheckbox label, .stDateInput label, .stMarkdown,
 .stExpander .streamlit-expanderHeader, .stExpander label, .stExpander p, .stExpander div {
-    color: #fff !important;
+    color: #FFD600 !important;
     opacity: 1 !important;
     font-weight: 700 !important;
     font-size: 1.04rem !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+/* Enhanced styling for multiselect labels and info messages */
+.stMultiSelect label, 
+div[data-testid="stAlert"] p,
+div[data-testid="stInfo"] p {
+    color: #FFD600 !important;
+    font-weight: 700 !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
 }
 .stTextInput input::placeholder,
 .stNumberInput input::placeholder {
@@ -867,6 +876,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
     if current_step == 1:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -969,6 +985,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
     elif current_step == 2:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1076,6 +1099,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
     elif current_step == 3:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1157,6 +1187,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
     elif current_step == 4:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1252,6 +1289,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 5: VEGETALES
     elif current_step == 5:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1319,6 +1363,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 6: FRUTAS
     elif current_step == 6:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1394,6 +1445,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 1: ACEITES DE COCCIÓN (PASO 7)
     elif current_step == 7:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1448,6 +1506,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 2: BEBIDAS (PASO 8)
     elif current_step == 8:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
@@ -1503,6 +1568,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 3: ALERGIAS/INTOLERANCIAS (PASO 9)
     elif current_step == 9:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
@@ -1621,6 +1693,13 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 4: ANTOJOS (PASO 10)
     elif current_step == 10:
+        # Auto-scroll to top for better UX
+        st.markdown("""
+        <script>
+        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        </script>
+        """, unsafe_allow_html=True)
+        
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
