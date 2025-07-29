@@ -677,76 +677,134 @@ if not st.session_state.datos_completos:
 datos_personales_completos = all([nombre, telefono, email_cliente]) and acepto_terminos
 
 if datos_personales_completos and st.session_state.datos_completos:
-    # Progress bar general
-    progress = st.progress(0)
-    progress_text = st.empty()
-
-    # CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA
+    # Progress bar mejorado y más prominente
+    st.markdown("### 📊 Progreso de tu Evaluación")
+    progress = st.progress(0, text="Iniciando evaluación...")
+    progress_container = st.container()
+    
+    # CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA CON MEJOR DISEÑO
     st.markdown("""
-    <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem;">
+    <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
         <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1.5rem;">
             🧾 CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA
         </h2>
         <div style="text-align: left; font-size: 1.1rem; line-height: 1.6;">
-            <p><strong>Instrucciones:</strong></p>
-            <p>Marca (✓) todos los alimentos y bebidas que consumes con facilidad o disfrutas. Esto permitirá diseñar un plan de alimentación ajustado a tus gustos, tolerancias y necesidades personales.</p>
+            <p><strong>📋 Instrucciones importantes:</strong></p>
+            <ul style="margin-left: 1rem;">
+                <li><strong>✅ Selecciona múltiples opciones:</strong> Puedes marcar TODOS los alimentos que consumes o disfrutas en cada categoría</li>
+                <li><strong>🎯 Sé específico:</strong> Entre más alimentos marques, más personalizado será tu plan nutricional</li>
+                <li><strong>⏱️ Tiempo estimado:</strong> 5-8 minutos para completar toda la evaluación</li>
+                <li><strong>💡 Consejo:</strong> Si tienes dudas sobre un alimento, márcalo. Es mejor incluir más opciones</li>
+            </ul>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Navegación mejorada por pasos
+    st.markdown("""
+    <div class="content-card" style="background: #2A2A2A; border-left: 5px solid #F4C430;">
+        <h3 style="color: #F4C430; text-align: center; margin-bottom: 1rem;">🗺️ Guía de Navegación</h3>
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="text-align: center; flex: 1; min-width: 120px;">
+                <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">1</div>
+                <small>Proteínas Grasas</small>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 120px;">
+                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">2</div>
+                <small>Proteínas Magras</small>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 120px;">
+                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">3</div>
+                <small>Grasas Saludables</small>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 120px;">
+                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">4</div>
+                <small>Carbohidratos</small>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 120px;">
+                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">5</div>
+                <small>Vegetales</small>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 120px;">
+                <div style="background: #666; color: #FFF; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: bold;">6</div>
+                <small>Frutas</small>
+            </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-    with st.expander("🥩 **GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO**", expanded=True):
-        progress.progress(17)
-        progress_text.text("Grupo 1 de 6: Proteína animal con más contenido graso")
+    with st.expander("🥩 **PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO**", expanded=True):
+        # Actualizar progreso
+        progress.progress(17, text="Paso 1 de 6: Proteínas con más contenido graso")
+        
+        # Actualizar indicador visual
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">1</div>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todas las que puedas consumir con facilidad)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        En este paso evaluaremos las **proteínas animales con mayor contenido graso** que consumes. 
+        Estos alimentos son importantes para la saciedad y el aporte de grasas esenciales.
+        
+        **💡 Instrucción:** Marca TODOS los alimentos que consumes habitualmente o que disfrutas comer.
+        """)
         
         st.markdown("#### 🍳 Huevos y embutidos")
+        st.info("💡 **Ayuda:** Incluye cualquier forma de huevo y embutidos que consumas, sin importar la frecuencia.")
         huevos_embutidos = st.multiselect(
-            "Selecciona los huevos y embutidos que consumes:",
+            "¿Cuáles de estos huevos y embutidos consumes? (Puedes seleccionar varios)",
             ["Huevo entero", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano"],
             default=st.session_state.get('huevos_embutidos', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumes con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los que consumes. Es mejor incluir más opciones para personalizar mejor tu plan."
         )
         
         st.markdown("#### 🥩 Carnes y cortes grasos")
+        st.info("💡 **Ayuda:** Incluye cualquier tipo de carne roja con mayor contenido graso que consumas.")
         carnes_grasas = st.multiselect(
-            "Selecciona las carnes y cortes grasos que consumes:",
+            "¿Cuáles de estas carnes y cortes grasos consumes? (Puedes seleccionar varios)",
             ["Costilla de res", "Costilla de cerdo", "Ribeye", "T-bone", "New York", "Arrachera marinada", 
              "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa"],
             default=st.session_state.get('carnes_grasas', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumes con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los cortes que consumes, aunque sea ocasionalmente."
         )
         
         st.markdown("#### 🧀 Quesos altos en grasa")
+        st.info("💡 **Ayuda:** Incluye cualquier tipo de queso con mayor contenido graso que disfrutes.")
         quesos_grasos = st.multiselect(
-            "Selecciona los quesos altos en grasa que consumes:",
+            "¿Cuáles de estos quesos altos en grasa consumes? (Puedes seleccionar varios)",
             ["Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar"],
             default=st.session_state.get('quesos_grasos', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumes con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los quesos que consumes en cualquier preparación."
         )
         
         st.markdown("#### 🥛 Lácteos enteros")
+        st.info("💡 **Ayuda:** Incluye cualquier producto lácteo entero (no light o descremado) que consumas.")
         lacteos_enteros = st.multiselect(
-            "Selecciona los lácteos enteros que consumes:",
+            "¿Cuáles de estos lácteos enteros consumes? (Puedes seleccionar varios)",
             ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", 
              "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)"],
             default=st.session_state.get('lacteos_enteros', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumes con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los lácteos enteros que uses en tu alimentación diaria."
         )
         
         st.markdown("#### 🐟 Pescados grasos")
+        st.info("💡 **Ayuda:** Incluye pescados con mayor contenido de grasas omega-3 que consumas.")
         pescados_grasos = st.multiselect(
-            "Selecciona los pescados grasos que consumes:",
+            "¿Cuáles de estos pescados grasos consumes? (Puedes seleccionar varios)",
             ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha"],
             default=st.session_state.get('pescados_grasos', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumes con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los pescados grasos que consumes, frescos o enlatados."
         )
 
         # Guardar en session state
@@ -756,66 +814,92 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.session_state.lacteos_enteros = lacteos_enteros
         st.session_state.pescados_grasos = pescados_grasos
         
+        # Resumen del paso actual
+        total_seleccionados = len(huevos_embutidos) + len(carnes_grasas) + len(quesos_grasos) + len(lacteos_enteros) + len(pescados_grasos)
+        if total_seleccionados > 0:
+            st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Esto nos ayudará a personalizar mejor tu plan.")
+        else:
+            st.warning("⚠️ **Nota:** No has seleccionado ningún alimento en este grupo. Si consumes alguno de estos alimentos, te recomendamos seleccionarlos.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
-    with st.expander("🍗 **GRUPO 2: PROTEÍNA ANIMAL MAGRA**", expanded=True):
-        progress.progress(33)
-        progress_text.text("Grupo 2 de 6: Proteína animal magra")
+    with st.expander("🍗 **PASO 2: PROTEÍNA ANIMAL MAGRA**", expanded=False):
+        # Actualizar progreso
+        progress.progress(33, text="Paso 2 de 6: Proteínas animales magras")
+        
+        # Actualizar indicador visual
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">2</div>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todas las que te sean fáciles de consumir)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        En este paso evaluaremos las **proteínas animales magras** que consumes. 
+        Estos alimentos son excelentes fuentes de proteína con menor contenido graso.
+        
+        **💡 Instrucción:** Marca TODOS los alimentos que te resultan fáciles de consumir o que disfrutas.
+        """)
         
         st.markdown("#### 🍗 Carnes y cortes magros")
+        st.info("💡 **Ayuda:** Incluye carnes con bajo contenido graso, como pechuga de pollo, cortes magros de res y cerdo.")
         carnes_magras = st.multiselect(
-            "Selecciona las carnes y cortes magros que consumes:",
+            "¿Cuáles de estas carnes y cortes magros consumes? (Puedes seleccionar varios)",
             ["Pechuga de pollo sin piel", "Filete de res magro (aguayón, bola, sirloin sin grasa visible)", 
              "Lomo de cerdo", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", 
              "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)"],
             default=st.session_state.get('carnes_magras', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que te sean fáciles de consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todas las carnes magras que te resulten fáciles de consumir."
         )
         
         st.markdown("#### 🐟 Pescados blancos y bajos en grasa")
+        st.info("💡 **Ayuda:** Incluye pescados con carne blanca o bajo contenido graso que consumas.")
         pescados_blancos = st.multiselect(
-            "Selecciona los pescados blancos y bajos en grasa que consumes:",
+            "¿Cuáles de estos pescados blancos y bajos en grasa consumes? (Puedes seleccionar varios)",
             ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua"],
             default=st.session_state.get('pescados_blancos', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que te sean fáciles de consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los pescados blancos que consumes, frescos, congelados o enlatados."
         )
         
         st.markdown("#### 🧀 Quesos bajos en grasa o magros")
+        st.info("💡 **Ayuda:** Incluye quesos con menor contenido graso o versiones light que consumas.")
         quesos_magros = st.multiselect(
-            "Selecciona los quesos bajos en grasa que consumes:",
+            "¿Cuáles de estos quesos bajos en grasa consumes? (Puedes seleccionar varios)",
             ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
              "Queso mozzarella light", "Queso fresco bajo en grasa"],
             default=st.session_state.get('quesos_magros', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que te sean fáciles de consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los quesos bajos en grasa que consumes."
         )
         
         st.markdown("#### 🥛 Lácteos light o reducidos")
+        st.info("💡 **Ayuda:** Incluye productos lácteos descremados, light o sin azúcar que consumas.")
         lacteos_light = st.multiselect(
-            "Selecciona los lácteos light o reducidos que consumes:",
+            "¿Cuáles de estos lácteos light o reducidos consumes? (Puedes seleccionar varios)",
             ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", 
              "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", 
              "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", 
              "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light"],
             default=st.session_state.get('lacteos_light', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que te sean fáciles de consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los lácteos light o reducidos que uses regularmente."
         )
         
-        st.markdown("#### 🥚 Otros")
+        st.markdown("#### 🥚 Otros productos proteicos magros")
+        st.info("💡 **Ayuda:** Incluye otros productos con alto contenido proteico y bajo en grasa.")
         otros_proteinas_magras = st.multiselect(
-            "Selecciona otros productos que consumes:",
+            "¿Cuáles de estos otros productos consumes? (Puedes seleccionar varios)",
             ["Clara de huevo", "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", 
              "Salchicha de pechuga de pavo (light)"],
             default=st.session_state.get('otros_proteinas_magras', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que te sean fáciles de consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los productos proteicos magros que consumes."
         )
 
         # Guardar en session state
@@ -825,44 +909,68 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.session_state.lacteos_light = lacteos_light
         st.session_state.otros_proteinas_magras = otros_proteinas_magras
         
+        # Resumen del paso actual
+        total_seleccionados = len(carnes_magras) + len(pescados_blancos) + len(quesos_magros) + len(lacteos_light) + len(otros_proteinas_magras)
+        if total_seleccionados > 0:
+            st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Las proteínas magras son fundamentales para tu plan.")
+        else:
+            st.warning("⚠️ **Nota:** No has seleccionado ningún alimento en este grupo. Las proteínas magras son muy importantes para una alimentación balanceada.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
-    with st.expander("🥑 **GRUPO 3: FUENTES DE GRASA SALUDABLE**", expanded=True):
-        progress.progress(50)
-        progress_text.text("Grupo 3 de 6: Fuentes de grasa saludable")
+    with st.expander("🥑 **PASO 3: FUENTES DE GRASA SALUDABLE**", expanded=False):
+        # Actualizar progreso
+        progress.progress(50, text="Paso 3 de 6: Fuentes de grasa saludable")
+        
+        # Actualizar indicador visual
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">3</div>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todas las que puedas o suelas consumir)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        En este paso evaluaremos las **fuentes de grasa saludable** que consumes. 
+        Estas grasas son esenciales para la absorción de vitaminas y el funcionamiento hormonal.
+        
+        **💡 Instrucción:** Marca TODOS los alimentos que puedas o suelas consumir, incluso ocasionalmente.
+        """)
         
         st.markdown("#### 🥑 Grasas naturales de alimentos")
+        st.info("💡 **Ayuda:** Incluye alimentos que naturalmente contienen grasas saludables.")
         grasas_naturales = st.multiselect(
-            "Selecciona las grasas naturales que consumes:",
+            "¿Cuáles de estas grasas naturales consumes? (Puedes seleccionar varios)",
             ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
              "Coco fresco", "Leche de coco sin azúcar"],
             default=st.session_state.get('grasas_naturales', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que puedas o suelas consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todas las grasas naturales que consumes en cualquier preparación."
         )
         
         st.markdown("#### 🌰 Frutos secos y semillas")
+        st.info("💡 **Ayuda:** Incluye cualquier tipo de fruto seco, semilla o nuez que consumas, natural o tostada.")
         frutos_secos_semillas = st.multiselect(
-            "Selecciona los frutos secos y semillas que consumes:",
+            "¿Cuáles de estos frutos secos y semillas consumes? (Puedes seleccionar varios)",
             ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
              "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)"],
             default=st.session_state.get('frutos_secos_semillas', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que puedas o suelas consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los frutos secos y semillas que consumes como snack o en preparaciones."
         )
         
         st.markdown("#### 🧈 Mantequillas y pastas vegetales")
+        st.info("💡 **Ayuda:** Incluye mantequillas naturales hechas de frutos secos o semillas (sin azúcar añadida).")
         mantequillas_vegetales = st.multiselect(
-            "Selecciona las mantequillas y pastas vegetales que consumes:",
+            "¿Cuáles de estas mantequillas y pastas vegetales consumes? (Puedes seleccionar varios)",
             ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
              "Mantequilla de nuez de la India"],
             default=st.session_state.get('mantequillas_vegetales', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que puedas o suelas consumir"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todas las mantequillas vegetales naturales que consumes."
         )
 
         # Guardar en session state
@@ -870,56 +978,81 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.session_state.frutos_secos_semillas = frutos_secos_semillas
         st.session_state.mantequillas_vegetales = mantequillas_vegetales
         
+        # Resumen del paso actual
+        total_seleccionados = len(grasas_naturales) + len(frutos_secos_semillas) + len(mantequillas_vegetales)
+        if total_seleccionados > 0:
+            st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} fuentes de grasa saludable. Estas son clave para un plan equilibrado.")
+        else:
+            st.warning("⚠️ **Nota:** Las grasas saludables son importantes para tu salud. Considera incluir algunas de estas opciones en tu alimentación.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
-    with st.expander("🍞 **GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES**", expanded=True):
-        progress.progress(67)
-        progress_text.text("Grupo 4 de 6: Carbohidratos complejos y cereales")
+    with st.expander("🍞 **PASO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES**", expanded=False):
+        # Actualizar progreso
+        progress.progress(67, text="Paso 4 de 6: Carbohidratos complejos y cereales")
+        
+        # Actualizar indicador visual
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">4</div>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todos los que consumas con facilidad)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        En este paso evaluaremos los **carbohidratos complejos y cereales** que consumes. 
+        Estos alimentos proporcionan energía sostenida y fibra importante para tu digestión.
+        
+        **💡 Instrucción:** Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente.
+        """)
         
         st.markdown("#### 🌾 Cereales y granos integrales")
+        st.info("💡 **Ayuda:** Incluye cereales, avenas y granos que consumas en el desayuno o comidas principales.")
         cereales_integrales = st.multiselect(
-            "Selecciona los cereales y granos integrales que consumes:",
+            "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
             ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
              "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar"],
             default=st.session_state.get('cereales_integrales', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumas con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los cereales y granos que consumes regularmente."
         )
         
         st.markdown("#### 🌽 Tortillas y panes")
+        st.info("💡 **Ayuda:** Incluye cualquier tipo de tortilla, pan o producto horneado que consumas.")
         tortillas_panes = st.multiselect(
-            "Selecciona las tortillas y panes que consumes:",
+            "¿Cuáles de estas tortillas y panes consumes? (Puedes seleccionar varios)",
             ["Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
              "Tortilla de avena", "Pan integral", "Pan multigrano", "Pan de centeno", 
              "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)"],
             default=st.session_state.get('tortillas_panes', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumas con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los tipos de tortillas y panes que consumes."
         )
         
         st.markdown("#### 🥔 Raíces, tubérculos y derivados")
+        st.info("💡 **Ayuda:** Incluye papas, camotes y otros tubérculos que consumas cocidos o preparados.")
         raices_tuberculos = st.multiselect(
-            "Selecciona las raíces, tubérculos y derivados que consumes:",
+            "¿Cuáles de estas raíces, tubérculos y derivados consumes? (Puedes seleccionar varios)",
             ["Papa cocida o al horno", "Camote cocido o al horno", "Yuca", "Plátano macho", 
              "Puré de papa", "Papas horneadas", "Papas en air fryer"],
             default=st.session_state.get('raices_tuberculos', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumas con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los tubérculos y raíces que consumes en diferentes preparaciones."
         )
         
         st.markdown("#### 🫘 Leguminosas")
+        st.info("💡 **Ayuda:** Incluye frijoles, lentejas y otras legumbres que consumas, cocidas o en preparaciones.")
         leguminosas = st.multiselect(
-            "Selecciona las leguminosas que consumes:",
+            "¿Cuáles de estas leguminosas consumes? (Puedes seleccionar varios)",
             ["Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
              "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)"],
             default=st.session_state.get('leguminosas', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumas con facilidad"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todas las leguminosas que consumes, frescas, secas o enlatadas."
         )
 
         # Guardar en session state
@@ -928,18 +1061,41 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.session_state.raices_tuberculos = raices_tuberculos
         st.session_state.leguminosas = leguminosas
         
+        # Resumen del paso actual
+        total_seleccionados = len(cereales_integrales) + len(tortillas_panes) + len(raices_tuberculos) + len(leguminosas)
+        if total_seleccionados > 0:
+            st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} fuentes de carbohidratos. Estos proporcionarán energía para tu plan.")
+        else:
+            st.warning("⚠️ **Nota:** Los carbohidratos son importantes para la energía. Considera incluir algunas opciones saludables.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # GRUPO 5: VEGETALES
-    with st.expander("🥬 **GRUPO 5: VEGETALES**", expanded=True):
-        progress.progress(83)
-        progress_text.text("Grupo 5 de 6: Vegetales")
+    with st.expander("🥬 **PASO 5: VEGETALES**", expanded=False):
+        # Actualizar progreso
+        progress.progress(83, text="Paso 5 de 6: Vegetales")
+        
+        # Actualizar indicador visual
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">5</div>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todos los que consumes o toleras fácilmente)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        En este paso evaluaremos los **vegetales** que consumes o toleras fácilmente. 
+        Los vegetales aportan vitaminas, minerales, fibra y antioxidantes esenciales para tu salud.
+        
+        **💡 Instrucción:** Marca TODOS los vegetales que consumes o toleras bien, sin importar cómo los prepares.
+        """)
+        
+        st.info("💡 **Ayuda:** Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan.")
         
         vegetales_lista = st.multiselect(
-            "Selecciona todos los vegetales que consumes o toleras fácilmente:",
+            "¿Cuáles de estos vegetales consumes o toleras fácilmente? (Puedes seleccionar varios)",
             ["Espinaca", "Acelga", "Kale", "Lechuga (romana, italiana, orejona, iceberg)", 
              "Col morada", "Col verde", "Repollo", "Brócoli", "Coliflor", "Ejote", "Chayote", 
              "Calabacita", "Nopal", "Betabel", "Zanahoria", "Jitomate saladet", "Jitomate bola", 
@@ -947,25 +1103,53 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
              "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza"],
             default=st.session_state.get('vegetales_lista', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que consumes o toleras fácilmente"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar todos los vegetales que consumes",
+            help="Selecciona todos los vegetales que consumes o toleras, en cualquier forma de preparación (crudo, cocido, salteado, etc.)"
         )
 
         # Guardar en session state
         st.session_state.vegetales_lista = vegetales_lista
         
+        # Resumen del paso actual con categorización
+        if len(vegetales_lista) >= 15:
+            st.success(f"✅ **¡Excelente diversidad!** Has seleccionado {len(vegetales_lista)} vegetales. Esto permitirá crear un plan muy variado y nutritivo.")
+        elif len(vegetales_lista) >= 8:
+            st.success(f"✅ **¡Buena variedad!** Has seleccionado {len(vegetales_lista)} vegetales. Tu plan tendrá buena diversidad nutricional.")
+        elif len(vegetales_lista) >= 3:
+            st.info(f"ℹ️ **Variedad básica:** Has seleccionado {len(vegetales_lista)} vegetales. Considera probar otros vegetales para enriquecer tu plan.")
+        elif len(vegetales_lista) > 0:
+            st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {len(vegetales_lista)} vegetales. Te recomendamos incluir más opciones.")
+        else:
+            st.error("❌ **Importante:** No has seleccionado ningún vegetal. Los vegetales son fundamentales para una alimentación saludable.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # GRUPO 6: FRUTAS
-    with st.expander("🍎 **GRUPO 6: FRUTAS**", expanded=True):
-        progress.progress(100)
-        progress_text.text("Grupo 6 de 6: Frutas")
+    with st.expander("🍎 **PASO 6: FRUTAS**", expanded=False):
+        # Actualizar progreso
+        progress.progress(100, text="Paso 6 de 6: Frutas - ¡Último paso!")
+        
+        # Actualizar indicador visual
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">6</div>
+            <h4 style="color: #F4C430; margin-top: 0.5rem;">¡ÚLTIMO PASO!</h4>
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todas las que disfrutes o toleres bien)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        En este último paso evaluaremos las **frutas** que disfrutas o toleras bien. 
+        Las frutas aportan vitaminas, antioxidantes, fibra y azúcares naturales para energía.
+        
+        **💡 Instrucción:** Marca TODAS las frutas que disfrutes o toleres, frescas, congeladas o en cualquier presentación natural.
+        """)
+        
+        st.info("💡 **Ayuda:** Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional.")
         
         frutas_lista = st.multiselect(
-            "Selecciona todas las frutas que disfrutas o toleras bien:",
+            "¿Cuáles de estas frutas disfrutas o toleras bien? (Puedes seleccionar varios)",
             ["Manzana (roja, verde, gala, fuji)", "Naranja", "Mandarina", "Mango (petacón, ataulfo)", 
              "Papaya", "Sandía", "Melón", "Piña", "Plátano (tabasco, dominico, macho)", "Uvas", 
              "Fresas", "Arándanos", "Zarzamoras", "Frambuesas", "Higo", "Kiwi", "Pera", "Durazno", 
@@ -973,122 +1157,179 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Níspero", "Mamey", "Pitahaya (dragon fruit)", "Tamarindo", "Coco (carne, rallado)", 
              "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light"],
             default=st.session_state.get('frutas_lista', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que disfrutes o toleres bien"
+            placeholder="🔽 Haz clic aquí para ver y seleccionar todas las frutas que disfrutas",
+            help="Selecciona todas las frutas que disfrutas, en cualquier presentación natural (fresca, congelada, deshidratada sin azúcar, etc.)"
         )
 
         # Guardar en session state
         st.session_state.frutas_lista = frutas_lista
         
+        # Resumen del paso actual con categorización
+        if len(frutas_lista) >= 12:
+            st.success(f"🎉 **¡Fantástica variedad!** Has seleccionado {len(frutas_lista)} frutas. Tu plan tendrá una excelente diversidad de sabores y nutrientes.")
+        elif len(frutas_lista) >= 6:
+            st.success(f"✅ **¡Buena selección!** Has seleccionado {len(frutas_lista)} frutas. Esto permitirá variedad en tu plan alimentario.")
+        elif len(frutas_lista) >= 3:
+            st.info(f"ℹ️ **Selección básica:** Has seleccionado {len(frutas_lista)} frutas. Considera incluir más opciones para mayor variedad.")
+        elif len(frutas_lista) > 0:
+            st.warning(f"⚠️ **Poca variedad:** Solo has seleccionado {len(frutas_lista)} frutas. Te sugerimos probar más opciones.")
+        else:
+            st.error("❌ **Importante:** Las frutas aportan vitaminas y antioxidantes esenciales. Te recomendamos incluir al menos algunas opciones.")
+        
+        # Mensaje de finalización del cuestionario principal
+        st.markdown("""
+        ---
+        ### 🎊 ¡Felicitaciones!
+        Has completado la evaluación de los **6 grupos alimentarios principales**. 
+        A continuación encontrarás secciones adicionales para complementar tu perfil nutricional.
+        """)
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA
-    with st.expander("🍳 **APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA**", expanded=True):
+    with st.expander("🍳 **INFORMACIÓN ADICIONAL: ACEITES DE COCCIÓN PREFERIDOS**", expanded=False):
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (elige todas las opciones que suelas usar para cocinar, freír, hornear o saltear tus alimentos)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        Queremos conocer los **aceites y grasas** que utilizas para cocinar, freír, hornear o saltear tus alimentos.
+        Esto nos ayuda a adaptar las recetas a tus preferencias y métodos disponibles.
+        
+        **💡 Instrucción:** Selecciona TODAS las opciones que sueles usar en tu cocina.
+        """)
+        
+        st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
         
         aceites_coccion = st.multiselect(
-            "Selecciona las grasas/aceites de cocción que usas:",
+            "¿Cuáles de estas grasas/aceites usas para cocinar? (Puedes seleccionar varios)",
             ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", 
              "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", 
              "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", 
              "❌ Prefiero cocinar sin aceite o con agua"],
             default=st.session_state.get('aceites_coccion', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las opciones que suelas usar"
+            placeholder="🔽 Haz clic aquí para seleccionar los aceites que usas para cocinar",
+            help="Selecciona todos los aceites y grasas que usas habitualmente en tu cocina."
         )
 
         # Guardar en session state
         st.session_state.aceites_coccion = aceites_coccion
         
+        # Resumen
+        if len(aceites_coccion) > 0:
+            st.success(f"✅ **Perfecto!** Has seleccionado {len(aceites_coccion)} opciones. Esto nos ayuda a personalizar las recetas según tus métodos de cocción.")
+        else:
+            st.info("ℹ️ **Nota:** Si no seleccionas ningún aceite, asumiremos métodos de cocción sin grasa añadida.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # BEBIDAS SIN CALORÍAS
-    with st.expander("🥤 **¿Qué bebidas sin calorías sueles consumir regularmente para hidratarte?**", expanded=True):
+    with st.expander("🥤 **INFORMACIÓN ADICIONAL: BEBIDAS PARA HIDRATACIÓN**", expanded=False):
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### (Marca todas las que acostumbres)")
+        st.markdown("""
+        ### 🎯 ¿Qué necesitamos saber?
+        Queremos conocer las **bebidas sin calorías** que consumes regularmente para mantenerte hidratado.
+        Esto nos ayuda a incluir opciones de hidratación que realmente disfrutes en tu plan.
+        
+        **💡 Instrucción:** Marca TODAS las bebidas que acostumbres tomar para hidratarte.
+        """)
+        
+        st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
         
         bebidas_sin_calorias = st.multiselect(
-            "Selecciona las bebidas sin calorías que consumes:",
+            "¿Cuáles de estas bebidas sin calorías consumes regularmente? (Puedes seleccionar varios)",
             ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", 
              "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", 
              "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", 
              "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", 
              "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)"],
             default=st.session_state.get('bebidas_sin_calorias', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que acostumbres"
+            placeholder="🔽 Haz clic aquí para seleccionar las bebidas que consumes",
+            help="Selecciona todas las bebidas sin calorías que acostumbres para hidratarte."
         )
 
         # Guardar en session state
         st.session_state.bebidas_sin_calorias = bebidas_sin_calorias
         
+        # Resumen
+        if len(bebidas_sin_calorias) > 0:
+            st.success(f"✅ **Excelente!** Has seleccionado {len(bebidas_sin_calorias)} opciones de hidratación. Esto enriquece las recomendaciones de tu plan.")
+        else:
+            st.info("ℹ️ **Nota:** La hidratación es fundamental. Te recomendamos incluir al menos agua natural en tu rutina diaria.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS
-    with st.expander("🚨 **SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS**", expanded=True):
+    with st.expander("🚨 **INFORMACIÓN IMPORTANTE: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS**", expanded=False):
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
-        st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria? (Marca todas las que apliquen)")
+        st.markdown("""
+        ### ⚠️ Información Crítica para tu Seguridad Alimentaria
+        Esta sección es **fundamental** para crear un plan alimentario seguro y adecuado para ti.
+        Por favor, sé muy específico y honesto con tus respuestas.
+        """)
+        
+        st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria?")
+        st.error("🚨 **IMPORTANTE:** Las alergias alimentarias pueden ser graves. Marca todas las que tengas, aunque sean leves.")
         alergias_alimentarias = st.multiselect(
-            "Selecciona las alergias alimentarias que tienes:",
+            "Selecciona TODAS las alergias alimentarias que tienes:",
             ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas"],
             default=st.session_state.get('alergias_alimentarias', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que apliquen"
+            placeholder="🔽 Selecciona si tienes alguna alergia alimentaria",
+            help="Incluye cualquier alergia, desde leve hasta severa. Esto es crítico para tu seguridad."
         )
         
         otra_alergia = st.text_input(
-            "Otra (especificar):",
+            "¿Otra alergia no mencionada? Especifica aquí:",
             value=st.session_state.get('otra_alergia', ''),
-            placeholder="Especifica otra alergia alimentaria",
-            help="Si tienes otra alergia, especifícala aquí"
+            placeholder="Ej: alergia al apio, maní, sulfitos, etc.",
+            help="Especifica cualquier otra alergia alimentaria que tengas"
         )
         
         st.markdown("---")
         st.markdown("### ⚠️ 2. ¿Tienes alguna intolerancia o malestar digestivo?")
+        st.warning("💡 **Ayuda:** Las intolerancias causan malestar pero no son tan graves como las alergias. Incluye cualquier alimento que te cause gases, hinchazón, dolor abdominal, etc.")
         intolerancias_digestivas = st.multiselect(
-            "Selecciona las intolerancias que tienes:",
+            "Selecciona las intolerancias o malestares digestivos que experimentas:",
             ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales"],
             default=st.session_state.get('intolerancias_digestivas', []),
-            placeholder="Selecciona una opción",
-            help="Marca todas las que apliquen"
+            placeholder="🔽 Selecciona si tienes intolerancias digestivas",
+            help="Incluye alimentos que te causen malestar digestivo, gases, hinchazón, etc."
         )
         
         otra_intolerancia = st.text_input(
-            "Otra (especificar):",
+            "¿Otra intolerancia no mencionada? Especifica aquí:",
             value=st.session_state.get('otra_intolerancia', ''),
-            placeholder="Especifica otra intolerancia",
-            help="Si tienes otra intolerancia, especifícala aquí"
+            placeholder="Ej: intolerancia a la fructosa, sorbitol, etc.",
+            help="Especifica cualquier otra intolerancia o malestar digestivo"
         )
         
         st.markdown("---")
-        st.markdown("### ➕ 3. ¿Hay algún alimento o bebida que desees incluir, aunque no aparezca en las listas anteriores?")
+        st.markdown("### ➕ 3. ¿Hay algún alimento o bebida especial que desees incluir?")
+        st.info("💡 **Ayuda:** Menciona alimentos regionales, marcas específicas, preparaciones especiales o cualquier cosa importante que no aparezca en las listas anteriores.")
         alimento_adicional = st.text_area(
-            "Escribe aquí:",
+            "Escribe aquí alimentos o bebidas adicionales:",
             value=st.session_state.get('alimento_adicional', ''),
-            placeholder="Especifica alimentos o bebidas adicionales que consumes",
-            help="Menciona cualquier alimento importante que no esté en las listas"
+            placeholder="Ej: agua de jamaica casera, proteína en polvo marca X, alimentos regionales como quelites, etc.",
+            help="Incluye cualquier alimento importante que no esté en las listas anteriores"
         )
         
         st.markdown("---")
-        st.markdown("### ➕4. ¿Métodos de cocción más accesibles para tu día a día?")
-        st.markdown("**Selecciona los métodos de cocción que más usas o prefieres para preparar tus alimentos:**")
+        st.markdown("### 👨‍🍳 4. ¿Cuáles son tus métodos de cocción más accesibles?")
+        st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
         
         metodos_coccion_accesibles = st.multiselect(
-            "Métodos de cocción preferidos:",
-            ["☐ A la plancha", "☐ A la parrilla", "☐ Hervido", "☐ Al vapor", "☐ Horneado / al horno", 
-             "☐ Air fryer (freidora de aire)", "☐ Microondas", "☐ Salteado (con poco aceite)"],
+            "Selecciona los métodos de cocción que más usas o prefieres:",
+            ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
+             "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
             default=st.session_state.get('metodos_coccion_accesibles', []),
-            placeholder="Selecciona una opción",
-            help="Selecciona todos los métodos que uses regularmente"
+            placeholder="🔽 Selecciona los métodos de cocción que usas",
+            help="Incluye todos los métodos que uses regularmente o que tengas disponibles"
         )
         
         otro_metodo_coccion = st.text_input(
-            "☐ Otro:",
+            "¿Otro método de cocción? Especifica aquí:",
             value=st.session_state.get('otro_metodo_coccion', ''),
-            placeholder="Especifica otro método de cocción",
-            help="Si usas otro método, especifícalo aquí"
+            placeholder="Ej: cocina de leña, olla de presión, wok, etc.",
+            help="Especifica cualquier otro método de cocción que uses"
         )
 
         # Guardar en session state
@@ -1100,83 +1341,109 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.session_state.metodos_coccion_accesibles = metodos_coccion_accesibles
         st.session_state.otro_metodo_coccion = otro_metodo_coccion
         
+        # Resumen de restricciones
+        total_restricciones = len(alergias_alimentarias) + len(intolerancias_digestivas)
+        if otra_alergia:
+            total_restricciones += 1
+        if otra_intolerancia:
+            total_restricciones += 1
+            
+        if total_restricciones > 0:
+            st.warning(f"⚠️ **Restricciones identificadas:** {total_restricciones} restricciones alimentarias. Tu plan será cuidadosamente adaptado para evitar estos alimentos.")
+        else:
+            st.success("✅ **Sin restricciones:** No has reportado alergias o intolerancias. Esto nos da mayor flexibilidad para tu plan alimentario.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # SECCIÓN DE ANTOJOS ALIMENTARIOS
-    with st.expander("😋 **SECCIÓN DE ANTOJOS ALIMENTARIOS**", expanded=True):
+    with st.expander("😋 **EVALUACIÓN DE ANTOJOS ALIMENTARIOS**", expanded=False):
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("### Instrucciones: Marca los alimentos que frecuentemente se te antojan o deseas con intensidad, aunque no necesariamente los consumas con regularidad. Puedes marcar tantos como necesites.")
+        st.markdown("""
+        ### 🧠 ¿Por qué evaluamos tus antojos?
+        Conocer tus **antojos frecuentes** nos ayuda a:
+        - Crear estrategias para manejarlos de forma saludable
+        - Incluir alternativas satisfactorias en tu plan
+        - Desarrollar un plan realista y sostenible a largo plazo
+        
+        **💡 Instrucción:** Marca los alimentos que frecuentemente se te antojan o deseas con intensidad, 
+        aunque no necesariamente los consumas con regularidad.
+        """)
         
         st.markdown("---")
-        st.markdown("### 🍫 Alimentos dulces / postres")
+        st.markdown("### 🍫 Antojos de alimentos dulces / postres")
+        st.info("💡 **Ayuda:** Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente.")
         antojos_dulces = st.multiselect(
-            "Selecciona los alimentos dulces que se te antojan:",
+            "¿Cuáles de estos alimentos dulces se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chocolate con leche", "Chocolate amargo", "Pan dulce (conchas, donas, cuernitos)", 
              "Pastel (tres leches, chocolate, etc.)", "Galletas (Marías, Emperador, Chokis, etc.)", 
              "Helado / Nieve", "Flan / Gelatina", "Dulces tradicionales (cajeta, obleas, jamoncillo, glorias)", 
              "Cereal azucarado", "Leche condensada", "Churros"],
             default=st.session_state.get('antojos_dulces', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que frecuentemente se te antojen"
+            placeholder="🔽 Selecciona los alimentos dulces que se te antojan",
+            help="Incluye todos los dulces que frecuentemente deseas, aunque no los consumas seguido."
         )
         
         st.markdown("---")
-        st.markdown("### 🧂 Alimentos salados / snacks")
+        st.markdown("### 🧂 Antojos de alimentos salados / snacks")
+        st.info("💡 **Ayuda:** Incluye botanas, frituras o alimentos salados que se te antojen.")
         antojos_salados = st.multiselect(
-            "Selecciona los alimentos salados que se te antojan:",
+            "¿Cuáles de estos alimentos salados se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Papas fritas (Sabritas, Ruffles, etc.)", "Cacahuates enchilados", "Frituras (Doritos, Cheetos, Takis, etc.)", 
              "Totopos con salsa", "Galletas saladas", "Cacahuates japoneses", "Chicharrón (de cerdo o harina)", 
              "Nachos con queso", "Queso derretido o gratinado"],
             default=st.session_state.get('antojos_salados', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que frecuentemente se te antojen"
+            placeholder="🔽 Selecciona los alimentos salados que se te antojan",
+            help="Incluye todas las botanas y snacks salados que frecuentemente deseas."
         )
         
         st.markdown("---")
-        st.markdown("### 🌮 Comidas rápidas / callejeras")
+        st.markdown("### 🌮 Antojos de comidas rápidas / callejeras")
+        st.info("💡 **Ayuda:** Incluye comida rápida, platillos callejeros o preparaciones que se te antojen.")
         antojos_comida_rapida = st.multiselect(
-            "Selecciona las comidas rápidas que se te antojan:",
+            "¿Cuáles de estas comidas rápidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Tacos (pastor, asada, birria, etc.)", "Tortas (cubana, ahogada, etc.)", "Hamburguesas", "Hot dogs", 
              "Pizza", "Quesadillas fritas", "Tamales", "Pambazos", "Sopes / gorditas", "Elotes / esquites", 
              "Burritos", "Enchiladas", "Empanadas"],
             default=st.session_state.get('antojos_comida_rapida', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que frecuentemente se te antojen"
+            placeholder="🔽 Selecciona las comidas rápidas que se te antojan",
+            help="Incluye toda la comida rápida o callejera que frecuentemente deseas."
         )
         
         st.markdown("---")
-        st.markdown("### 🍹 Bebidas y postres líquidos")
+        st.markdown("### 🍹 Antojos de bebidas y postres líquidos")
+        st.info("💡 **Ayuda:** Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen.")
         antojos_bebidas = st.multiselect(
-            "Selecciona las bebidas que se te antojan:",
+            "¿Cuáles de estas bebidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Refrescos regulares (Coca-Cola, Fanta, etc.)", "Jugos industrializados (Boing, Jumex, etc.)", 
              "Malteadas / Frappés", "Agua de sabor con azúcar (jamaica, horchata, tamarindo)", 
              "Café con azúcar y leche", "Champurrado / atole", "Licuado de plátano con azúcar", 
              "Bebidas alcohólicas (cerveza, tequila, vino, etc.)"],
             default=st.session_state.get('antojos_bebidas', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que frecuentemente se te antojen"
+            placeholder="🔽 Selecciona las bebidas que se te antojan",
+            help="Incluye todas las bebidas con calorías que frecuentemente deseas."
         )
         
         st.markdown("---")
-        st.markdown("### 🔥 Alimentos con condimentos estimulantes")
+        st.markdown("### 🔥 Antojos de alimentos con condimentos estimulantes")
+        st.info("💡 **Ayuda:** Incluye alimentos picantes, con chile o condimentos intensos que se te antojen.")
         antojos_picantes = st.multiselect(
-            "Selecciona los alimentos con condimentos que se te antojan:",
+            "¿Cuáles de estos alimentos picantes se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chiles en escabeche", "Salsas picantes", "Salsa Valentina, Tajín o Chamoy", 
              "Pepinos con chile y limón", "Mangos verdes con chile", "Gomitas enchiladas", 
              "Fruta con Miguelito o chile en polvo"],
             default=st.session_state.get('antojos_picantes', []),
-            placeholder="Selecciona una opción",
-            help="Marca todos los que frecuentemente se te antojen"
+            placeholder="🔽 Selecciona los alimentos picantes que se te antojan",
+            help="Incluye todos los alimentos con chile o condimentos estimulantes que deseas."
         )
         
         st.markdown("---")
-        st.markdown("### ❓ Pregunta final:")
-        st.markdown("**¿Qué otros alimentos o preparaciones se te antojan mucho y no aparecen en esta lista?**")
+        st.markdown("### ❓ Otros antojos no mencionados")
+        st.info("💡 **Ayuda:** Especifica cualquier otro antojo que no aparezca en las listas anteriores.")
         otros_antojos = st.text_area(
-            "👉 Escríbelos aquí:",
+            "¿Qué otros alimentos o preparaciones se te antojan mucho?",
             value=st.session_state.get('otros_antojos', ''),
-            placeholder="Especifica otros alimentos que se te antojen frecuentemente",
-            help="Menciona cualquier antojo que no esté en las listas anteriores"
+            placeholder="Ej: palomitas con mantequilla, raspados, gelatinas comerciales, etc.",
+            help="Describe cualquier otro antojo que no esté en las listas anteriores"
         )
 
         # Guardar en session state
@@ -1187,12 +1454,25 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.session_state.antojos_picantes = antojos_picantes
         st.session_state.otros_antojos = otros_antojos
         
+        # Análisis de antojos
+        total_antojos = len(antojos_dulces) + len(antojos_salados) + len(antojos_comida_rapida) + len(antojos_bebidas) + len(antojos_picantes)
+        
+        if total_antojos >= 15:
+            st.warning(f"⚠️ **Muchos antojos identificados:** {total_antojos} tipos de antojos. Será importante desarrollar estrategias específicas de manejo.")
+        elif total_antojos >= 8:
+            st.info(f"ℹ️ **Antojos moderados:** {total_antojos} tipos de antojos. Incluiremos alternativas saludables en tu plan.")
+        elif total_antojos >= 3:
+            st.success(f"✅ **Pocos antojos:** {total_antojos} tipos de antojos. Esto facilitará mantener un plan alimentario saludable.")
+        elif total_antojos > 0:
+            st.success(f"✅ **Muy pocos antojos:** Solo {total_antojos} tipos. Tu autocontrol alimentario parece ser muy bueno.")
+        else:
+            st.success("🎉 **Sin antojos frecuentes:** Excelente autocontrol alimentario. Esto será una gran ventaja para tu plan.")
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
     # RESULTADO FINAL: Análisis completo del nuevo cuestionario
     with st.expander("📈 **RESULTADO FINAL: Tu Perfil Alimentario Completo**", expanded=True):
-        progress.progress(100)
-        progress_text.text("Análisis completo: Generando tu perfil alimentario personalizado")
+        progress.progress(100, text="Análisis completo: Generando tu perfil alimentario personalizado")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
