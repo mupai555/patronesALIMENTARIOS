@@ -876,10 +876,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
     if current_step == 1:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso1"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso1');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -985,10 +992,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
     elif current_step == 2:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso2"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso2');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1099,10 +1113,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
     elif current_step == 3:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso3"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso3');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1187,10 +1208,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
     elif current_step == 4:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso4"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso4');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1289,10 +1317,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 5: VEGETALES
     elif current_step == 5:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso5"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso5');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1363,10 +1398,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 6: FRUTAS
     elif current_step == 6:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso6"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso6');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1445,10 +1487,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 1: ACEITES DE COCCIÓN (PASO 7)
     elif current_step == 7:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso7"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso7');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1506,10 +1555,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 2: BEBIDAS (PASO 8)
     elif current_step == 8:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso8"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso8');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1568,10 +1624,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 3: ALERGIAS/INTOLERANCIAS (PASO 9)
     elif current_step == 9:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso9"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso9');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
@@ -1693,10 +1756,17 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 4: ANTOJOS (PASO 10)
     elif current_step == 10:
-        # Auto-scroll to top for better UX
+        # Add unique HTML marker for this step
         st.markdown("""
+        <div id="paso10"></div>
         <script>
-        window.parent.document.querySelector('.main').scrollTo(0, 0);
+        // Auto-scroll to this step's marker for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso10');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
         </script>
         """, unsafe_allow_html=True)
         
