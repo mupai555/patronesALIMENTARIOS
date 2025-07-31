@@ -84,6 +84,14 @@ def validate_step_10():
     """Valida antojos - opcional"""
     return True  # Este paso es opcional
 
+def validate_step_11():
+    """Valida frecuencia de comidas - opcional"""
+    return True  # Este paso es opcional
+
+def validate_step_12():
+    """Valida sugerencias de menús - opcional"""
+    return True  # Este paso es opcional
+
 def get_step_validator(step_number):
     """Obtiene la función de validación para un paso específico"""
     validators = {
@@ -96,7 +104,9 @@ def get_step_validator(step_number):
         7: validate_step_7,
         8: validate_step_8,
         9: validate_step_9,
-        10: validate_step_10
+        10: validate_step_10,
+        11: validate_step_11,
+        12: validate_step_12
     }
     return validators.get(step_number, lambda: True)
 
@@ -109,7 +119,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 10:
+        if current_step < 12:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
@@ -544,7 +554,9 @@ defaults = {
         7: False,  # Aceites de cocción
         8: False,  # Bebidas
         9: False,  # Alergias/intolerancias
-        10: False  # Antojos
+        10: False,  # Antojos
+        11: False,  # Frecuencia de comidas
+        12: False   # Sugerencias de menús
     },
     "max_unlocked_step": 1
 }
@@ -885,7 +897,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
-            <small>Paso {current_step} de 10 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
+            <small>Paso {current_step} de 12 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
         <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;">
             <span style="color: #27AE60;">● Completo</span> | 
@@ -918,7 +930,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 1 de 10 - Selecciona las proteínas grasas que consumes
+                Estás en el paso 1 de 12 - Selecciona las proteínas grasas que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -954,7 +966,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(10, text="Paso 1 de 10: Proteínas con más contenido graso")
+        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -987,7 +999,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         carnes_res_grasas = st.multiselect(
             "¿Cuáles de estas carnes de res grasas consumes? (Puedes seleccionar varios)",
-            ["Costilla de res", "Ribeye", "T-bone", "New York", "Porterhouse", "Arrachera marinada", "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa", "Prime rib", "Chuck roast (diezmillo)", "Brisket (pecho)", "Short ribs (costilla corta)", "Cowboy steak", "Tomahawk", "Ninguno"],
+            ["Costilla de res", "Ribeye", "T-bone", "New York", "Porterhouse", "Arrachera marinada", "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa", "Prime rib", "Chuck roast (diezmillo)", "Brisket (pecho)", "Short ribs (costilla corta)", "Cowboy steak", "Tomahawk", "Churrasco", "Carne para asar con grasa", "Picaña con grasa", "Entrañas", "Matambre", "Paleta con grasa", "Chambarete con tuétano", "Retazo con grasa", "Diezmillo graso", "Suadero", "Pecho de res graso", "Ninguno"],
             key="carnes_res_grasas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
@@ -1107,7 +1119,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 2 de 10 - Selecciona las proteínas magras que consumes
+                Estás en el paso 2 de 12 - Selecciona las proteínas magras que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1143,7 +1155,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(20, text="Paso 2 de 10: Proteínas animales magras")
+        progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1166,7 +1178,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         carnes_res_magras = st.multiselect(
             "¿Cuáles de estas carnes de res magras consumes? (Puedes seleccionar varios)",
-            ["Aguayón (top sirloin)", "Bola (eye of round)", "Sirloin sin grasa visible", "Filete de res magro", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)", "Top round", "Bottom round", "Flank steak limpio", "Ninguno"],
+            ["Aguayón (top sirloin)", "Bola (eye of round)", "Sirloin sin grasa visible", "Filete de res magro", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)", "Top round", "Bottom round", "Flank steak limpio", "Milanesa de res sin empanizar", "Pulpa bola magra", "Pulpa negra sin grasa", "Chamorro sin grasa", "Agujas sin grasa", "Tampiqueña magra", "Medallones de res", "Lomo bajo magro", "Cuete magro", "Espaldilla magra", "Maciza sin grasa", "Ninguno"],
             key="carnes_res_magras",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todas las carnes de res magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
@@ -1298,7 +1310,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥑 PASO 3: FUENTES DE GRASA SALUDABLE
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 3 de 10 - Selecciona las grasas saludables que consumes
+                Estás en el paso 3 de 12 - Selecciona las grasas saludables que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1334,7 +1346,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(30, text="Paso 3 de 10: Fuentes de grasa saludable")
+        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1423,7 +1435,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍞 PASO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 4 de 10 - Selecciona los carbohidratos que consumes
+                Estás en el paso 4 de 12 - Selecciona los carbohidratos que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1459,7 +1471,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(40, text="Paso 4 de 10: Carbohidratos complejos y cereales")
+        progress.progress(33, text="Paso 4 de 12: Carbohidratos complejos y cereales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1572,7 +1584,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥬 PASO 5: VEGETALES
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 5 de 10 - Selecciona los vegetales que consumes
+                Estás en el paso 5 de 12 - Selecciona los vegetales que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1608,7 +1620,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(50, text="Paso 5 de 10: Vegetales")
+        progress.progress(42, text="Paso 5 de 12: Vegetales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1683,7 +1695,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍎 PASO 6: FRUTAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 6 de 10 - Selecciona las frutas que consumes
+                Estás en el paso 6 de 12 - Selecciona las frutas que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1719,7 +1731,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(60, text="Paso 6 de 10: Frutas - ¡Completando grupos principales!")
+        progress.progress(50, text="Paso 6 de 12: Frutas - ¡Completando grupos principales!")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -1802,7 +1814,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍳 PASO 7: ACEITES DE COCCIÓN PREFERIDOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 7 de 10 - Información Adicional (Opcional)
+                Estás en el paso 7 de 12 - Información Adicional (Opcional)
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1839,7 +1851,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(70, text="Paso 7 de 10: Aceites de cocción (Opcional)")
+        progress.progress(58, text="Paso 7 de 12: Aceites de cocción (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -1900,7 +1912,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥤 PASO 8: BEBIDAS PARA HIDRATACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 8 de 10 - Información Adicional (Opcional)
+                Estás en el paso 8 de 12 - Información Adicional (Opcional)
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1937,7 +1949,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(80, text="Paso 8 de 10: Bebidas para hidratación (Opcional)")
+        progress.progress(67, text="Paso 8 de 12: Bebidas para hidratación (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -1999,7 +2011,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🚨 PASO 9: ALERGIAS E INTOLERANCIAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 9 de 10 - Información Crítica para tu Seguridad
+                Estás en el paso 9 de 12 - Información Crítica para tu Seguridad
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2036,7 +2048,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(90, text="Paso 9 de 10: Alergias e intolerancias (Crítico)")
+        progress.progress(75, text="Paso 9 de 12: Alergias e intolerancias (Crítico)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2161,7 +2173,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 😋 PASO 10: EVALUACIÓN DE ANTOJOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 10 de 10 - Información para Estrategias
+                Estás en el paso 10 de 12 - Información para Estrategias
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2198,7 +2210,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 10 de 10: Antojos alimentarios - ¡Último paso!")
+        progress.progress(83, text="Paso 10 de 12: Antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2315,6 +2327,229 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 11: FRECUENCIA DE COMIDAS
+    elif current_step == 11:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🍽️ PASO 11: FRECUENCIA DE COMIDAS PREFERIDA
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 11 de 12 - Adaptación a tu Estilo de Vida
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Add unique HTML marker for this step
+        st.markdown("""
+        <div id="paso11"></div>
+        <script>
+        // Auto-scroll to this step's marker and focus on first input for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso11');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
+        </script>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(92, text="Paso 11 de 12: Frecuencia de comidas preferida")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🎯 ¿Cuál es tu frecuencia de comidas ideal?
+        Queremos conocer la **frecuencia de comidas** que mejor se adapta a tu agenda diaria y estilo de vida.
+        Esto nos ayudará a estructurar tu plan alimentario de manera que sea práctico y sostenible para ti.
+        
+        **💡 Instrucción:** Selecciona la opción que mejor describa tu rutina alimentaria preferida o más realista para tu día a día.
+        """)
+        
+        st.info("💡 **Ayuda:** Piensa en tu horario de trabajo, actividades y preferencias personales para elegir la frecuencia más conveniente.")
+        
+        frecuencia_comidas = st.radio(
+            "¿Cuál es la frecuencia de comidas que mejor se adapta a tu agenda diaria?",
+            [
+                "Desayuno, comida y cena (3 comidas principales)",
+                "Desayuno, comida, cena y una colación",
+                "Desayuno, comida, cena y dos colaciones", 
+                "Solo dos comidas principales al día",
+                "Otro (especificar)"
+            ],
+            key='frecuencia_comidas',
+            help="Selecciona la estructura de comidas que mejor se ajuste a tu rutina diaria"
+        )
+        
+        # Campo adicional si selecciona "Otro"
+        otra_frecuencia = ""
+        if frecuencia_comidas == "Otro (especificar)":
+            otra_frecuencia = st.text_input(
+                "Especifica tu frecuencia de comidas preferida:",
+                value=st.session_state.get('otra_frecuencia', ''),
+                placeholder="Ej: Ayuno intermitente 16:8, una comida al día, 5 comidas pequeñas, etc.",
+                help="Describe tu rutina alimentaria ideal con el mayor detalle posible"
+            )
+            st.session_state.otra_frecuencia = otra_frecuencia
+        
+        # Resumen de la selección
+        if frecuencia_comidas:
+            if frecuencia_comidas == "Otro (especificar)" and otra_frecuencia:
+                st.success(f"✅ **Frecuencia seleccionada:** {otra_frecuencia}")
+            elif frecuencia_comidas != "Otro (especificar)":
+                st.success(f"✅ **Frecuencia seleccionada:** {frecuencia_comidas}")
+            
+            # Información adicional según la selección
+            if "3 comidas principales" in frecuencia_comidas:
+                st.info("🍽️ **Estructura clásica:** Ideal para horarios regulares y control de porciones.")
+            elif "una colación" in frecuencia_comidas:
+                st.info("🥪 **Con una colación:** Excelente para mantener energía estable durante el día.")
+            elif "dos colaciones" in frecuencia_comidas:
+                st.info("🍎 **Con dos colaciones:** Perfecta para personas con horarios largos o alta actividad física.")
+            elif "dos comidas principales" in frecuencia_comidas:
+                st.info("⏰ **Ayuno intermitente:** Ideal para quienes prefieren ventanas de alimentación más concentradas.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 12: SUGERENCIAS DE MENÚS
+    elif current_step == 12:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            border: 3px solid #4CAF50;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                📝 PASO 12: SUGERENCIAS DE MENÚS
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                ¡Último Paso! Estás en el paso 12 de 12 - Personalización Final
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Add unique HTML marker for this step
+        st.markdown("""
+        <div id="paso12"></div>
+        <script>
+        // Auto-scroll to this step's marker and focus on first input for better UX
+        setTimeout(function() {
+            const stepElement = window.parent.document.getElementById('paso12');
+            if (stepElement) {
+                stepElement.scrollIntoView({behavior: 'smooth'});
+            }
+        }, 100);
+        </script>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(100, text="Paso 12 de 12: Sugerencias de menús - ¡Último paso!")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 💭 Sugerencias de Menús y Preferencias Adicionales
+        Para finalizar tu evaluación, nos gustaría conocer si tienes **sugerencias específicas de menús** que te gustaría que adaptemos a tu plan nutricional, o si prefieres que nuestro equipo de nutrición se encargue de crear las propuestas basándose en toda la información que has proporcionado.
+        
+        **💡 Instrucción:** Puedes escribir menús específicos, platos favoritos, recetas que te gustan, o simplemente indicar que confías en nuestro criterio profesional.
+        """)
+        
+        st.info("💡 **Ayuda:** Puedes mencionar platos específicos, combinaciones que te gustan, recetas familiares, o cualquier idea que tengas. También puedes dejar que nuestro equipo decida completamente.")
+        
+        sugerencias_menus = st.text_area(
+            "¿Tienes alguna sugerencia de menús que quisieras que adaptemos, o prefieres que el equipo decida por ti?",
+            value=st.session_state.get('sugerencias_menus', ''),
+            placeholder="""Ejemplos:
+- Me gustan los desayunos con avena y frutas
+- Prefiero pollo a la plancha con verduras para la cena
+- Me encantan las ensaladas coloridas para el almuerzo
+- Que el equipo decida completamente basándose en mi evaluación
+- Quiero incluir comida mexicana tradicional saludable
+- Prefiero menús sencillos y fáciles de preparar""",
+            height=120,
+            help="Escribe todas las ideas, preferencias o sugerencias que tengas, o indica si prefieres que decidamos nosotros"
+        )
+        
+        # Guardar en session state
+        st.session_state.sugerencias_menus = sugerencias_menus
+        
+        # Opciones predefinidas rápidas
+        st.markdown("### 🎯 Opciones Rápidas (Opcional)")
+        st.markdown("Si no sabes qué escribir, puedes seleccionar una de estas opciones:")
+        
+        opcion_rapida = st.selectbox(
+            "Selecciona una opción si no tienes sugerencias específicas:",
+            [
+                "Seleccionar...",
+                "Que el equipo decida completamente por mí",
+                "Prefiero comida mexicana saludable",
+                "Quiero menús sencillos y fáciles de preparar", 
+                "Me gusta variar mucho los sabores",
+                "Prefiero preparaciones al vapor y a la plancha",
+                "Quiero incluir más recetas internacionales saludables"
+            ],
+            key='opcion_rapida_menu',
+            help="Estas son opciones generales que puedes usar si no tienes ideas específicas"
+        )
+        
+        # Auto-llenar si selecciona una opción rápida
+        if opcion_rapida and opcion_rapida != "Seleccionar..." and not sugerencias_menus:
+            st.session_state.sugerencias_menus = opcion_rapida
+            st.rerun()
+        
+        # Mostrar resumen de la entrada
+        if sugerencias_menus:
+            palabra_count = len(sugerencias_menus.split())
+            if palabra_count > 0:
+                st.success(f"✅ **Sugerencias recibidas:** {palabra_count} palabras. Excelente, esto nos ayudará mucho a personalizar tu plan.")
+            
+            # Análisis rápido del contenido
+            if "equipo decida" in sugerencias_menus.lower() or "decidan por mí" in sugerencias_menus.lower():
+                st.info("👨‍🍳 **Perfecto:** Nuestro equipo de nutrición creará menús completamente personalizados basándose en toda tu evaluación.")
+            elif len(sugerencias_menus) > 50:
+                st.info("📝 **Excelente:** Has proporcionado sugerencias detalladas que nos ayudarán a crear un plan muy específico para ti.")
+            else:
+                st.info("💡 **Recibido:** Tus preferencias han sido registradas y las consideraremos en tu plan personalizado.")
+        else:
+            st.info("ℹ️ **Nota:** Si no escribes nada, nuestro equipo creará menús basándose en todos los alimentos que seleccionaste en los pasos anteriores.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
         # Botones de navegación - En el último paso solo mostrar anterior y finalizar
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
@@ -2325,7 +2560,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 st.success("🎊 ¡Felicitaciones! Has completado toda la evaluación de patrones alimentarios.")
                 st.balloons()
                 # Marcar este paso como completado
-                st.session_state.step_completed[10] = True
+                st.session_state.step_completed[12] = True
 
     # RESULTADO FINAL: Análisis completo del nuevo cuestionario
     with st.expander("📈 **RESULTADO FINAL: Tu Perfil Alimentario Completo**", expanded=False):
@@ -2453,6 +2688,24 @@ if datos_personales_completos and st.session_state.datos_completos:
         if st.session_state.get('alimento_adicional'):
             st.markdown("### ➕ Alimentos Adicionales Especificados")
             st.info(f"**Alimentos mencionados:** {st.session_state.get('alimento_adicional', 'No especificado')}")
+
+        # Información de frecuencia de comidas
+        if st.session_state.get('frecuencia_comidas'):
+            st.markdown("### 🍽️ Frecuencia de Comidas Preferida")
+            frecuencia = st.session_state.get('frecuencia_comidas', 'No especificado')
+            if frecuencia == "Otro (especificar)" and st.session_state.get('otra_frecuencia'):
+                st.info(f"**Frecuencia personalizada:** {st.session_state.get('otra_frecuencia')}")
+            else:
+                st.info(f"**Frecuencia seleccionada:** {frecuencia}")
+
+        # Sugerencias de menús
+        if st.session_state.get('sugerencias_menus'):
+            st.markdown("### 📝 Sugerencias de Menús")
+            sugerencias = st.session_state.get('sugerencias_menus', '')
+            palabra_count = len(sugerencias.split()) if sugerencias else 0
+            st.info(f"**Sugerencias del cliente:** {sugerencias[:200]}{'...' if len(sugerencias) > 200 else ''}")
+            if palabra_count > 0:
+                st.success(f"**Detalle:** {palabra_count} palabras de sugerencias específicas proporcionadas")
 
         # Recomendaciones personalizadas basadas en datos reales
         st.markdown("### 💡 Recomendaciones Personalizadas Iniciales")
@@ -2695,6 +2948,18 @@ DATOS DEL CLIENTE:
 - {st.session_state.get('otros_antojos', 'No especificado')}
 
 =====================================
+🍽️ FRECUENCIA DE COMIDAS PREFERIDA
+=====================================
+- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas', 'No especificado')}
+- Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
+
+=====================================
+📝 SUGERENCIAS DE MENÚS Y PREFERENCIAS
+=====================================
+- Sugerencias del cliente: {st.session_state.get('sugerencias_menus', 'No especificado')}
+- Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
+
+=====================================
 RESUMEN DE ANÁLISIS IDENTIFICADO:
 =====================================
 Este cuestionario completo de patrones alimentarios proporciona una base integral 
@@ -2705,13 +2970,17 @@ para el desarrollo de recomendaciones nutricionales altamente personalizadas bas
 3. Restricciones específicas (alergias e intolerancias)  
 4. Patrones de preferencias detallados
 5. Análisis de antojos y alimentación emocional
-6. Contexto personal, familiar y social completo
+6. Frecuencia de comidas preferida del cliente
+7. Sugerencias específicas de menús y preferencias adicionales
+8. Contexto personal, familiar y social completo
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
 - Considerar restricciones y alergias como prioridad absoluta
 - Aprovechar métodos de cocción preferidos y disponibles
 - Integrar estrategias para manejo de antojos identificados
+- Estructurar la frecuencia de comidas según la preferencia del cliente
+- Incorporar sugerencias específicas de menús proporcionadas por el cliente
 - Adaptar recomendaciones al contexto personal y familiar específico
 
 =====================================
@@ -2816,7 +3085,7 @@ def verificar_grupos_obligatorios_completos():
 
 # Botón para enviar email
 if not st.session_state.get("correo_enviado", False):
-    if st.button("📧 Enviar Resumen por Email", key="enviar_email"):
+    if st.button("📧 Terminar cuestionario y enviar resumen por email", key="enviar_email"):
         faltantes = datos_completos_para_email()
         grupos_incompletos = verificar_grupos_obligatorios_completos()
         
