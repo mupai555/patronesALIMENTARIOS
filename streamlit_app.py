@@ -901,15 +901,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
     if current_step == 1:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            border: 3px solid #4CAF50;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 1 de 10 - Selecciona las proteínas grasas que consumes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso1"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso1');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -987,7 +1017,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         organos_grasos = st.multiselect(
             "¿Cuáles de estos órganos y vísceras grasas consumes? (Puedes seleccionar varios)",
-            ["Hígado de res", "Hígado de cerdo", "Hígado de pollo", "Riñones", "Corazón", "Sesos", "Tuétano", "Molleja", "Ninguno"],
+            ["Hígado de res", "Hígado de cerdo", "Hígado de pollo", "Hígado de cordero", "Riñones de res", "Riñones de cerdo", "Corazón de res", "Corazón de cerdo", "Corazón de pollo", "Sesos de res", "Sesos de cerdo", "Tuétano de res", "Molleja de res", "Molleja de cerdo", "Ninguno"],
             key="organos_grasos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los órganos que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
@@ -1060,15 +1090,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
     elif current_step == 2:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
+            border: 3px solid #2196F3;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 2 de 10 - Selecciona las proteínas magras que consumes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso2"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso2');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1136,7 +1196,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         organos_magros = st.multiselect(
             "¿Cuáles de estos órganos y vísceras magros consumes? (Puedes seleccionar varios)",
-            ["Hígado de ternera magro", "Corazón magro", "Lengua sin grasa", "Ninguno"],
+            ["Hígado de ternera magro", "Hígado de pollo magro", "Corazón de res magro", "Corazón de pollo magro", "Lengua de res sin grasa", "Riñones de ternera", "Molleja de ternera magra", "Ninguno"],
             key="organos_magros",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los órganos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
@@ -1221,15 +1281,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
     elif current_step == 3:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🥑 PASO 3: FUENTES DE GRASA SALUDABLE
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 3 de 10 - Selecciona las grasas saludables que consumes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso3"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso3');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1316,15 +1406,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
     elif current_step == 4:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+            border: 3px solid #9C27B0;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🍞 PASO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 4 de 10 - Selecciona los carbohidratos que consumes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso4"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso4');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1435,15 +1555,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 5: VEGETALES
     elif current_step == 5:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+            border: 3px solid #4CAF50;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🥬 PASO 5: VEGETALES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 5 de 10 - Selecciona los vegetales que consumes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso5"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso5');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1516,15 +1666,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 6: FRUTAS
     elif current_step == 6:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3);
+            border: 3px solid #E91E63;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🍎 PASO 6: FRUTAS
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 6 de 10 - Selecciona las frutas que consumes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso6"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso6');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1605,15 +1785,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 1: ACEITES DE COCCIÓN (PASO 7)
     elif current_step == 7:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(121, 85, 72, 0.3);
+            border: 3px solid #795548;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🍳 PASO 7: ACEITES DE COCCIÓN PREFERIDOS
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 7 de 10 - Información Adicional (Opcional)
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso7"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso7');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1673,15 +1883,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 2: BEBIDAS (PASO 8)
     elif current_step == 8:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 188, 212, 0.3);
+            border: 3px solid #00BCD4;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🥤 PASO 8: BEBIDAS PARA HIDRATACIÓN
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 8 de 10 - Información Adicional (Opcional)
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso8"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso8');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1742,15 +1982,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 3: ALERGIAS/INTOLERANCIAS (PASO 9)
     elif current_step == 9:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(244, 67, 54, 0.3);
+            border: 3px solid #F44336;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 9 de 10 - Información Crítica para tu Seguridad
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso9"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso9');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
@@ -1874,15 +2144,45 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # APARTADO EXTRA 4: ANTOJOS (PASO 10)
     elif current_step == 10:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(103, 58, 183, 0.3);
+            border: 3px solid #673AB7;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                ¡Último Paso! Estás en el paso 10 de 10 - Información para Estrategias
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Add unique HTML marker for this step
         st.markdown("""
         <div id="paso10"></div>
         <script>
-        // Auto-scroll to this step's marker for better UX
+        // Auto-scroll to this step's marker and focus on first input for better UX
         setTimeout(function() {
             const stepElement = window.parent.document.getElementById('paso10');
             if (stepElement) {
                 stepElement.scrollIntoView({behavior: 'smooth'});
+                // Focus on the first multiselect dropdown in this step
+                setTimeout(function() {
+                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
+                    if (firstMultiselect) {
+                        firstMultiselect.focus();
+                        firstMultiselect.click();
+                    }
+                }, 200);
             }
         }, 100);
         </script>
