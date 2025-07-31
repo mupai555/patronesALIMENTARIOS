@@ -14,20 +14,29 @@ def validate_step_1():
     """Valida que se haya seleccionado al menos una opción en proteínas grasas"""
     selections = (
         st.session_state.get('huevos_embutidos', []) + 
-        st.session_state.get('carnes_grasas', []) + 
+        st.session_state.get('carnes_res_grasas', []) + 
+        st.session_state.get('carnes_cerdo_grasas', []) + 
+        st.session_state.get('carnes_pollo_grasas', []) + 
+        st.session_state.get('organos_grasos', []) + 
         st.session_state.get('quesos_grasos', []) + 
         st.session_state.get('lacteos_enteros', []) + 
-        st.session_state.get('pescados_grasos', [])
+        st.session_state.get('pescados_grasos', []) + 
+        st.session_state.get('mariscos_grasos', [])
     )
     return len(selections) > 0
 
 def validate_step_2():
     """Valida que se haya seleccionado al menos una opción en proteínas magras"""
     selections = (
-        st.session_state.get('carnes_magras', []) + 
-        st.session_state.get('pescados_blancos', []) + 
+        st.session_state.get('carnes_res_magras', []) + 
+        st.session_state.get('carnes_cerdo_magras', []) + 
+        st.session_state.get('carnes_pollo_magras', []) + 
+        st.session_state.get('organos_magros', []) + 
+        st.session_state.get('pescados_magros', []) + 
+        st.session_state.get('mariscos_magros', []) + 
         st.session_state.get('quesos_magros', []) + 
-        st.session_state.get('lacteos_light', [])
+        st.session_state.get('lacteos_light', []) + 
+        st.session_state.get('huevos_embutidos_light', [])
     )
     return len(selections) > 0
 
@@ -44,6 +53,7 @@ def validate_step_4():
     """Valida que se haya seleccionado al menos una opción en carbohidratos"""
     selections = (
         st.session_state.get('cereales_integrales', []) + 
+        st.session_state.get('pastas', []) + 
         st.session_state.get('tortillas_panes', []) + 
         st.session_state.get('raices_tuberculos', []) + 
         st.session_state.get('leguminosas', [])
@@ -934,63 +944,106 @@ if datos_personales_completos and st.session_state.datos_completos:
         """)
         
         st.markdown("#### 🍳 Huevos y embutidos")
-        st.info("💡 **Ayuda:** Incluye cualquier forma de huevo y embutidos que consumas, sin importar la frecuencia.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         huevos_embutidos = st.multiselect(
             "¿Cuáles de estos huevos y embutidos consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Huevo entero", "Clara de huevo", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano"],
+            ["Huevo entero", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano", "Jamón ibérico", "Salami", "Mortadela", "Pastrami", "Pepperoni", "Ninguno"],
             key="huevos_embutidos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los que consumes. Marca 'Ninguna' si no consumes ninguno de estos alimentos."
+            help="Selecciona todos los que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
         )
         
-        st.markdown("#### 🥩 Carnes y cortes grasos")
-        st.info("💡 **Ayuda:** Incluye cualquier tipo de carne roja con mayor contenido graso que consumas.")
-        carnes_grasas = st.multiselect(
-            "¿Cuáles de estas carnes y cortes grasos consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Costilla de res", "Costilla de cerdo", "Ribeye", "T-bone", "New York", "Arrachera marinada", 
-             "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa"],
-            key="carnes_grasas",
+        st.markdown("#### 🥩 Carnes de res grasas")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        carnes_res_grasas = st.multiselect(
+            "¿Cuáles de estas carnes de res grasas consumes? (Puedes seleccionar varios)",
+            ["Costilla de res", "Ribeye", "T-bone", "New York", "Porterhouse", "Arrachera marinada", "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa", "Prime rib", "Chuck roast (diezmillo)", "Brisket (pecho)", "Short ribs (costilla corta)", "Cowboy steak", "Tomahawk", "Ninguno"],
+            key="carnes_res_grasas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguna' si no consumes ninguno de estos cortes."
+            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+        )
+        
+        st.markdown("#### 🐷 Carnes de cerdo grasas")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        carnes_cerdo_grasas = st.multiselect(
+            "¿Cuáles de estas carnes de cerdo grasas consumes? (Puedes seleccionar varios)",
+            ["Costilla de cerdo", "Panceta (belly)", "Chuleta con grasa", "Carnitas", "Chicharrón prensado", "Codillo", "Espalda (Boston butt)", "Picnic shoulder", "Pata de cerdo", "Ninguno"],
+            key="carnes_cerdo_grasas",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+        )
+        
+        st.markdown("#### 🐔 Carnes de pollo/pavo grasas")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        carnes_pollo_grasas = st.multiselect(
+            "¿Cuáles de estas carnes de pollo/pavo grasas consumes? (Puedes seleccionar varios)",
+            ["Muslo de pollo con piel", "Pierna de pollo con piel", "Alitas de pollo", "Pollo entero con piel", "Pavo con piel", "Muslo de pavo", "Ninguno"],
+            key="carnes_pollo_grasas",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+        )
+        
+        st.markdown("#### 🫀 Órganos y vísceras grasas")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        organos_grasos = st.multiselect(
+            "¿Cuáles de estos órganos y vísceras grasas consumes? (Puedes seleccionar varios)",
+            ["Hígado de res", "Hígado de cerdo", "Hígado de pollo", "Riñones", "Corazón", "Sesos", "Tuétano", "Molleja", "Ninguno"],
+            key="organos_grasos",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todos los órganos que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
         )
         
         st.markdown("#### 🧀 Quesos altos en grasa")
-        st.info("💡 **Ayuda:** Incluye cualquier tipo de queso con mayor contenido graso que disfrutes.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         quesos_grasos = st.multiselect(
             "¿Cuáles de estos quesos altos en grasa consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar"],
+            ["Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar", "Queso roquefort", "Queso brie", "Queso camembert", "Queso parmesano", "Queso gruyere", "Queso de cabra maduro", "Ninguno"],
             key="quesos_grasos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos que consumes. Marca 'Ninguna' si no consumes ninguno de estos quesos."
+            help="Selecciona todos los quesos que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
         )
         
         st.markdown("#### 🥛 Lácteos enteros")
-        st.info("💡 **Ayuda:** Incluye cualquier producto lácteo entero (no light o descremado) que consumas.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         lacteos_enteros = st.multiselect(
             "¿Cuáles de estos lácteos enteros consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", 
-             "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)"],
+            ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", 
+             "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)", "Nata", "Crema agria", "Ninguno"],
             key="lacteos_enteros",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos enteros que uses. Marca 'Ninguna' si no consumes ninguno de estos lácteos."
+            help="Incluye todos los lácteos enteros que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
         )
         
         st.markdown("#### 🐟 Pescados grasos")
-        st.info("💡 **Ayuda:** Incluye pescados con mayor contenido de grasas omega-3 que consumas.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         pescados_grasos = st.multiselect(
             "¿Cuáles de estos pescados grasos consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha"],
+            ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha", "Arenque", "Anchovetas", "Pez espada", "Anguila", "Ninguno"],
             key="pescados_grasos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los pescados grasos que consumes. Marca 'Ninguna' si no consumes ninguno de estos pescados."
+            help="Selecciona todos los pescados grasos que consumes. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+        )
+        
+        st.markdown("#### 🦐 Mariscos/comida marina grasos")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        mariscos_grasos = st.multiselect(
+            "¿Cuáles de estos mariscos/comida marina grasos consumes? (Puedes seleccionar varios)",
+            ["Pulpo", "Calamar", "Mejillones", "Ostras", "Cangrejo", "Langosta", "Caracol de mar", "Ninguno"],
+            key="mariscos_grasos",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los mariscos grasos que consumes. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
         )
 
         # Resumen del paso actual
         total_seleccionados = (len(st.session_state.get('huevos_embutidos', [])) + 
-                              len(st.session_state.get('carnes_grasas', [])) + 
+                              len(st.session_state.get('carnes_res_grasas', [])) + 
+                              len(st.session_state.get('carnes_cerdo_grasas', [])) + 
+                              len(st.session_state.get('carnes_pollo_grasas', [])) + 
+                              len(st.session_state.get('organos_grasos', [])) + 
                               len(st.session_state.get('quesos_grasos', [])) + 
                               len(st.session_state.get('lacteos_enteros', [])) + 
-                              len(st.session_state.get('pescados_grasos', [])))
+                              len(st.session_state.get('pescados_grasos', [])) + 
+                              len(st.session_state.get('mariscos_grasos', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Esto nos ayudará a personalizar mejor tu plan.")
         
@@ -1049,57 +1102,109 @@ if datos_personales_completos and st.session_state.datos_completos:
         **💡 Instrucción:** Marca TODOS los alimentos que te resultan fáciles de consumir o que disfrutas.
         """)
         
-        st.markdown("#### 🍗 Carnes y cortes magros")
-        st.info("💡 **Ayuda:** Incluye carnes con bajo contenido graso, como pechuga de pollo, cortes magros de res y cerdo.")
-        carnes_magras = st.multiselect(
-            "¿Cuáles de estas carnes y cortes magros consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Pechuga de pollo sin piel", "Filete de res magro (aguayón, bola, sirloin sin grasa visible)", 
-             "Lomo de cerdo", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", 
-             "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)", 
-             "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", "Salchicha de pechuga de pavo (light)"],
-            key="carnes_magras",
+        st.markdown("#### 🐄 Carnes de res magras")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        carnes_res_magras = st.multiselect(
+            "¿Cuáles de estas carnes de res magras consumes? (Puedes seleccionar varios)",
+            ["Aguayón (top sirloin)", "Bola (eye of round)", "Sirloin sin grasa visible", "Filete de res magro", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)", "Top round", "Bottom round", "Flank steak limpio", "Ninguno"],
+            key="carnes_res_magras",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes magras que consumas. Marca 'Ninguna' si no consumes ninguna de estas carnes."
+            help="Selecciona todas las carnes de res magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
         )
         
-        st.markdown("#### 🐟 Pescados blancos y bajos en grasa")
-        st.info("💡 **Ayuda:** Incluye pescados con carne blanca o bajo contenido graso que consumas.")
-        pescados_blancos = st.multiselect(
-            "¿Cuáles de estos pescados blancos y bajos en grasa consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua"],
-            key="pescados_blancos",
+        st.markdown("#### 🐷 Carnes de cerdo magras")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        carnes_cerdo_magras = st.multiselect(
+            "¿Cuáles de estas carnes de cerdo magras consumes? (Puedes seleccionar varios)",
+            ["Lomo de cerdo", "Filete de cerdo", "Chuleta magra sin grasa", "Solomillo de cerdo", "Tenderloin", "Ninguno"],
+            key="carnes_cerdo_magras",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los pescados blancos que consumes. Marca 'Ninguna' si no consumes ninguno de estos pescados."
+            help="Selecciona todas las carnes de cerdo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
         )
         
-        st.markdown("#### 🧀 Quesos bajos en grasa o magros")
-        st.info("💡 **Ayuda:** Incluye quesos con menor contenido graso o versiones light que consumas.")
+        st.markdown("#### 🐔 Carnes de pollo/pavo magras")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        carnes_pollo_magras = st.multiselect(
+            "¿Cuáles de estas carnes de pollo/pavo magras consumes? (Puedes seleccionar varios)",
+            ["Pechuga de pollo sin piel", "Pechuga de pavo sin piel", "Muslo de pollo sin piel", "Pierna de pavo sin piel", "Ninguno"],
+            key="carnes_pollo_magras",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todas las carnes de pollo/pavo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+        )
+        
+        st.markdown("#### 🫀 Órganos y vísceras magros")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        organos_magros = st.multiselect(
+            "¿Cuáles de estos órganos y vísceras magros consumes? (Puedes seleccionar varios)",
+            ["Hígado de ternera magro", "Corazón magro", "Lengua sin grasa", "Ninguno"],
+            key="organos_magros",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los órganos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+        )
+        
+        st.markdown("#### 🐟 Pescados magros")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        pescados_magros = st.multiselect(
+            "¿Cuáles de estos pescados magros consumes? (Puedes seleccionar varios)",
+            ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua", "Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
+            key="pescados_magros",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los pescados magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+        )
+        
+        st.markdown("#### 🦐 Mariscos/comida marina magros")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        mariscos_magros = st.multiselect(
+            "¿Cuáles de estos mariscos/comida marina magros consumes? (Puedes seleccionar varios)",
+            ["Camarón", "Callo de hacha", "Almeja", "Langostino", "Jaiba", "Ninguno"],
+            key="mariscos_magros",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los mariscos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
+        )
+        
+        st.markdown("#### 🧀 Quesos magros")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         quesos_magros = st.multiselect(
-            "¿Cuáles de estos quesos bajos en grasa consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
-             "Queso mozzarella light", "Queso fresco bajo en grasa"],
+            "¿Cuáles de estos quesos magros consumes? (Puedes seleccionar varios)",
+            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
+             "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
             key="quesos_magros",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos bajos en grasa que consumes. Marca 'Ninguna' si no consumes ninguno de estos quesos."
+            help="Selecciona todos los quesos magros que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
         )
         
         st.markdown("#### 🥛 Lácteos light o reducidos")
-        st.info("💡 **Ayuda:** Incluye productos lácteos descremados, light o sin azúcar que consumas.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         lacteos_light = st.multiselect(
             "¿Cuáles de estos lácteos light o reducidos consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", 
+            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", 
              "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", 
              "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", 
-             "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light"],
+             "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
             key="lacteos_light",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos light que uses. Marca 'Ninguna' si no consumes ninguno de estos lácteos."
+            help="Incluye todos los lácteos light que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
+        )
+        
+        st.markdown("#### 🥚 Huevos y embutidos light")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        huevos_embutidos_light = st.multiselect(
+            "¿Cuáles de estos huevos y embutidos light consumes? (Puedes seleccionar varios)",
+            ["Clara de huevo", "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", "Salchicha de pechuga de pavo (light)", "Pechuga de pavo rebanada", "Jamón serrano magro", "Ninguno"],
+            key="huevos_embutidos_light",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Selecciona todos los huevos y embutidos light que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
         )
         # Resumen del paso actual
-        total_seleccionados = (len(st.session_state.get('carnes_magras', [])) + 
-                              len(st.session_state.get('pescados_blancos', [])) + 
+        total_seleccionados = (len(st.session_state.get('carnes_res_magras', [])) + 
+                              len(st.session_state.get('carnes_cerdo_magras', [])) + 
+                              len(st.session_state.get('carnes_pollo_magras', [])) + 
+                              len(st.session_state.get('organos_magros', [])) + 
+                              len(st.session_state.get('pescados_magros', [])) + 
+                              len(st.session_state.get('mariscos_magros', [])) + 
                               len(st.session_state.get('quesos_magros', [])) + 
-                              len(st.session_state.get('lacteos_light', [])))
+                              len(st.session_state.get('lacteos_light', [])) + 
+                              len(st.session_state.get('huevos_embutidos_light', [])))
         if total_seleccionados > 0:
             st.success(f"✅ **¡Excelente!** Has seleccionado {total_seleccionados} alimentos en este grupo. Las proteínas magras son fundamentales para tu plan.")
         
@@ -1155,40 +1260,40 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este paso evaluaremos las **fuentes de grasa saludable** que consumes. 
         Estas grasas son esenciales para la absorción de vitaminas y el funcionamiento hormonal.
         
-        **💡 Instrucción:** Marca TODOS los alimentos que puedas o suelas consumir, incluso ocasionalmente.
+        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
         """)
         
         st.markdown("#### 🥑 Grasas naturales de alimentos")
-        st.info("💡 **Ayuda:** Incluye alimentos que naturalmente contienen grasas saludables.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         grasas_naturales = st.multiselect(
             "¿Cuáles de estas grasas naturales consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
-             "Coco fresco", "Leche de coco sin azúcar"],
+            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
+             "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
             key="grasas_naturales",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las grasas naturales que consumes. Marca 'Ninguna' si no consumes ninguna de estas grasas."
+            help="Selecciona todas las grasas naturales que consumes. Marca 'Ninguno' si no consumes ninguna de estas grasas."
         )
         
         st.markdown("#### 🌰 Frutos secos y semillas")
-        st.info("💡 **Ayuda:** Incluye cualquier tipo de fruto seco, semilla o nuez que consumas, natural o tostada.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         frutos_secos_semillas = st.multiselect(
             "¿Cuáles de estos frutos secos y semillas consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
-             "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)"],
+            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
+             "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
             key="frutos_secos_semillas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los frutos secos y semillas que consumes. Marca 'Ninguna' si no consumes ninguno de estos."
+            help="Incluye todos los frutos secos y semillas que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
         )
         
         st.markdown("#### 🧈 Mantequillas y pastas vegetales")
-        st.info("💡 **Ayuda:** Incluye mantequillas naturales hechas de frutos secos o semillas (sin azúcar añadida).")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         mantequillas_vegetales = st.multiselect(
             "¿Cuáles de estas mantequillas y pastas vegetales consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
-             "Mantequilla de nuez de la India"],
+            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
+             "Mantequilla de nuez de la India", "Ninguno"],
             key="mantequillas_vegetales",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las mantequillas vegetales que consumes. Marca 'Ninguna' si no consumes ninguna de estas."
+            help="Selecciona todas las mantequillas vegetales que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
         )
 
         # Resumen del paso actual
@@ -1254,53 +1359,63 @@ if datos_personales_completos and st.session_state.datos_completos:
         """)
         
         st.markdown("#### 🌾 Cereales y granos integrales")
-        st.info("💡 **Ayuda:** Incluye cereales, avenas y granos que consumas en el desayuno o comidas principales.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         cereales_integrales = st.multiselect(
             "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
+            ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
-             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar"],
+             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Ninguno"],
             key="cereales_integrales",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cereales y granos que consumes. Marca 'Ninguna' si no consumes ninguno de estos."
+            help="Incluye todos los cereales y granos que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
+        )
+        
+        st.markdown("#### 🍝 Pastas")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
+        pastas = st.multiselect(
+            "¿Cuáles de estas pastas consumes? (Puedes seleccionar varios)",
+            ["Pasta integral", "Pasta de trigo regular", "Pasta de arroz", "Pasta de quinoa", "Pasta de legumbres (lentejas, garbanzos)", "Fideos de arroz", "Fideos chinos", "Spaguetti", "Macarrones", "Lasaña", "Ninguno"],
+            key="pastas",
+            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
+            help="Incluye todas las pastas que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
         )
         
         st.markdown("#### 🌽 Tortillas y panes")
-        st.info("💡 **Ayuda:** Incluye cualquier tipo de tortilla, pan o producto horneado que consumas.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         tortillas_panes = st.multiselect(
             "¿Cuáles de estas tortillas y panes consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
+            ["Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
              "Tortilla de avena", "Pan integral", "Pan multigrano", "Pan de centeno", 
-             "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)"],
+             "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)", "Ninguno"],
             key="tortillas_panes",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los tipos de tortillas y panes que consumes. Marca 'Ninguna' si no consumes ninguno."
+            help="Selecciona todos los tipos de tortillas y panes que consumes. Marca 'Ninguno' si no consumes ninguno."
         )
         
-        st.markdown("#### 🥔 Raíces, tubérculos y derivados")
-        st.info("💡 **Ayuda:** Incluye papas, camotes y otros tubérculos que consumas cocidos o preparados.")
+        st.markdown("#### 🥔 Raíces y tubérculos (forma base)")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         raices_tuberculos = st.multiselect(
-            "¿Cuáles de estas raíces, tubérculos y derivados consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Papa cocida o al horno", "Camote cocido o al horno", "Yuca", "Plátano macho", 
-             "Puré de papa", "Papas horneadas", "Papas en air fryer"],
+            "¿Cuáles de estas raíces y tubérculos consumes? (Puedes seleccionar varios)",
+            ["Papa", "Camote", "Yuca", "Plátano macho", "Jícama", "Zanahoria", "Betabel", "Ninguno"],
             key="raices_tuberculos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los tubérculos y raíces que consumes. Marca 'Ninguna' si no consumes ninguno de estos."
+            help="Incluye todos los tubérculos y raíces que consumes en su forma base. Marca 'Ninguno' si no consumes ninguno de estos."
         )
         
         st.markdown("#### 🫘 Leguminosas")
-        st.info("💡 **Ayuda:** Incluye frijoles, lentejas y otras legumbres que consumas, cocidas o en preparaciones.")
+        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         leguminosas = st.multiselect(
             "¿Cuáles de estas leguminosas consumes? (Puedes seleccionar varios)",
-            ["Ninguna", "Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
-             "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)"],
+            ["Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
+             "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)", "Ninguno"],
             key="leguminosas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las leguminosas que consumes. Marca 'Ninguna' si no consumes ninguna de estas."
+            help="Selecciona todas las leguminosas que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
         )
 
         # Resumen del paso actual
         total_seleccionados = (len(st.session_state.get('cereales_integrales', [])) + 
+                              len(st.session_state.get('pastas', [])) + 
                               len(st.session_state.get('tortillas_panes', [])) + 
                               len(st.session_state.get('raices_tuberculos', [])) + 
                               len(st.session_state.get('leguminosas', [])))
@@ -1359,22 +1474,22 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este paso evaluaremos los **vegetales** que consumes o toleras fácilmente. 
         Los vegetales aportan vitaminas, minerales, fibra y antioxidantes esenciales para tu salud.
         
-        **💡 Instrucción:** Marca TODOS los vegetales que consumes o toleras bien, sin importar cómo los prepares.
+        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
         """)
         
         st.info("💡 **Ayuda:** Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan.")
         
         vegetales_lista = st.multiselect(
             "¿Cuáles de estos vegetales consumes o toleras fácilmente? (Puedes seleccionar varios)",
-            ["Ninguna", "Espinaca", "Acelga", "Kale", "Lechuga (romana, italiana, orejona, iceberg)", 
+            ["Espinaca", "Acelga", "Kale", "Lechuga (romana, italiana, orejona, iceberg)", 
              "Col morada", "Col verde", "Repollo", "Brócoli", "Coliflor", "Ejote", "Chayote", 
              "Calabacita", "Nopal", "Betabel", "Zanahoria", "Jitomate saladet", "Jitomate bola", 
              "Tomate verde", "Cebolla blanca", "Cebolla morada", "Pimiento morrón (rojo, verde, amarillo, naranja)", 
              "Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
-             "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza"],
+             "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza", "Ninguno"],
             key="vegetales_lista",
             placeholder="🔽 Haz clic aquí para ver y seleccionar todos los vegetales que consumes",
-            help="Selecciona todos los vegetales que consumes o toleras. Marca 'Ninguna' si no consumes ninguno de estos vegetales."
+            help="Selecciona todos los vegetales que consumes o toleras. Marca 'Ninguno' si no consumes ninguno de estos vegetales."
         )
 
         # Resumen del paso actual con categorización
@@ -1440,22 +1555,22 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este último paso de los grupos principales evaluaremos las **frutas** que disfrutas o toleras bien. 
         Las frutas aportan vitaminas, antioxidantes, fibra y azúcares naturales para energía.
         
-        **💡 Instrucción:** Marca TODAS las frutas que disfrutes o toleres, frescas, congeladas o en cualquier presentación natural.
+        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
         """)
         
         st.info("💡 **Ayuda:** Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional.")
         
         frutas_lista = st.multiselect(
             "¿Cuáles de estas frutas disfrutas o toleras bien? (Puedes seleccionar varios)",
-            ["Ninguna", "Manzana (roja, verde, gala, fuji)", "Naranja", "Mandarina", "Mango (petacón, ataulfo)", 
+            ["Manzana (roja, verde, gala, fuji)", "Naranja", "Mandarina", "Mango (petacón, ataulfo)", 
              "Papaya", "Sandía", "Melón", "Piña", "Plátano (tabasco, dominico, macho)", "Uvas", 
              "Fresas", "Arándanos", "Zarzamoras", "Frambuesas", "Higo", "Kiwi", "Pera", "Durazno", 
              "Ciruela", "Granada", "Cereza", "Chabacano", "Lima", "Limón", "Guayaba", "Tuna", 
              "Níspero", "Mamey", "Pitahaya (dragon fruit)", "Tamarindo", "Coco (carne, rallado)", 
-             "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light"],
+             "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light", "Ninguno"],
             key='frutas_lista',
             placeholder="🔽 Haz clic aquí para ver y seleccionar todas las frutas que disfrutas",
-            help="Selecciona todas las frutas que disfrutas. Marca 'Ninguna' si no consumes ninguna de estas frutas."
+            help="Selecciona todas las frutas que disfrutas. Marca 'Ninguno' si no consumes ninguna de estas frutas."
         )
 
         # Resumen del paso actual con categorización
@@ -1529,13 +1644,13 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         aceites_coccion = st.multiselect(
             "¿Cuáles de estas grasas/aceites usas para cocinar? (Puedes seleccionar varios)",
-            ["Ninguna", "🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", 
+            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", 
              "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", 
              "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", 
-             "❌ Prefiero cocinar sin aceite o con agua"],
+             "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
             key='aceites_coccion',
             placeholder="🔽 Haz clic aquí para seleccionar los aceites que usas para cocinar",
-            help="Selecciona todos los aceites y grasas que usas en tu cocina. Marca 'Ninguna' si no usas ninguno de estos aceites."
+            help="Selecciona todos los aceites y grasas que usas en tu cocina. Marca 'Ninguno' si no usas ninguno de estos aceites."
         )
 
         # Resumen
@@ -1597,14 +1712,14 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         bebidas_sin_calorias = st.multiselect(
             "¿Cuáles de estas bebidas sin calorías consumes regularmente? (Puedes seleccionar varios)",
-            ["Ninguna", "💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", 
+            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", 
              "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", 
              "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", 
              "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", 
-             "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)"],
+             "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
             key='bebidas_sin_calorias',
             placeholder="🔽 Haz clic aquí para seleccionar las bebidas que consumes",
-            help="Selecciona todas las bebidas sin calorías que acostumbres. Marca 'Ninguna' si no consumes ninguna de estas bebidas."
+            help="Selecciona todas las bebidas sin calorías que acostumbres. Marca 'Ninguno' si no consumes ninguna de estas bebidas."
         )
 
         # Resumen
@@ -1931,20 +2046,24 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.write(f"• **Fecha evaluación:** {st.session_state.get('fecha_llenado', 'No especificado')}")
             
             st.markdown("#### 🥩 Grupo 1: Proteínas Grasas")
-            total_proteinas_grasas = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_grasas', [])) + len(st.session_state.get('quesos_grasos', [])) + len(st.session_state.get('lacteos_enteros', [])) + len(st.session_state.get('pescados_grasos', []))
+            total_proteinas_grasas = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) + len(st.session_state.get('carnes_cerdo_grasas', [])) + len(st.session_state.get('carnes_pollo_grasas', [])) + len(st.session_state.get('organos_grasos', [])) + len(st.session_state.get('quesos_grasos', [])) + len(st.session_state.get('lacteos_enteros', [])) + len(st.session_state.get('pescados_grasos', [])) + len(st.session_state.get('mariscos_grasos', []))
             st.write(f"• **Total alimentos seleccionados:** {total_proteinas_grasas}")
             if st.session_state.get('huevos_embutidos'):
                 st.write(f"• **Huevos/embutidos:** {len(st.session_state.get('huevos_embutidos', []))}")
-            if st.session_state.get('carnes_grasas'):
-                st.write(f"• **Carnes grasas:** {len(st.session_state.get('carnes_grasas', []))}")
+            if st.session_state.get('carnes_res_grasas'):
+                st.write(f"• **Carnes de res grasas:** {len(st.session_state.get('carnes_res_grasas', []))}")
+            if st.session_state.get('carnes_cerdo_grasas'):
+                st.write(f"• **Carnes de cerdo grasas:** {len(st.session_state.get('carnes_cerdo_grasas', []))}")
+            if st.session_state.get('carnes_pollo_grasas'):
+                st.write(f"• **Carnes de pollo/pavo grasas:** {len(st.session_state.get('carnes_pollo_grasas', []))}")
             
             st.markdown("#### 🍗 Grupo 2: Proteínas Magras")
-            total_proteinas_magras = len(st.session_state.get('carnes_magras', [])) + len(st.session_state.get('pescados_blancos', [])) + len(st.session_state.get('quesos_magros', [])) + len(st.session_state.get('lacteos_light', []))
+            total_proteinas_magras = len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('carnes_cerdo_magras', [])) + len(st.session_state.get('carnes_pollo_magras', [])) + len(st.session_state.get('organos_magros', [])) + len(st.session_state.get('pescados_magros', [])) + len(st.session_state.get('mariscos_magros', [])) + len(st.session_state.get('quesos_magros', [])) + len(st.session_state.get('lacteos_light', [])) + len(st.session_state.get('huevos_embutidos_light', []))
             st.write(f"• **Total alimentos seleccionados:** {total_proteinas_magras}")
-            if st.session_state.get('carnes_magras'):
-                st.write(f"• **Carnes magras:** {len(st.session_state.get('carnes_magras', []))}")
-            if st.session_state.get('pescados_blancos'):
-                st.write(f"• **Pescados blancos:** {len(st.session_state.get('pescados_blancos', []))}")
+            if st.session_state.get('carnes_res_magras'):
+                st.write(f"• **Carnes de res magras:** {len(st.session_state.get('carnes_res_magras', []))}")
+            if st.session_state.get('pescados_magros'):
+                st.write(f"• **Pescados magros:** {len(st.session_state.get('pescados_magros', []))}")
         
         with col2:
             st.markdown("#### 🥑 Grupo 3: Grasas Saludables")
@@ -1956,7 +2075,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 st.write(f"• **Frutos secos/semillas:** {len(st.session_state.get('frutos_secos_semillas', []))}")
             
             st.markdown("#### 🍞 Grupo 4: Carbohidratos")
-            total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('tortillas_panes', [])) + len(st.session_state.get('raices_tuberculos', [])) + len(st.session_state.get('leguminosas', []))
+            total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', [])) + len(st.session_state.get('raices_tuberculos', [])) + len(st.session_state.get('leguminosas', []))
             st.write(f"• **Total alimentos seleccionados:** {total_carbohidratos}")
             if st.session_state.get('cereales_integrales'):
                 st.write(f"• **Cereales:** {len(st.session_state.get('cereales_integrales', []))}")
@@ -2043,13 +2162,13 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         # Verificar diversidad de alimentos por grupo
         total_grupos_completos = 0
-        if len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_grasas', [])) > 0:
+        if len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) > 0:
             total_grupos_completos += 1
-        if len(st.session_state.get('carnes_magras', [])) + len(st.session_state.get('pescados_blancos', [])) > 0:
+        if len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('pescados_magros', [])) > 0:
             total_grupos_completos += 1
         if len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', [])) > 0:
             total_grupos_completos += 1
-        if len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('tortillas_panes', [])) > 0:
+        if len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', [])) > 0:
             total_grupos_completos += 1
         if len(st.session_state.get('vegetales_lista', [])) > 5:
             total_grupos_completos += 1
@@ -2129,8 +2248,23 @@ DATOS DEL CLIENTE:
 🍳 Huevos y embutidos:
 - {', '.join(st.session_state.get('huevos_embutidos', [])) if st.session_state.get('huevos_embutidos') else 'No especificado'}
 
-🥩 Carnes y cortes grasos:
-- {', '.join(st.session_state.get('carnes_grasas', [])) if st.session_state.get('carnes_grasas') else 'No especificado'}
+🐄 Carnes de res grasas:
+- {', '.join(st.session_state.get('carnes_res_grasas', [])) if st.session_state.get('carnes_res_grasas') else 'No especificado'}
+
+🐷 Carnes de cerdo grasas:
+- {', '.join(st.session_state.get('carnes_cerdo_grasas', [])) if st.session_state.get('carnes_cerdo_grasas') else 'No especificado'}
+
+🐔 Carnes de pollo/pavo grasas:
+- {', '.join(st.session_state.get('carnes_pollo_grasas', [])) if st.session_state.get('carnes_pollo_grasas') else 'No especificado'}
+
+🫀 Órganos y vísceras grasas:
+- {', '.join(st.session_state.get('organos_grasos', [])) if st.session_state.get('organos_grasos') else 'No especificado'}
+
+🐟 Pescados grasos:
+- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
+
+🦐 Mariscos/comida marina grasos:
+- {', '.join(st.session_state.get('mariscos_grasos', [])) if st.session_state.get('mariscos_grasos') else 'No especificado'}
 
 🧀 Quesos altos en grasa:
 - {', '.join(st.session_state.get('quesos_grasos', [])) if st.session_state.get('quesos_grasos') else 'No especificado'}
@@ -2144,17 +2278,32 @@ DATOS DEL CLIENTE:
 =====================================
 🍗 GRUPO 2: PROTEÍNA ANIMAL MAGRA
 =====================================
-🍗 Carnes y cortes magros:
-- {', '.join(st.session_state.get('carnes_magras', [])) if st.session_state.get('carnes_magras') else 'No especificado'}
+🐄 Carnes de res magras:
+- {', '.join(st.session_state.get('carnes_res_magras', [])) if st.session_state.get('carnes_res_magras') else 'No especificado'}
 
-🐟 Pescados blancos y bajos en grasa:
-- {', '.join(st.session_state.get('pescados_blancos', [])) if st.session_state.get('pescados_blancos') else 'No especificado'}
+🐷 Carnes de cerdo magras:
+- {', '.join(st.session_state.get('carnes_cerdo_magras', [])) if st.session_state.get('carnes_cerdo_magras') else 'No especificado'}
 
-🧀 Quesos bajos en grasa o magros:
+🐔 Carnes de pollo/pavo magras:
+- {', '.join(st.session_state.get('carnes_pollo_magras', [])) if st.session_state.get('carnes_pollo_magras') else 'No especificado'}
+
+🫀 Órganos y vísceras magros:
+- {', '.join(st.session_state.get('organos_magros', [])) if st.session_state.get('organos_magros') else 'No especificado'}
+
+🐟 Pescados magros:
+- {', '.join(st.session_state.get('pescados_magros', [])) if st.session_state.get('pescados_magros') else 'No especificado'}
+
+🦐 Mariscos/comida marina magros:
+- {', '.join(st.session_state.get('mariscos_magros', [])) if st.session_state.get('mariscos_magros') else 'No especificado'}
+
+🧀 Quesos magros:
 - {', '.join(st.session_state.get('quesos_magros', [])) if st.session_state.get('quesos_magros') else 'No especificado'}
 
 🥛 Lácteos light o reducidos:
 - {', '.join(st.session_state.get('lacteos_light', [])) if st.session_state.get('lacteos_light') else 'No especificado'}
+
+🥚 Huevos y embutidos light:
+- {', '.join(st.session_state.get('huevos_embutidos_light', [])) if st.session_state.get('huevos_embutidos_light') else 'No especificado'}
 
 =====================================
 🥑 GRUPO 3: FUENTES DE GRASA SALUDABLE
@@ -2174,10 +2323,13 @@ DATOS DEL CLIENTE:
 🌾 Cereales y granos integrales:
 - {', '.join(st.session_state.get('cereales_integrales', [])) if st.session_state.get('cereales_integrales') else 'No especificado'}
 
+🍝 Pastas:
+- {', '.join(st.session_state.get('pastas', [])) if st.session_state.get('pastas') else 'No especificado'}
+
 🌽 Tortillas y panes:
 - {', '.join(st.session_state.get('tortillas_panes', [])) if st.session_state.get('tortillas_panes') else 'No especificado'}
 
-🥔 Raíces, tubérculos y derivados:
+🥔 Raíces y tubérculos (forma base):
 - {', '.join(st.session_state.get('raices_tuberculos', [])) if st.session_state.get('raices_tuberculos') else 'No especificado'}
 
 🫘 Leguminosas:
@@ -2278,8 +2430,8 @@ st.markdown(f"*Fecha: {st.session_state.get('fecha_llenado', 'No especificado')}
 # Mostrar métricas finales basadas en los datos reales del formulario
 col1, col2, col3 = st.columns(3)
 with col1:
-    total_alimentos_grupo1 = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_grasas', [])) + len(st.session_state.get('quesos_grasos', []))
-    total_alimentos_grupo2 = len(st.session_state.get('carnes_magras', [])) + len(st.session_state.get('pescados_blancos', [])) + len(st.session_state.get('quesos_magros', []))
+    total_alimentos_grupo1 = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) + len(st.session_state.get('quesos_grasos', []))
+    total_alimentos_grupo2 = len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('pescados_magros', [])) + len(st.session_state.get('quesos_magros', []))
     st.markdown(f"""
     ### 🥩 Proteínas
     - **Grupo 1 (grasas):** {total_alimentos_grupo1} alimentos
@@ -2289,7 +2441,7 @@ with col1:
 
 with col2:
     total_grasas = len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', []))
-    total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('tortillas_panes', []))
+    total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', []))
     st.markdown(f"""
     ### 🥑 Macronutrientes  
     - **Grasas saludables:** {total_grasas} alimentos
@@ -2374,7 +2526,7 @@ if not st.session_state.get("correo_enviado", False):
             st.error(f"""
             ❌ **No se puede enviar el email. Grupos incompletos:**
             
-            Los siguientes grupos alimentarios requieren al menos una selección (puedes marcar 'Ninguna' si no consumes ninguno):
+            Los siguientes grupos alimentarios requieren al menos una selección (puedes marcar 'Ninguno' si no consumes ninguno):
             
             {chr(10).join([f'• {grupo}' for grupo in grupos_incompletos])}
             
