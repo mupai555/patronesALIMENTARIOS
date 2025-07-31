@@ -999,7 +999,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         carnes_res_grasas = st.multiselect(
             "¿Cuáles de estas carnes de res grasas consumes? (Puedes seleccionar varios)",
-            ["Costilla de res", "Ribeye", "T-bone", "New York", "Porterhouse", "Arrachera marinada", "Molida 80/20 (regular)", "Molida 85/15", "Cecina con grasa", "Prime rib", "Chuck roast (diezmillo)", "Brisket (pecho)", "Short ribs (costilla corta)", "Cowboy steak", "Tomahawk", "Churrasco", "Carne para asar con grasa", "Picaña con grasa", "Entrañas", "Matambre", "Paleta con grasa", "Chambarete con tuétano", "Retazo con grasa", "Diezmillo graso", "Suadero", "Pecho de res graso", "Ninguno"],
+            ["Aguja norteña", "Diezmillo marmoleado", "Costilla/Costillar", "Ribeye", "New York", "T-bone", "Porterhouse", "Prime rib", "Arrachera", "Picaña", "Suadero", "Brisket/Pecho de res", "Chamberete con tuétano", "Falda marmoleada", "Molida 80/20", "Molida 85/15", "Carne para asar con grasa", "Chuck roast (diezmillo graso)", "Paleta con grasa", "Retazo con grasa", "Short ribs", "Cowboy steak", "Tomahawk", "Matambre", "Entraña", "Ninguno"],
             key="carnes_res_grasas",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
@@ -1029,7 +1029,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         organos_grasos = st.multiselect(
             "¿Cuáles de estos órganos y vísceras grasas consumes? (Puedes seleccionar varios)",
-            ["Hígado de res", "Hígado de cerdo", "Hígado de pollo", "Hígado de cordero", "Riñones de res", "Riñones de cerdo", "Corazón de res", "Corazón de cerdo", "Corazón de pollo", "Sesos de res", "Sesos de cerdo", "Tuétano de res", "Molleja de res", "Molleja de cerdo", "Ninguno"],
+            ["Sesos de res", "Tuétano de res", "Molleja de res", "Hígado de res", "Riñón de res", "Ninguno"],
             key="organos_grasos",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Incluye todos los órganos que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
@@ -1178,7 +1178,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         carnes_res_magras = st.multiselect(
             "¿Cuáles de estas carnes de res magras consumes? (Puedes seleccionar varios)",
-            ["Aguayón (top sirloin)", "Bola (eye of round)", "Sirloin sin grasa visible", "Filete de res magro", "Bistec de res sin grasa visible", "Cecina magra", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Carne para deshebrar sin grasa (falda limpia)", "Top round", "Bottom round", "Flank steak limpio", "Milanesa de res sin empanizar", "Pulpa bola magra", "Pulpa negra sin grasa", "Chamorro sin grasa", "Agujas sin grasa", "Tampiqueña magra", "Medallones de res", "Lomo bajo magro", "Cuete magro", "Espaldilla magra", "Maciza sin grasa", "Ninguno"],
+            ["Filete (lomo fino)", "Lomo bajo (striploin limpio)", "Centro de diezmillo limpio", "Sirloin limpio/Aguayón", "Bola/Pulpa bola", "Cuete", "Pulpa negra", "Pulpa blanca", "Espaldilla limpia", "Milanesa de bola", "Bistec de pierna", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Falda limpia", "Chamorro limpio", "Tampiqueña magra", "Medallones de res magros", "Top round", "Bottom round", "Flank steak limpio", "Maciza limpia", "Ninguno"],
             key="carnes_res_magras",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todas las carnes de res magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
@@ -1208,7 +1208,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
         organos_magros = st.multiselect(
             "¿Cuáles de estos órganos y vísceras magros consumes? (Puedes seleccionar varios)",
-            ["Hígado de ternera magro", "Hígado de pollo magro", "Corazón de res magro", "Corazón de pollo magro", "Lengua de res sin grasa", "Riñones de ternera", "Molleja de ternera magra", "Ninguno"],
+            ["Corazón de res", "Lengua de res", "Hígado de ternera", "Riñones de ternera", "Corazón de pollo", "Hígado de pollo", "Molleja de ternera", "Ninguno"],
             key="organos_magros",
             placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
             help="Selecciona todos los órganos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
