@@ -77,12 +77,23 @@ def validate_step_8():
     return True  # Este paso es opcional
 
 def validate_step_9():
-    """Valida alergias/intolerancias - opcional"""
-    return True  # Este paso es opcional
+    """Valida que se haya seleccionado al menos una opción en alergias/intolerancias"""
+    alergias_selections = st.session_state.get('alergias_alimentarias', [])
+    intolerancias_selections = st.session_state.get('intolerancias_digestivas', [])
+    
+    # Al menos una selección en alguno de los dos grupos (puede ser "Ninguna")
+    return len(alergias_selections) > 0 or len(intolerancias_selections) > 0
 
 def validate_step_10():
-    """Valida antojos - opcional"""
-    return True  # Este paso es opcional
+    """Valida que se haya seleccionado al menos una opción en antojos"""
+    selections = (
+        st.session_state.get('antojos_dulces', []) +
+        st.session_state.get('antojos_salados', []) +
+        st.session_state.get('antojos_comida_rapida', []) +
+        st.session_state.get('antojos_bebidas', []) +
+        st.session_state.get('antojos_picantes', [])
+    )
+    return len(selections) > 0
 
 def validate_step_11():
     """Valida frecuencia de comidas - opcional"""
@@ -864,7 +875,13 @@ if datos_personales_completos and st.session_state.datos_completos:
         3: validate_step_3(),
         4: validate_step_4(),
         5: validate_step_5(),
-        6: validate_step_6()
+        6: validate_step_6(),
+        7: validate_step_7(),
+        8: validate_step_8(),
+        9: validate_step_9(),
+        10: validate_step_10(),
+        11: validate_step_11(),
+        12: validate_step_12()
     }
     
     st.markdown(f"""
@@ -2060,12 +2077,13 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria?")
         st.error("🚨 **IMPORTANTE:** Las alergias alimentarias pueden ser graves. Marca todas las que tengas, aunque sean leves.")
+        st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes alergias, selecciona 'Ninguna'.")
         alergias_alimentarias = st.multiselect(
             "Selecciona TODAS las alergias alimentarias que tienes:",
-            ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas"],
+            ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas", "Ninguna"],
             key='alergias_alimentarias',
-            placeholder="🔽 Selecciona si tienes alguna alergia alimentaria",
-            help="Incluye cualquier alergia, desde leve hasta severa. Esto es crítico para tu seguridad."
+            placeholder="🔽 Selecciona si tienes alguna alergia alimentaria o marca 'Ninguna'",
+            help="Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
         )
         
         otra_alergia = st.text_input(
@@ -2078,12 +2096,13 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("---")
         st.markdown("### ⚠️ 2. ¿Tienes alguna intolerancia o malestar digestivo?")
         st.warning("💡 **Ayuda:** Las intolerancias causan malestar pero no son tan graves como las alergias. Incluye cualquier alimento que te cause gases, hinchazón, dolor abdominal, etc.")
+        st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes intolerancias, selecciona 'Ninguna'.")
         intolerancias_digestivas = st.multiselect(
             "Selecciona las intolerancias o malestares digestivos que experimentas:",
-            ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales"],
+            ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales", "Ninguna"],
             key='intolerancias_digestivas',
-            placeholder="🔽 Selecciona si tienes intolerancias digestivas",
-            help="Incluye alimentos que te causen malestar digestivo, gases, hinchazón, etc."
+            placeholder="🔽 Selecciona si tienes intolerancias digestivas o marca 'Ninguna'",
+            help="Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, selecciona 'Ninguna'."
         )
         
         otra_intolerancia = st.text_input(
@@ -2220,75 +2239,75 @@ if datos_personales_completos and st.session_state.datos_completos:
         - Incluir alternativas satisfactorias en tu plan
         - Desarrollar un plan realista y sostenible a largo plazo
         
-        **💡 Instrucción:** Marca los alimentos que frecuentemente se te antojan o deseas con intensidad, 
-        aunque no necesariamente los consumas con regularidad. (Este paso es opcional)
+        **💡 Instrucción:** Debes seleccionar al menos una opción en cualquiera de las categorías de antojos. 
+        Si no tienes antojos frecuentes, selecciona 'Ninguno' en al menos una categoría.
         """)
         
         st.markdown("---")
         st.markdown("### 🍫 Antojos de alimentos dulces / postres")
-        st.info("💡 **Ayuda:** Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente.")
+        st.info("💡 **Ayuda:** Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente. Si no tienes antojos dulces, selecciona 'Ninguno'.")
         antojos_dulces = st.multiselect(
             "¿Cuáles de estos alimentos dulces se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chocolate con leche", "Chocolate amargo", "Pan dulce (conchas, donas, cuernitos)", 
              "Pastel (tres leches, chocolate, etc.)", "Galletas (Marías, Emperador, Chokis, etc.)", 
              "Helado / Nieve", "Flan / Gelatina", "Dulces tradicionales (cajeta, obleas, jamoncillo, glorias)", 
-             "Cereal azucarado", "Leche condensada", "Churros"],
+             "Cereal azucarado", "Leche condensada", "Churros", "Ninguno"],
             key='antojos_dulces',
-            placeholder="🔽 Selecciona los alimentos dulces que se te antojan",
-            help="Incluye todos los dulces que frecuentemente deseas, aunque no los consumas seguido."
+            placeholder="🔽 Selecciona los alimentos dulces que se te antojan o marca 'Ninguno'",
+            help="Incluye todos los dulces que frecuentemente deseas. Si no tienes antojos dulces, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🧂 Antojos de alimentos salados / snacks")
-        st.info("💡 **Ayuda:** Incluye botanas, frituras o alimentos salados que se te antojen.")
+        st.info("💡 **Ayuda:** Incluye botanas, frituras o alimentos salados que se te antojen. Si no tienes antojos salados, selecciona 'Ninguno'.")
         antojos_salados = st.multiselect(
             "¿Cuáles de estos alimentos salados se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Papas fritas (Sabritas, Ruffles, etc.)", "Cacahuates enchilados", "Frituras (Doritos, Cheetos, Takis, etc.)", 
              "Totopos con salsa", "Galletas saladas", "Cacahuates japoneses", "Chicharrón (de cerdo o harina)", 
-             "Nachos con queso", "Queso derretido o gratinado"],
+             "Nachos con queso", "Queso derretido o gratinado", "Ninguno"],
             key='antojos_salados',
-            placeholder="🔽 Selecciona los alimentos salados que se te antojan",
-            help="Incluye todas las botanas y snacks salados que frecuentemente deseas."
+            placeholder="🔽 Selecciona los alimentos salados que se te antojan o marca 'Ninguno'",
+            help="Incluye todas las botanas y snacks salados que frecuentemente deseas. Si no tienes antojos salados, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🌮 Antojos de comidas rápidas / callejeras")
-        st.info("💡 **Ayuda:** Incluye comida rápida, platillos callejeros o preparaciones que se te antojen.")
+        st.info("💡 **Ayuda:** Incluye comida rápida, platillos callejeros o preparaciones que se te antojen. Si no tienes antojos de comida rápida, selecciona 'Ninguno'.")
         antojos_comida_rapida = st.multiselect(
             "¿Cuáles de estas comidas rápidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Tacos (pastor, asada, birria, etc.)", "Tortas (cubana, ahogada, etc.)", "Hamburguesas", "Hot dogs", 
              "Pizza", "Quesadillas fritas", "Tamales", "Pambazos", "Sopes / gorditas", "Elotes / esquites", 
-             "Burritos", "Enchiladas", "Empanadas"],
+             "Burritos", "Enchiladas", "Empanadas", "Ninguno"],
             key='antojos_comida_rapida',
-            placeholder="🔽 Selecciona las comidas rápidas que se te antojan",
-            help="Incluye toda la comida rápida o callejera que frecuentemente deseas."
+            placeholder="🔽 Selecciona las comidas rápidas que se te antojan o marca 'Ninguno'",
+            help="Incluye toda la comida rápida o callejera que frecuentemente deseas. Si no tienes antojos de comida rápida, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🍹 Antojos de bebidas y postres líquidos")
-        st.info("💡 **Ayuda:** Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen.")
+        st.info("💡 **Ayuda:** Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen. Si no tienes antojos de bebidas, selecciona 'Ninguno'.")
         antojos_bebidas = st.multiselect(
             "¿Cuáles de estas bebidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Refrescos regulares (Coca-Cola, Fanta, etc.)", "Jugos industrializados (Boing, Jumex, etc.)", 
              "Malteadas / Frappés", "Agua de sabor con azúcar (jamaica, horchata, tamarindo)", 
              "Café con azúcar y leche", "Champurrado / atole", "Licuado de plátano con azúcar", 
-             "Bebidas alcohólicas (cerveza, tequila, vino, etc.)"],
+             "Bebidas alcohólicas (cerveza, tequila, vino, etc.)", "Ninguno"],
             key='antojos_bebidas',
-            placeholder="🔽 Selecciona las bebidas que se te antojan",
-            help="Incluye todas las bebidas con calorías que frecuentemente deseas."
+            placeholder="🔽 Selecciona las bebidas que se te antojan o marca 'Ninguno'",
+            help="Incluye todas las bebidas con calorías que frecuentemente deseas. Si no tienes antojos de bebidas, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🔥 Antojos de alimentos con condimentos estimulantes")
-        st.info("💡 **Ayuda:** Incluye alimentos picantes, con chile o condimentos intensos que se te antojen.")
+        st.info("💡 **Ayuda:** Incluye alimentos picantes, con chile o condimentos intensos que se te antojen. Si no tienes antojos picantes, selecciona 'Ninguno'.")
         antojos_picantes = st.multiselect(
             "¿Cuáles de estos alimentos picantes se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chiles en escabeche", "Salsas picantes", "Salsa Valentina, Tajín o Chamoy", 
              "Pepinos con chile y limón", "Mangos verdes con chile", "Gomitas enchiladas", 
-             "Fruta con Miguelito o chile en polvo"],
+             "Fruta con Miguelito o chile en polvo", "Ninguno"],
             key='antojos_picantes',
-            placeholder="🔽 Selecciona los alimentos picantes que se te antojan",
-            help="Incluye todos los alimentos con chile o condimentos estimulantes que deseas."
+            placeholder="🔽 Selecciona los alimentos picantes que se te antojan o marca 'Ninguno'",
+            help="Incluye todos los alimentos con chile o condimentos estimulantes que deseas. Si no tienes antojos picantes, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
