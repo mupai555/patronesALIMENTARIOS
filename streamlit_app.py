@@ -69,12 +69,12 @@ def validate_step_6():
     return len(st.session_state.get('frutas_lista', [])) > 0
 
 def validate_step_7():
-    """Valida aceites de cocción - opcional"""
-    return True  # Este paso es opcional
+    """Valida que se haya seleccionado al menos una opción en aceites de cocción"""
+    return len(st.session_state.get('aceites_coccion', [])) > 0
 
 def validate_step_8():
-    """Valida bebidas - opcional"""
-    return True  # Este paso es opcional
+    """Valida que se haya seleccionado al menos una opción en bebidas"""
+    return len(st.session_state.get('bebidas_sin_calorias', [])) > 0
 
 def validate_step_9():
     """Valida que se haya seleccionado al menos una opción en alergias/intolerancias"""
@@ -96,12 +96,21 @@ def validate_step_10():
     return len(selections) > 0
 
 def validate_step_11():
-    """Valida frecuencia de comidas - opcional"""
-    return True  # Este paso es opcional
+    """Valida que se haya seleccionado una frecuencia de comidas"""
+    frecuencia = st.session_state.get('frecuencia_comidas', '')
+    # Si selecciona "Otro (especificar)", debe llenar el campo adicional
+    if frecuencia == "Otro (especificar)":
+        otra_frecuencia = st.session_state.get('otra_frecuencia', '')
+        return bool(frecuencia and otra_frecuencia.strip())
+    # Para otras opciones, solo necesita seleccionar una opción
+    return bool(frecuencia)
 
 def validate_step_12():
-    """Valida sugerencias de menús - opcional"""
-    return True  # Este paso es opcional
+    """Valida que se haya proporcionado alguna sugerencia de menús o seleccionado una opción rápida"""
+    sugerencias = st.session_state.get('sugerencias_menus', '')
+    opcion_rapida = st.session_state.get('opcion_rapida_menu', '')
+    # Válido si hay texto en sugerencias O si seleccionó una opción rápida (diferente a "Seleccionar...")
+    return bool(sugerencias.strip()) or (opcion_rapida and opcion_rapida != "Seleccionar...")
 
 def get_step_validator(step_number):
     """Obtiene la función de validación para un paso específico"""
