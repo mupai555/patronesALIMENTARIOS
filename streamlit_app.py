@@ -226,7 +226,7 @@ def datos_completos_para_email():
     return faltantes
 
 def verificar_grupos_obligatorios_completos():
-    """Verifica que los grupos obligatorios (1-6) estén completados"""
+    """Verifica que los grupos obligatorios (1-8) estén completados"""
     grupos_incompletos = []
     
     # Grupo 1: Proteínas grasas
@@ -252,6 +252,14 @@ def verificar_grupos_obligatorios_completos():
     # Grupo 6: Frutas
     if not validate_step_6():
         grupos_incompletos.append("Frutas")
+        
+    # Grupo 7: Aceites de cocción
+    if not validate_step_7():
+        grupos_incompletos.append("Aceites de cocción")
+        
+    # Grupo 8: Bebidas
+    if not validate_step_8():
+        grupos_incompletos.append("Bebidas para hidratación")
         
     return grupos_incompletos
 
@@ -1881,7 +1889,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍳 PASO 7: ACEITES DE COCCIÓN PREFERIDOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 7 de 12 - Información Adicional (Opcional)
+                Estás en el paso 7 de 12 - Información Requerida
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -1913,12 +1921,12 @@ if datos_personales_completos and st.session_state.datos_completos:
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
                 🍳 PASO 7: ACEITES DE COCCIÓN PREFERIDOS
             </h2>
-            <p style="text-align: center; margin: 0; font-weight: bold;">Información Adicional - Opcional</p>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información Requerida</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(58, text="Paso 7 de 12: Aceites de cocción (Opcional)")
+        progress.progress(58, text="Paso 7 de 12: Aceites de cocción")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -1926,7 +1934,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         Queremos conocer los **aceites y grasas** que utilizas para cocinar, freír, hornear o saltear tus alimentos.
         Esto nos ayuda a adaptar las recetas a tus preferencias y métodos disponibles.
         
-        **💡 Instrucción:** Selecciona TODAS las opciones que sueles usar en tu cocina. (Este paso es opcional)
+        **💡 Instrucción:** Selecciona TODAS las opciones que sueles usar en tu cocina.
         """)
         
         st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
@@ -1979,7 +1987,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥤 PASO 8: BEBIDAS PARA HIDRATACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 8 de 12 - Información Adicional (Opcional)
+                Estás en el paso 8 de 12 - Información Requerida
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2011,12 +2019,12 @@ if datos_personales_completos and st.session_state.datos_completos:
             <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
                 🥤 PASO 8: BEBIDAS PARA HIDRATACIÓN
             </h2>
-            <p style="text-align: center; margin: 0; font-weight: bold;">Información Adicional - Opcional</p>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información Requerida</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(67, text="Paso 8 de 12: Bebidas para hidratación (Opcional)")
+        progress.progress(67, text="Paso 8 de 12: Bebidas para hidratación")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2024,7 +2032,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         Queremos conocer las **bebidas sin calorías** que consumes regularmente para mantenerte hidratado.
         Esto nos ayuda a incluir opciones de hidratación que realmente disfrutes en tu plan.
         
-        **💡 Instrucción:** Marca TODAS las bebidas que acostumbres tomar para hidratarte. (Este paso es opcional)
+        **💡 Instrucción:** Marca TODAS las bebidas que acostumbres tomar para hidratarte.
         """)
         
         st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
@@ -2462,8 +2470,14 @@ if datos_personales_completos and st.session_state.datos_completos:
             [
                 "Desayuno, comida y cena (3 comidas principales)",
                 "Desayuno, comida, cena y una colación",
-                "Desayuno, comida, cena y dos colaciones", 
+                "Desayuno, comida, cena y dos colaciones (5 comidas)", 
+                "Desayuno, comida, cena y tres colaciones (6 comidas)",
                 "Solo dos comidas principales al día",
+                "Ayuno intermitente con 2 comidas",
+                "Ayuno intermitente con 3 comidas",
+                "Ayuno intermitente con 4 comidas",
+                "Ayuno intermitente OMAD (una comida al día)",
+                "Comidas según hambre/intuición (no horarios fijos)",
                 "Otro (especificar)"
             ],
             key='frecuencia_comidas',
@@ -2493,10 +2507,22 @@ if datos_personales_completos and st.session_state.datos_completos:
                 st.info("🍽️ **Estructura clásica:** Ideal para horarios regulares y control de porciones.")
             elif "una colación" in frecuencia_comidas:
                 st.info("🥪 **Con una colación:** Excelente para mantener energía estable durante el día.")
-            elif "dos colaciones" in frecuencia_comidas:
+            elif "dos colaciones (5 comidas)" in frecuencia_comidas:
                 st.info("🍎 **Con dos colaciones:** Perfecta para personas con horarios largos o alta actividad física.")
-            elif "dos comidas principales" in frecuencia_comidas:
-                st.info("⏰ **Ayuno intermitente:** Ideal para quienes prefieren ventanas de alimentación más concentradas.")
+            elif "tres colaciones (6 comidas)" in frecuencia_comidas:
+                st.info("🥗 **Con tres colaciones:** Ideal para deportistas y personas con alta demanda energética.")
+            elif "Solo dos comidas principales" in frecuencia_comidas:
+                st.info("⏰ **Ayuno intermitente básico:** Ideal para quienes prefieren ventanas de alimentación más concentradas.")
+            elif "Ayuno intermitente con 2 comidas" in frecuencia_comidas:
+                st.info("🕐 **Ayuno intermitente 16:8:** Ventana de alimentación de 8 horas con dos comidas principales.")
+            elif "Ayuno intermitente con 3 comidas" in frecuencia_comidas:
+                st.info("🕑 **Ayuno intermitente 14:10:** Ventana de alimentación de 10 horas con tres comidas.")
+            elif "Ayuno intermitente con 4 comidas" in frecuencia_comidas:
+                st.info("🕒 **Ayuno intermitente 12:12:** Ventana de alimentación de 12 horas con cuatro comidas.")
+            elif "OMAD" in frecuencia_comidas:
+                st.info("🍽️ **OMAD (One Meal A Day):** Una sola comida completa al día, máximo ayuno intermitente.")
+            elif "hambre/intuición" in frecuencia_comidas:
+                st.info("🧘 **Alimentación intuitiva:** Comidas basadas en señales naturales de hambre y saciedad.")
         
         st.markdown('</div>', unsafe_allow_html=True)
         
