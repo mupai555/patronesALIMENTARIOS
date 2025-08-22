@@ -214,6 +214,47 @@ def validate_email(email):
     
     return True, ""
 
+# Función para verificar datos completos
+def datos_completos_para_email():
+    obligatorios = {
+        "Nombre": st.session_state.get('nombre'),
+        "Email": st.session_state.get('email_cliente'), 
+        "Teléfono": st.session_state.get('telefono'),
+        "Edad": st.session_state.get('edad')
+    }
+    faltantes = [campo for campo, valor in obligatorios.items() if not valor]
+    return faltantes
+
+def verificar_grupos_obligatorios_completos():
+    """Verifica que los grupos obligatorios (1-6) estén completados"""
+    grupos_incompletos = []
+    
+    # Grupo 1: Proteínas grasas
+    if not validate_step_1():
+        grupos_incompletos.append("Proteínas con más contenido graso")
+    
+    # Grupo 2: Proteínas magras  
+    if not validate_step_2():
+        grupos_incompletos.append("Proteínas magras")
+        
+    # Grupo 3: Grasas saludables
+    if not validate_step_3():
+        grupos_incompletos.append("Fuentes de grasa saludable")
+        
+    # Grupo 4: Carbohidratos
+    if not validate_step_4():
+        grupos_incompletos.append("Carbohidratos complejos")
+        
+    # Grupo 5: Vegetales
+    if not validate_step_5():
+        grupos_incompletos.append("Vegetales")
+        
+    # Grupo 6: Frutas
+    if not validate_step_6():
+        grupos_incompletos.append("Frutas")
+        
+    return grupos_incompletos
+
 # ==================== CONFIGURACIÓN DE PÁGINA Y CSS MEJORADO ====================
 st.set_page_config(
     page_title="MUPAI - Evaluación de Patrones Alimentarios",
@@ -3052,47 +3093,6 @@ Alimentary Pattern Assessment Intelligence
 =====================================
 """
     return resumen
-
-# Función para verificar datos completos
-def datos_completos_para_email():
-    obligatorios = {
-        "Nombre": st.session_state.get('nombre'),
-        "Email": st.session_state.get('email_cliente'), 
-        "Teléfono": st.session_state.get('telefono'),
-        "Edad": st.session_state.get('edad')
-    }
-    faltantes = [campo for campo, valor in obligatorios.items() if not valor]
-    return faltantes
-
-def verificar_grupos_obligatorios_completos():
-    """Verifica que los grupos obligatorios (1-6) estén completados"""
-    grupos_incompletos = []
-    
-    # Grupo 1: Proteínas grasas
-    if not validate_step_1():
-        grupos_incompletos.append("Proteínas con más contenido graso")
-    
-    # Grupo 2: Proteínas magras  
-    if not validate_step_2():
-        grupos_incompletos.append("Proteínas magras")
-        
-    # Grupo 3: Grasas saludables
-    if not validate_step_3():
-        grupos_incompletos.append("Fuentes de grasa saludable")
-        
-    # Grupo 4: Carbohidratos
-    if not validate_step_4():
-        grupos_incompletos.append("Carbohidratos complejos")
-        
-    # Grupo 5: Vegetales
-    if not validate_step_5():
-        grupos_incompletos.append("Vegetales")
-        
-    # Grupo 6: Frutas
-    if not validate_step_6():
-        grupos_incompletos.append("Frutas")
-        
-    return grupos_incompletos
 
 # Opción para reenviar manualmente (solo si ya se envió)
 if st.session_state.get("correo_enviado", False):
