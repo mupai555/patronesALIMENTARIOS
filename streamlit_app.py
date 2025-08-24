@@ -263,6 +263,60 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# CSS principal para ocultar elementos de UI y establecer espaciado profesional
+st.markdown("""
+<style>
+/* Hide Streamlit header, toolbar, and GitHub/Fork elements */
+#MainMenu {visibility: hidden !important;}
+header[data-testid="stHeader"] {visibility: hidden !important;}
+.stApp > header {visibility: hidden !important;}
+[data-testid="stToolbar"] {display: none !important;}
+[data-testid="stDecoration"] {display: none !important;}
+[data-testid="stStatusWidget"] {display: none !important;}
+section[data-testid="stToolbar"] {display: none !important;}
+div[data-testid="stToolbar"] {display: none !important;}
+.stToolbar {display: none !important;}
+.stDeployButton {display: none !important;}
+.stActionButton {display: none !important;}
+button[title="View fullscreen"] {visibility: hidden !important;}
+footer {visibility: hidden !important;}
+
+/* Hide hamburger menu */
+.css-14xtw13.e8zbici0 {display: none !important;}
+.css-vk3wp9 {display: none !important;}
+.css-1544g2n {display: none !important;}
+
+/* Hide any GitHub/Fork related elements */
+a[href*="github"] {display: none !important;}
+a[href*="fork"] {display: none !important;}
+button[data-baseweb="button"]:has-text("Fork") {display: none !important;}
+*[title*="GitHub"] {display: none !important;}
+*[title*="Fork"] {display: none !important;}
+*[alt*="GitHub"] {display: none !important;}
+*[alt*="Fork"] {display: none !important;}
+
+/* Professional spacing for main container */
+.main .block-container {
+    padding-top: 64px !important;
+    padding-bottom: 2rem !important;
+}
+
+/* Additional spacing adjustments */
+.css-hi6a2p {padding-top: 64px !important;}
+#root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 64px !important;}
+
+/* Ensure proper margin for header containers and footer elements */
+.header-container {
+    margin-top: 1rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.footer-mupai {
+    margin-top: 3rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
 :root {
@@ -276,38 +330,6 @@ st.markdown("""
     --mupai-warning: #F39C12;
     --mupai-danger: #E74C3C;
 }
-
-/* Hide GitHub-related elements */
-#MainMenu {visibility: hidden;}
-.stDeployButton {display: none;}
-.stActionButton {display: none;}
-[data-testid="stToolbar"] {visibility: hidden !important;}
-[data-testid="stDecoration"] {display: none !important;}
-[data-testid="stStatusWidget"] {display: none !important;}
-.stApp > header {visibility: hidden;}
-.css-1dp5vir {visibility: hidden;}
-.css-hi6a2p {padding-top: 0rem;}
-#root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem;}
-footer {visibility: hidden;}
-.stDeployButton {display: none !important;}
-button[title="View fullscreen"] {visibility: hidden;}
-
-/* Hide hamburger menu and toolbar */
-.css-14xtw13.e8zbici0 {display: none !important;}
-.css-vk3wp9 {display: none !important;}
-.css-1544g2n {display: none !important;}
-section[data-testid="stToolbar"] {display: none !important;}
-div[data-testid="stToolbar"] {display: none !important;}
-.stToolbar {display: none !important;}
-
-/* Additional hiding for any fork/GitHub buttons */
-a[href*="github"] {display: none !important;}
-a[href*="fork"] {display: none !important;}
-button[data-baseweb="button"]:has-text("Fork") {display: none !important;}
-*[title*="GitHub"] {display: none !important;}
-*[title*="Fork"] {display: none !important;}
-*[alt*="GitHub"] {display: none !important;}
-*[alt*="Fork"] {display: none !important;}
 /* Fondo general */
 .stApp {
     background: linear-gradient(135deg, #1E1E1E 0%, #232425 100%);
