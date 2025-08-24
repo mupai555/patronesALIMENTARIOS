@@ -276,6 +276,38 @@ st.markdown("""
     --mupai-warning: #F39C12;
     --mupai-danger: #E74C3C;
 }
+
+/* Hide GitHub-related elements */
+#MainMenu {visibility: hidden;}
+.stDeployButton {display: none;}
+.stActionButton {display: none;}
+[data-testid="stToolbar"] {visibility: hidden !important;}
+[data-testid="stDecoration"] {display: none !important;}
+[data-testid="stStatusWidget"] {display: none !important;}
+.stApp > header {visibility: hidden;}
+.css-1dp5vir {visibility: hidden;}
+.css-hi6a2p {padding-top: 0rem;}
+#root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 0rem;}
+footer {visibility: hidden;}
+.stDeployButton {display: none !important;}
+button[title="View fullscreen"] {visibility: hidden;}
+
+/* Hide hamburger menu and toolbar */
+.css-14xtw13.e8zbici0 {display: none !important;}
+.css-vk3wp9 {display: none !important;}
+.css-1544g2n {display: none !important;}
+section[data-testid="stToolbar"] {display: none !important;}
+div[data-testid="stToolbar"] {display: none !important;}
+.stToolbar {display: none !important;}
+
+/* Additional hiding for any fork/GitHub buttons */
+a[href*="github"] {display: none !important;}
+a[href*="fork"] {display: none !important;}
+button[data-baseweb="button"]:has-text("Fork") {display: none !important;}
+*[title*="GitHub"] {display: none !important;}
+*[title*="Fork"] {display: none !important;}
+*[alt*="GitHub"] {display: none !important;}
+*[alt*="Fork"] {display: none !important;}
 /* Fondo general */
 .stApp {
     background: linear-gradient(135deg, #1E1E1E 0%, #232425 100%);
@@ -484,8 +516,118 @@ hr {
     font-weight: 600;
     font-size: 1.01rem;
 }
+
+/* Enhanced styling for important checkboxes */
+.stCheckbox:has(span:contains("He leído y acepto la política de privacidad")) {
+    background: rgba(244, 196, 48, 0.05) !important;
+    border: 2px solid var(--mupai-yellow) !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    margin: 0.8rem 0 !important;
+    transition: all 0.3s ease !important;
+}
+.stCheckbox:has(span:contains("He leído y acepto la política de privacidad")):hover {
+    background: rgba(244, 196, 48, 0.1) !important;
+    box-shadow: 0 4px 15px rgba(244, 196, 48, 0.2) !important;
+}
+.stCheckbox:has(span:contains("He leído y acepto la política de privacidad")) label {
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+}
+/* Enhanced styling for disclaimer checkbox inside expander */
+.stCheckbox:has(span:contains("He leído y entiendo completamente el descargo")) {
+    background: rgba(244, 196, 48, 0.03) !important;
+    border: 1px solid rgba(244, 196, 48, 0.4) !important;
+    border-radius: 8px !important;
+    padding: 0.8rem !important;
+    margin: 0.5rem 0 !important;
+    transition: all 0.3s ease !important;
+}
+.stCheckbox:has(span:contains("He leído y entiendo completamente el descargo")):hover {
+    background: rgba(244, 196, 48, 0.08) !important;
+    border-color: var(--mupai-yellow) !important;
+}
+.stCheckbox:has(span:contains("He leído y entiendo completamente el descargo")) label {
+    font-weight: 500 !important;
+    font-size: 1.05rem !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
+
+# JavaScript para ocultar elementos de GitHub/Fork que puedan aparecer dinámicamente
+github_hide_js = """
+<script>
+// Function to hide GitHub/Fork related elements
+function hideGitHubElements() {
+    // Hide elements by text content
+    const elementsToHide = [
+        'a[href*="github"]',
+        'a[href*="fork"]', 
+        'button:contains("Fork")',
+        'button:contains("GitHub")',
+        'button:contains("Share")',
+        'button:contains("Deploy")',
+        '[data-testid="stToolbar"]',
+        '[data-testid="stHeader"]',
+        '.stDeployButton',
+        '.stActionButton'
+    ];
+    
+    elementsToHide.forEach(selector => {
+        try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                if (el) {
+                    el.style.display = 'none !important';
+                    el.style.visibility = 'hidden !important';
+                }
+            });
+        } catch (e) {
+            console.log('Could not hide element:', selector);
+        }
+    });
+    
+    // Hide elements by text content (more aggressive)
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(el => {
+        if (el.textContent && (
+            el.textContent.toLowerCase().includes('fork') ||
+            el.textContent.toLowerCase().includes('github') ||
+            el.textContent.toLowerCase().includes('deploy') ||
+            el.textContent.toLowerCase().includes('share')
+        )) {
+            // Only hide if it's a button or link
+            if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+                el.style.display = 'none !important';
+            }
+        }
+    });
+}
+
+// Run immediately and also on DOM changes
+hideGitHubElements();
+
+// Observer for dynamic content
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.addedNodes.length > 0) {
+            hideGitHubElements();
+        }
+    });
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+// Run again after page load
+window.addEventListener('load', hideGitHubElements);
+</script>
+"""
+
+st.markdown(github_hide_js, unsafe_allow_html=True)
 
 # Header principal visual con logos
 import base64
@@ -744,6 +886,53 @@ with st.expander("🎯 **Misión, Visión y Compromiso MUPAI**", expanded=False)
             "warning"
         ), unsafe_allow_html=True)
 
+# === DESCARGO DE RESPONSABILIDAD PROFESIONAL ===
+with st.expander("⚖️ **Descargo de Responsabilidad Profesional** (Requerido)", expanded=False):
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(crear_tarjeta(
+            "🔬 Naturaleza Científica",
+            "Esta herramienta proporciona estimaciones basadas en algoritmos científicos validados. Los resultados son orientativos y no constituyen un diagnóstico médico o nutricional.",
+            "info"
+        ), unsafe_allow_html=True)
+    with col2:
+        st.markdown(crear_tarjeta(
+            "⚕️ Limitaciones",
+            "No reemplaza la consulta con profesionales de la salud. Los cálculos pueden tener margen de error según la precisión de los datos ingresados.",
+            "warning"
+        ), unsafe_allow_html=True)
+    with col3:
+        st.markdown(crear_tarjeta(
+            "🎯 Uso Recomendado",
+            "Utiliza estos resultados como punto de partida informativo. Consulta con profesionales certificados antes de implementar cambios significativos.",
+            "success"
+        ), unsafe_allow_html=True)
+    with col4:
+        st.markdown(crear_tarjeta(
+            "📞 Responsabilidad",
+            "MUPAI y Muscle Up GYM no se hacen responsables por el uso inadecuado de esta información. El usuario asume la responsabilidad.",
+            "danger"
+        ), unsafe_allow_html=True)
+    
+    # Checkbox destacado dentro del expander
+    st.markdown("""
+    <div style="background: rgba(244, 196, 48, 0.08); padding: 1rem; border-radius: 10px; border: 1px solid rgba(244, 196, 48, 0.3); margin: 1rem 0;">
+        <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+            <span style="color: var(--mupai-yellow); font-size: 1.1rem; margin-right: 0.5rem;">📋</span>
+            <strong style="color: var(--mupai-yellow); font-size: 1rem;">CONFIRMACIÓN REQUERIDA</strong>
+        </div>
+        <p style="color: #CCCCCC; margin: 0; font-size: 0.95rem;">
+            Marca la siguiente casilla para confirmar que has leído y comprendes completamente el descargo de responsabilidad.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    acepto_descargo = st.checkbox(
+        "✅ **He leído y entiendo completamente el descargo de responsabilidad profesional**",
+        key="acepto_descargo",
+        help="Debes confirmar que has leído y entiendes las limitaciones de esta evaluación"
+    )
+
 # BLOQUE 0: Datos personales con diseño mejorado
 st.markdown('<div class="content-card">', unsafe_allow_html=True)
 st.markdown("### 👤 Información Personal")
@@ -769,9 +958,29 @@ with col2:
     fecha_llenado = datetime.now().strftime("%Y-%m-%d")
     st.info(f"📅 Fecha de evaluación: {fecha_llenado}")
 
-acepto_terminos = st.checkbox("He leído y acepto la política de privacidad y el descargo de responsabilidad", value=st.session_state.get('acepto_terminos', False))
+# Checkbox principal con diseño destacado (solo se habilita si se acepta el descargo)
+st.markdown(f"""
+<div class="content-card" style="border-left-color: var(--mupai-warning); margin: 1.5rem 0; background: linear-gradient(135deg, #1E1E1E 0%, #252525 100%); border: 2px solid var(--mupai-yellow); box-shadow: 0 8px 25px rgba(244, 196, 48, 0.15);">
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+        <span class="badge badge-warning" style="margin-right: 0.8rem; font-size: 0.9rem;">✅ ACEPTACIÓN REQUERIDA</span>
+        <h4 style="margin: 0; color: #FFF; font-size: 1.1rem;">Confirmación Final de Términos</h4>
+    </div>
+    <div style="background: rgba(244, 196, 48, 0.1); padding: 1rem; border-radius: 10px; border-left: 4px solid var(--mupai-yellow); margin-bottom: 1rem;">
+        <p style="color: #FFF; margin: 0; font-weight: 500; font-size: 1.05rem;">
+            <strong style="color: var(--mupai-yellow);">⚠️ IMPORTANTE:</strong> 
+            Para continuar con tu evaluación personalizada, debes confirmar que has leído y aceptas completamente nuestros términos y el descargo de responsabilidad profesional.
+        </p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-if st.button("🚀 COMENZAR EVALUACIÓN", disabled=not acepto_terminos):
+acepto_terminos = st.checkbox(
+    "✅ **He leído y acepto la política de privacidad y el descargo de responsabilidad**",
+    disabled=not st.session_state.get("acepto_descargo", False),
+    help="Primero debes leer y aceptar el descargo de responsabilidad profesional arriba" if not st.session_state.get("acepto_descargo", False) else "Acepto los términos para continuar con la evaluación"
+)
+
+if st.button("🚀 COMENZAR EVALUACIÓN", disabled=not (acepto_terminos and st.session_state.get("acepto_descargo", False))):
     # Validación estricta de cada campo
     name_valid, name_error = validate_name(nombre)
     phone_valid, phone_error = validate_phone(telefono)
@@ -887,7 +1096,7 @@ if not st.session_state.datos_completos:
     """, unsafe_allow_html=True)
 
 # VALIDACIÓN DATOS PERSONALES PARA CONTINUAR
-datos_personales_completos = all([nombre, telefono, email_cliente]) and acepto_terminos
+datos_personales_completos = all([nombre, telefono, email_cliente]) and acepto_terminos and st.session_state.get("acepto_descargo", False)
 
 if datos_personales_completos and st.session_state.datos_completos:
     # Progress bar mejorado y más prominente
