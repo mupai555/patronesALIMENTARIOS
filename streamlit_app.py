@@ -1560,89 +1560,78 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
     elif current_step == 3:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
             border: 3px solid #FF9800;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🥑 PASO 3: FUENTES DE GRASA SALUDABLE
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 3 de 12 - Selecciona las grasas saludables que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 3 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las fuentes de grasas saludables que incluyes en tu dieta
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🥑 PASO 3: FUENTES DE GRASA SALUDABLE
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas grasas?**
+        - Las grasas saludables son esenciales para la absorción de vitaminas liposolubles (A, D, E, K)
+        - Favorecen el funcionamiento hormonal y la salud cardiovascular
+        - Proporcionan saciedad y mejoran el sabor de los alimentos
         
-        # Actualizar progreso
-        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de grasas saludables verticalmente
+        - Para listas cortas: marca las casillas de verificación directamente
+        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">3</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **fuentes de grasa saludable** que consumes. 
-        Estas grasas son esenciales para la absorción de vitaminas y el funcionamiento hormonal.
-        
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+        **💡 Consejo:** Las grasas saludables son fundamentales en una alimentación equilibrada, no las evites.
         """)
         
+
+        # Actualizar progreso
+        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
         st.markdown("#### 🥑 Grasas naturales de alimentos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        grasas_naturales = st.multiselect(
-            "¿Cuáles de estas grasas naturales consumes? (Puedes seleccionar varios)",
-            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
-             "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
-            key="grasas_naturales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las grasas naturales que consumes. Marca 'Ninguno' si no consumes ninguna de estas grasas."
+        grasas_naturales = create_vertical_checkboxes(
+            "¿Cuáles de estas grasas naturales consumes?",
+            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
+            "grasas_naturales",
+            "Marca todas las grasas naturales que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🌰 Frutos secos y semillas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        frutos_secos_semillas = st.multiselect(
-            "¿Cuáles de estos frutos secos y semillas consumes? (Puedes seleccionar varios)",
-            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
-             "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
-            key="frutos_secos_semillas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los frutos secos y semillas que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
+        frutos_secos_semillas = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos frutos secos y semillas consumes?",
+            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
+            "frutos_secos_semillas",
+            "Marca todos los frutos secos y semillas que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧈 Mantequillas y pastas vegetales")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mantequillas_vegetales = st.multiselect(
-            "¿Cuáles de estas mantequillas y pastas vegetales consumes? (Puedes seleccionar varios)",
-            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
-             "Mantequilla de nuez de la India", "Ninguno"],
-            key="mantequillas_vegetales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las mantequillas vegetales que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+        mantequillas_vegetales = create_vertical_checkboxes(
+            "¿Cuáles de estas mantequillas y pastas vegetales consumes?",
+            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", "Mantequilla de nuez de la India", "Ninguno"],
+            "mantequillas_vegetales",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -2031,15 +2020,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
         
-        aceites_coccion = st.multiselect(
-            "¿Cuáles de estas grasas/aceites usas para cocinar? (Puedes seleccionar varios)",
-            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", 
-             "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", 
-             "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", 
-             "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
-            key='aceites_coccion',
-            placeholder="🔽 Haz clic aquí para seleccionar los aceites que usas para cocinar",
-            help="Selecciona todos los aceites y grasas que usas en tu cocina. Marca 'Ninguno' si no usas ninguno de estos aceites."
+        aceites_coccion = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas grasas/aceites usas para cocinar?",
+            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
+            "aceites_coccion",
+            "Marca todos los aceites y grasas que usas en tu cocina. Si no usas ninguno, marca 'Ninguno'."
         )
 
         # Resumen
@@ -2109,16 +2094,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
         
-        bebidas_sin_calorias = st.multiselect(
-            "¿Cuáles de estas bebidas sin calorías consumes regularmente? (Puedes seleccionar varios)",
-            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", 
-             "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", 
-             "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", 
-             "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", 
-             "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
-            key='bebidas_sin_calorias',
-            placeholder="🔽 Haz clic aquí para seleccionar las bebidas que consumes",
-            help="Selecciona todas las bebidas sin calorías que acostumbres. Marca 'Ninguno' si no consumes ninguna de estas bebidas."
+        bebidas_sin_calorias = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas bebidas sin calorías consumes regularmente?",
+            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
+            "bebidas_sin_calorias",
+            "Marca todas las bebidas sin calorías que acostumbres. Si no consumes ninguna, marca 'Ninguno'."
         )
 
         # Resumen
@@ -2188,12 +2168,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria?")
         st.error("🚨 **IMPORTANTE:** Las alergias alimentarias pueden ser graves. Marca todas las que tengas, aunque sean leves.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes alergias, selecciona 'Ninguna'.")
-        alergias_alimentarias = st.multiselect(
+        alergias_alimentarias = create_multiselect_with_bullet_list(
             "Selecciona TODAS las alergias alimentarias que tienes:",
             ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas", "Ninguna"],
-            key='alergias_alimentarias',
-            placeholder="🔽 Selecciona si tienes alguna alergia alimentaria o marca 'Ninguna'",
-            help="Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
+            "alergias_alimentarias",
+            "Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
         )
         
         otra_alergia = st.text_input(
@@ -2207,12 +2186,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### ⚠️ 2. ¿Tienes alguna intolerancia o malestar digestivo?")
         st.warning("💡 **Ayuda:** Las intolerancias causan malestar pero no son tan graves como las alergias. Incluye cualquier alimento que te cause gases, hinchazón, dolor abdominal, etc.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes intolerancias, selecciona 'Ninguna'.")
-        intolerancias_digestivas = st.multiselect(
+        intolerancias_digestivas = create_vertical_checkboxes(
             "Selecciona las intolerancias o malestares digestivos que experimentas:",
             ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales", "Ninguna"],
-            key='intolerancias_digestivas',
-            placeholder="🔽 Selecciona si tienes intolerancias digestivas o marca 'Ninguna'",
-            help="Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, selecciona 'Ninguna'."
+            "intolerancias_digestivas",
+            "Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, marca 'Ninguna'."
         )
         
         otra_intolerancia = st.text_input(
