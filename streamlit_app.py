@@ -1415,150 +1415,124 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
     elif current_step == 2:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
             border: 3px solid #2196F3;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 2 de 12 - Selecciona las proteínas magras que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 2 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las proteínas animales magras que consumes habitualmente
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas proteínas?**
+        - Las proteínas magras aportan aminoácidos esenciales con menor contenido graso
+        - Son ideales para construir masa muscular y controlar calorías
+        - Proporcionan saciedad sin exceso de grasas saturadas
         
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de alimentos verticalmente
+        - Para listas cortas: marca las casillas de verificación directamente
+        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Las proteínas magras son especialmente útiles para objetivos de composición corporal.
+        """)
         # Actualizar progreso
         progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
-        
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">2</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **proteínas animales magras** que consumes. 
-        Estos alimentos son excelentes fuentes de proteína con menor contenido graso.
-        
-        **💡 Instrucción:** Marca TODOS los alimentos que te resultan fáciles de consumir o que disfrutas.
-        """)
         
         st.markdown("#### 🐄 Carnes de res magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_res_magras = st.multiselect(
-            "¿Cuáles de estas carnes de res magras consumes? (Puedes seleccionar varios)",
+        carnes_res_magras = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas carnes de res magras consumes?",
             ["Filete (lomo fino)", "Lomo bajo (striploin limpio)", "Centro de diezmillo limpio", "Sirloin limpio/Aguayón", "Bola/Pulpa bola", "Cuete", "Pulpa negra", "Pulpa blanca", "Espaldilla limpia", "Milanesa de bola", "Bistec de pierna", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Falda limpia", "Chamorro limpio", "Tampiqueña magra", "Medallones de res magros", "Top round", "Bottom round", "Flank steak limpio", "Maciza limpia", "Ninguno"],
-            key="carnes_res_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de res magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_res_magras",
+            "Marca todas las carnes de res magras que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐷 Carnes de cerdo magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_cerdo_magras = st.multiselect(
-            "¿Cuáles de estas carnes de cerdo magras consumes? (Puedes seleccionar varios)",
+        carnes_cerdo_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de cerdo magras consumes?",
             ["Lomo de cerdo", "Filete de cerdo", "Chuleta magra sin grasa", "Solomillo de cerdo", "Tenderloin", "Ninguno"],
-            key="carnes_cerdo_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de cerdo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_cerdo_magras",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐔 Carnes de pollo/pavo magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_pollo_magras = st.multiselect(
-            "¿Cuáles de estas carnes de pollo/pavo magras consumes? (Puedes seleccionar varios)",
+        carnes_pollo_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de pollo/pavo magras consumes?",
             ["Pechuga de pollo sin piel", "Pechuga de pavo sin piel", "Muslo de pollo sin piel", "Pierna de pavo sin piel", "Ninguno"],
-            key="carnes_pollo_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de pollo/pavo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_pollo_magras",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🫀 Órganos y vísceras magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        organos_magros = st.multiselect(
-            "¿Cuáles de estos órganos y vísceras magros consumes? (Puedes seleccionar varios)",
+        organos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos órganos y vísceras magros consumes?",
             ["Corazón de res", "Lengua de res", "Hígado de ternera", "Riñones de ternera", "Corazón de pollo", "Hígado de pollo", "Molleja de ternera", "Ninguno"],
-            key="organos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los órganos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "organos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐟 Pescados magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pescados_magros = st.multiselect(
-            "¿Cuáles de estos pescados magros consumes? (Puedes seleccionar varios)",
+        pescados_magros = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos pescados magros consumes?",
             ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua", "Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
-            key="pescados_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los pescados magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+            "pescados_magros",
+            "Marca todos los pescados magros que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🦐 Mariscos/comida marina magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mariscos_magros = st.multiselect(
-            "¿Cuáles de estos mariscos/comida marina magros consumes? (Puedes seleccionar varios)",
+        mariscos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos mariscos/comida marina magros consumes?",
             ["Camarón", "Callo de hacha", "Almeja", "Langostino", "Jaiba", "Ninguno"],
-            key="mariscos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los mariscos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
+            "mariscos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧀 Quesos magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        quesos_magros = st.multiselect(
-            "¿Cuáles de estos quesos magros consumes? (Puedes seleccionar varios)",
-            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
-             "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
-            key="quesos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos magros que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
+        quesos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos quesos magros consumes?",
+            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
+            "quesos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥛 Lácteos light o reducidos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        lacteos_light = st.multiselect(
-            "¿Cuáles de estos lácteos light o reducidos consumes? (Puedes seleccionar varios)",
-            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", 
-             "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", 
-             "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", 
-             "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
-            key="lacteos_light",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos light que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
+        lacteos_light = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos lácteos light o reducidos consumes?",
+            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
+            "lacteos_light",
+            "Marca todos los lácteos light que uses. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥚 Huevos y embutidos light")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        huevos_embutidos_light = st.multiselect(
-            "¿Cuáles de estos huevos y embutidos light consumes? (Puedes seleccionar varios)",
+        huevos_embutidos_light = create_vertical_checkboxes(
+            "¿Cuáles de estos huevos y embutidos light consumes?",
             ["Clara de huevo", "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", "Salchicha de pechuga de pavo (light)", "Pechuga de pavo rebanada", "Jamón serrano magro", "Ninguno"],
-            key="huevos_embutidos_light",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los huevos y embutidos light que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "huevos_embutidos_light",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         # Resumen del paso actual
         total_seleccionados = (len(st.session_state.get('carnes_res_magras', [])) + 
