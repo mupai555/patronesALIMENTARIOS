@@ -112,6 +112,62 @@ def validate_step_12():
     # Válido si hay texto en sugerencias O si seleccionó una opción rápida (diferente a "Seleccionar...")
     return bool(sugerencias.strip()) or (opcion_rapida and opcion_rapida != "Seleccionar...")
 
+def create_vertical_checkboxes(title, options, key, help_text=""):
+    """
+    Create vertical checkboxes for short option lists.
+    Returns the selected options as a list.
+    """
+    st.markdown(f"**{title}**")
+    if help_text:
+        st.info(f"💡 **Instrucción:** {help_text}")
+    
+    # Initialize session state for this key if it doesn't exist
+    if key not in st.session_state:
+        st.session_state[key] = []
+    
+    selected_options = []
+    
+    # Create checkboxes in a clean vertical layout
+    for option in options:
+        checkbox_key = f"{key}_{option.replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_')}"
+        is_checked = st.checkbox(
+            option, 
+            key=checkbox_key, 
+            value=(option in st.session_state.get(key, []))
+        )
+        if is_checked:
+            selected_options.append(option)
+    
+    # Update session state
+    st.session_state[key] = selected_options
+    return selected_options
+
+def create_multiselect_with_bullet_list(title, options, key, help_text=""):
+    """
+    Create a multiselect with a bullet list above it for longer option lists.
+    Returns the selected options as a list.
+    """
+    st.markdown(f"**{title}**")
+    if help_text:
+        st.info(f"💡 **Instrucción:** {help_text}")
+    
+    # Display available options as a bullet list
+    st.markdown("**Opciones disponibles:**")
+    with st.expander("Ver todas las opciones disponibles", expanded=False):
+        for option in options:
+            st.markdown(f"• {option}")
+    
+    # Create the multiselect
+    selected = st.multiselect(
+        f"Selecciona de la lista de {len(options)} opciones:",
+        options,
+        key=key,
+        default=st.session_state.get(key, []),
+        placeholder=f"🔽 Haz clic para seleccionar de {len(options)} opciones disponibles"
+    )
+    
+    return selected
+
 def get_step_validator(step_number):
     """Obtiene la función de validación para un paso específico"""
     validators = {
@@ -1211,167 +1267,126 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
     if current_step == 1:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
             border: 3px solid #4CAF50;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 1 de 12 - Selecciona las proteínas grasas que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 1 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las proteínas animales con mayor contenido graso que consumes habitualmente
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso1"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso1');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas proteínas?**
+        - Las proteínas grasas aportan aminoácidos esenciales y grasas saturadas
+        - Son importantes para la saciedad y absorción de vitaminas liposolubles
+        - Nos ayudan a calcular tu perfil nutricional completo
         
-        # Actualizar progreso
-        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de alimentos verticalmente
+        - Para listas cortas: marca las casillas de verificación directamente
+        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">1</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **proteínas animales con mayor contenido graso** que consumes. 
-        Estos alimentos son importantes para la saciedad y el aporte de grasas esenciales.
-        
-        **💡 Instrucción:** Marca TODOS los alimentos que consumes habitualmente o que disfrutas comer.
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
+
+        # Actualizar progreso
+        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
         st.markdown("#### 🍳 Huevos y embutidos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        huevos_embutidos = st.multiselect(
-            "¿Cuáles de estos huevos y embutidos consumes? (Puedes seleccionar varios)",
+        huevos_embutidos = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos huevos y embutidos consumes?",
             ["Huevo entero", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano", "Jamón ibérico", "Salami", "Mortadela", "Pastrami", "Pepperoni", "Ninguno"],
-            key="huevos_embutidos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "huevos_embutidos",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥩 Carnes de res grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_res_grasas = st.multiselect(
-            "¿Cuáles de estas carnes de res grasas consumes? (Puedes seleccionar varios)",
+        carnes_res_grasas = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas carnes de res grasas consumes?",
             ["Aguja norteña", "Diezmillo marmoleado", "Costilla/Costillar", "Ribeye", "New York", "T-bone", "Porterhouse", "Prime rib", "Arrachera", "Picaña", "Suadero", "Brisket/Pecho de res", "Chamberete con tuétano", "Falda marmoleada", "Molida 80/20", "Molida 85/15", "Carne para asar con grasa", "Chuck roast (diezmillo graso)", "Paleta con grasa", "Retazo con grasa", "Short ribs", "Cowboy steak", "Tomahawk", "Matambre", "Entraña", "Ninguno"],
-            key="carnes_res_grasas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+            "carnes_res_grasas",
+            "Marca todos los cortes que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐷 Carnes de cerdo grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_cerdo_grasas = st.multiselect(
-            "¿Cuáles de estas carnes de cerdo grasas consumes? (Puedes seleccionar varios)",
+        carnes_cerdo_grasas = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas carnes de cerdo grasas consumes?",
             ["Costilla de cerdo", "Panceta (belly)", "Chuleta con grasa", "Carnitas", "Chicharrón prensado", "Codillo", "Espalda (Boston butt)", "Picnic shoulder", "Pata de cerdo", "Ninguno"],
-            key="carnes_cerdo_grasas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+            "carnes_cerdo_grasas",
+            "Marca todos los cortes que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐔 Carnes de pollo/pavo grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_pollo_grasas = st.multiselect(
-            "¿Cuáles de estas carnes de pollo/pavo grasas consumes? (Puedes seleccionar varios)",
+        carnes_pollo_grasas = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de pollo/pavo grasas consumes?",
             ["Muslo de pollo con piel", "Pierna de pollo con piel", "Alitas de pollo", "Pollo entero con piel", "Pavo con piel", "Muslo de pavo", "Ninguno"],
-            key="carnes_pollo_grasas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+            "carnes_pollo_grasas",
+            "Marca todas las que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🫀 Órganos y vísceras grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        organos_grasos = st.multiselect(
-            "¿Cuáles de estos órganos y vísceras grasas consumes? (Puedes seleccionar varios)",
+        organos_grasos = create_vertical_checkboxes(
+            "¿Cuáles de estos órganos y vísceras grasas consumes?",
             ["Sesos de res", "Tuétano de res", "Molleja de res", "Hígado de res", "Riñón de res", "Ninguno"],
-            key="organos_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los órganos que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "organos_grasos",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧀 Quesos altos en grasa")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        quesos_grasos = st.multiselect(
-            "¿Cuáles de estos quesos altos en grasa consumes? (Puedes seleccionar varios)",
+        quesos_grasos = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos quesos altos en grasa consumes?",
             ["Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar", "Queso roquefort", "Queso brie", "Queso camembert", "Queso parmesano", "Queso gruyere", "Queso de cabra maduro", "Ninguno"],
-            key="quesos_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
+            "quesos_grasos",
+            "Marca todos los quesos que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥛 Lácteos enteros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        lacteos_enteros = st.multiselect(
-            "¿Cuáles de estos lácteos enteros consumes? (Puedes seleccionar varios)",
-            ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", 
-             "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)", "Nata", "Crema agria", "Ninguno"],
-            key="lacteos_enteros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos enteros que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
+        lacteos_enteros = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos lácteos enteros consumes?",
+            ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)", "Nata", "Crema agria", "Ninguno"],
+            "lacteos_enteros",
+            "Marca todos los lácteos enteros que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐟 Pescados grasos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pescados_grasos = st.multiselect(
-            "¿Cuáles de estos pescados grasos consumes? (Puedes seleccionar varios)",
+        pescados_grasos = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos pescados grasos consumes?",
             ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha", "Arenque", "Anchovetas", "Pez espada", "Anguila", "Ninguno"],
-            key="pescados_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los pescados grasos que consumes. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+            "pescados_grasos",
+            "Marca todos los pescados grasos que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🦐 Mariscos/comida marina grasos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mariscos_grasos = st.multiselect(
-            "¿Cuáles de estos mariscos/comida marina grasos consumes? (Puedes seleccionar varios)",
+        mariscos_grasos = create_vertical_checkboxes(
+            "¿Cuáles de estos mariscos/comida marina grasos consumes?",
             ["Pulpo", "Calamar", "Mejillones", "Ostras", "Cangrejo", "Langosta", "Caracol de mar", "Ninguno"],
-            key="mariscos_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los mariscos grasos que consumes. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
+            "mariscos_grasos",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -1400,170 +1415,124 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
     elif current_step == 2:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
             border: 3px solid #2196F3;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 2 de 12 - Selecciona las proteínas magras que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 2 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las proteínas animales magras que consumes habitualmente
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso2"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso2');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas proteínas?**
+        - Las proteínas magras aportan aminoácidos esenciales con menor contenido graso
+        - Son ideales para construir masa muscular y controlar calorías
+        - Proporcionan saciedad sin exceso de grasas saturadas
         
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de alimentos verticalmente
+        - Para listas cortas: marca las casillas de verificación directamente
+        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Las proteínas magras son especialmente útiles para objetivos de composición corporal.
+        """)
         # Actualizar progreso
         progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
-        
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">2</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **proteínas animales magras** que consumes. 
-        Estos alimentos son excelentes fuentes de proteína con menor contenido graso.
-        
-        **💡 Instrucción:** Marca TODOS los alimentos que te resultan fáciles de consumir o que disfrutas.
-        """)
         
         st.markdown("#### 🐄 Carnes de res magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_res_magras = st.multiselect(
-            "¿Cuáles de estas carnes de res magras consumes? (Puedes seleccionar varios)",
+        carnes_res_magras = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas carnes de res magras consumes?",
             ["Filete (lomo fino)", "Lomo bajo (striploin limpio)", "Centro de diezmillo limpio", "Sirloin limpio/Aguayón", "Bola/Pulpa bola", "Cuete", "Pulpa negra", "Pulpa blanca", "Espaldilla limpia", "Milanesa de bola", "Bistec de pierna", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Falda limpia", "Chamorro limpio", "Tampiqueña magra", "Medallones de res magros", "Top round", "Bottom round", "Flank steak limpio", "Maciza limpia", "Ninguno"],
-            key="carnes_res_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de res magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_res_magras",
+            "Marca todas las carnes de res magras que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐷 Carnes de cerdo magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_cerdo_magras = st.multiselect(
-            "¿Cuáles de estas carnes de cerdo magras consumes? (Puedes seleccionar varios)",
+        carnes_cerdo_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de cerdo magras consumes?",
             ["Lomo de cerdo", "Filete de cerdo", "Chuleta magra sin grasa", "Solomillo de cerdo", "Tenderloin", "Ninguno"],
-            key="carnes_cerdo_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de cerdo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_cerdo_magras",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐔 Carnes de pollo/pavo magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_pollo_magras = st.multiselect(
-            "¿Cuáles de estas carnes de pollo/pavo magras consumes? (Puedes seleccionar varios)",
+        carnes_pollo_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de pollo/pavo magras consumes?",
             ["Pechuga de pollo sin piel", "Pechuga de pavo sin piel", "Muslo de pollo sin piel", "Pierna de pavo sin piel", "Ninguno"],
-            key="carnes_pollo_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de pollo/pavo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_pollo_magras",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🫀 Órganos y vísceras magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        organos_magros = st.multiselect(
-            "¿Cuáles de estos órganos y vísceras magros consumes? (Puedes seleccionar varios)",
+        organos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos órganos y vísceras magros consumes?",
             ["Corazón de res", "Lengua de res", "Hígado de ternera", "Riñones de ternera", "Corazón de pollo", "Hígado de pollo", "Molleja de ternera", "Ninguno"],
-            key="organos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los órganos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "organos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐟 Pescados magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pescados_magros = st.multiselect(
-            "¿Cuáles de estos pescados magros consumes? (Puedes seleccionar varios)",
+        pescados_magros = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos pescados magros consumes?",
             ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua", "Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
-            key="pescados_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los pescados magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+            "pescados_magros",
+            "Marca todos los pescados magros que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🦐 Mariscos/comida marina magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mariscos_magros = st.multiselect(
-            "¿Cuáles de estos mariscos/comida marina magros consumes? (Puedes seleccionar varios)",
+        mariscos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos mariscos/comida marina magros consumes?",
             ["Camarón", "Callo de hacha", "Almeja", "Langostino", "Jaiba", "Ninguno"],
-            key="mariscos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los mariscos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
+            "mariscos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧀 Quesos magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        quesos_magros = st.multiselect(
-            "¿Cuáles de estos quesos magros consumes? (Puedes seleccionar varios)",
-            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
-             "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
-            key="quesos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos magros que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
+        quesos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos quesos magros consumes?",
+            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
+            "quesos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥛 Lácteos light o reducidos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        lacteos_light = st.multiselect(
-            "¿Cuáles de estos lácteos light o reducidos consumes? (Puedes seleccionar varios)",
-            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", 
-             "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", 
-             "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", 
-             "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
-            key="lacteos_light",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos light que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
+        lacteos_light = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos lácteos light o reducidos consumes?",
+            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
+            "lacteos_light",
+            "Marca todos los lácteos light que uses. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥚 Huevos y embutidos light")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        huevos_embutidos_light = st.multiselect(
-            "¿Cuáles de estos huevos y embutidos light consumes? (Puedes seleccionar varios)",
+        huevos_embutidos_light = create_vertical_checkboxes(
+            "¿Cuáles de estos huevos y embutidos light consumes?",
             ["Clara de huevo", "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", "Salchicha de pechuga de pavo (light)", "Pechuga de pavo rebanada", "Jamón serrano magro", "Ninguno"],
-            key="huevos_embutidos_light",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los huevos y embutidos light que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "huevos_embutidos_light",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         # Resumen del paso actual
         total_seleccionados = (len(st.session_state.get('carnes_res_magras', [])) + 
@@ -1591,109 +1560,78 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
     elif current_step == 3:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
             border: 3px solid #FF9800;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🥑 PASO 3: FUENTES DE GRASA SALUDABLE
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 3 de 12 - Selecciona las grasas saludables que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 3 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las fuentes de grasas saludables que incluyes en tu dieta
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso3"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso3');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🥑 PASO 3: FUENTES DE GRASA SALUDABLE
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas grasas?**
+        - Las grasas saludables son esenciales para la absorción de vitaminas liposolubles (A, D, E, K)
+        - Favorecen el funcionamiento hormonal y la salud cardiovascular
+        - Proporcionan saciedad y mejoran el sabor de los alimentos
         
-        # Actualizar progreso
-        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de grasas saludables verticalmente
+        - Para listas cortas: marca las casillas de verificación directamente
+        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">3</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **fuentes de grasa saludable** que consumes. 
-        Estas grasas son esenciales para la absorción de vitaminas y el funcionamiento hormonal.
-        
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+        **💡 Consejo:** Las grasas saludables son fundamentales en una alimentación equilibrada, no las evites.
         """)
         
+
+        # Actualizar progreso
+        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
         st.markdown("#### 🥑 Grasas naturales de alimentos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        grasas_naturales = st.multiselect(
-            "¿Cuáles de estas grasas naturales consumes? (Puedes seleccionar varios)",
-            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
-             "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
-            key="grasas_naturales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las grasas naturales que consumes. Marca 'Ninguno' si no consumes ninguna de estas grasas."
+        grasas_naturales = create_vertical_checkboxes(
+            "¿Cuáles de estas grasas naturales consumes?",
+            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
+            "grasas_naturales",
+            "Marca todas las grasas naturales que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🌰 Frutos secos y semillas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        frutos_secos_semillas = st.multiselect(
-            "¿Cuáles de estos frutos secos y semillas consumes? (Puedes seleccionar varios)",
-            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
-             "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
-            key="frutos_secos_semillas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los frutos secos y semillas que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
+        frutos_secos_semillas = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos frutos secos y semillas consumes?",
+            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
+            "frutos_secos_semillas",
+            "Marca todos los frutos secos y semillas que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧈 Mantequillas y pastas vegetales")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mantequillas_vegetales = st.multiselect(
-            "¿Cuáles de estas mantequillas y pastas vegetales consumes? (Puedes seleccionar varios)",
-            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
-             "Mantequilla de nuez de la India", "Ninguno"],
-            key="mantequillas_vegetales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las mantequillas vegetales que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+        mantequillas_vegetales = create_vertical_checkboxes(
+            "¿Cuáles de estas mantequillas y pastas vegetales consumes?",
+            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", "Mantequilla de nuez de la India", "Ninguno"],
+            "mantequillas_vegetales",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -1738,27 +1676,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso4"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso4');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1887,27 +1805,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso5"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso5');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1998,27 +1896,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso6"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso6');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -2117,27 +1995,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso7"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso7');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
@@ -2162,15 +2020,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
         
-        aceites_coccion = st.multiselect(
-            "¿Cuáles de estas grasas/aceites usas para cocinar? (Puedes seleccionar varios)",
-            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", 
-             "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", 
-             "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", 
-             "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
-            key='aceites_coccion',
-            placeholder="🔽 Haz clic aquí para seleccionar los aceites que usas para cocinar",
-            help="Selecciona todos los aceites y grasas que usas en tu cocina. Marca 'Ninguno' si no usas ninguno de estos aceites."
+        aceites_coccion = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas grasas/aceites usas para cocinar?",
+            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
+            "aceites_coccion",
+            "Marca todos los aceites y grasas que usas en tu cocina. Si no usas ninguno, marca 'Ninguno'."
         )
 
         # Resumen
@@ -2215,27 +2069,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso8"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso8');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
@@ -2260,16 +2094,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
         
-        bebidas_sin_calorias = st.multiselect(
-            "¿Cuáles de estas bebidas sin calorías consumes regularmente? (Puedes seleccionar varios)",
-            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", 
-             "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", 
-             "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", 
-             "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", 
-             "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
-            key='bebidas_sin_calorias',
-            placeholder="🔽 Haz clic aquí para seleccionar las bebidas que consumes",
-            help="Selecciona todas las bebidas sin calorías que acostumbres. Marca 'Ninguno' si no consumes ninguna de estas bebidas."
+        bebidas_sin_calorias = create_multiselect_with_bullet_list(
+            "¿Cuáles de estas bebidas sin calorías consumes regularmente?",
+            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
+            "bebidas_sin_calorias",
+            "Marca todas las bebidas sin calorías que acostumbres. Si no consumes ninguna, marca 'Ninguno'."
         )
 
         # Resumen
@@ -2314,27 +2143,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso9"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso9');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
@@ -2359,12 +2168,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria?")
         st.error("🚨 **IMPORTANTE:** Las alergias alimentarias pueden ser graves. Marca todas las que tengas, aunque sean leves.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes alergias, selecciona 'Ninguna'.")
-        alergias_alimentarias = st.multiselect(
+        alergias_alimentarias = create_multiselect_with_bullet_list(
             "Selecciona TODAS las alergias alimentarias que tienes:",
             ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas", "Ninguna"],
-            key='alergias_alimentarias',
-            placeholder="🔽 Selecciona si tienes alguna alergia alimentaria o marca 'Ninguna'",
-            help="Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
+            "alergias_alimentarias",
+            "Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
         )
         
         otra_alergia = st.text_input(
@@ -2378,12 +2186,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### ⚠️ 2. ¿Tienes alguna intolerancia o malestar digestivo?")
         st.warning("💡 **Ayuda:** Las intolerancias causan malestar pero no son tan graves como las alergias. Incluye cualquier alimento que te cause gases, hinchazón, dolor abdominal, etc.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes intolerancias, selecciona 'Ninguna'.")
-        intolerancias_digestivas = st.multiselect(
+        intolerancias_digestivas = create_vertical_checkboxes(
             "Selecciona las intolerancias o malestares digestivos que experimentas:",
             ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales", "Ninguna"],
-            key='intolerancias_digestivas',
-            placeholder="🔽 Selecciona si tienes intolerancias digestivas o marca 'Ninguna'",
-            help="Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, selecciona 'Ninguna'."
+            "intolerancias_digestivas",
+            "Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, marca 'Ninguna'."
         )
         
         otra_intolerancia = st.text_input(
@@ -2478,27 +2285,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso10"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso10');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
@@ -2660,19 +2447,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso11"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso11');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         # Actualizar progreso
         progress.progress(92, text="Paso 11 de 12: Frecuencia de comidas preferida")
@@ -2764,19 +2539,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso12"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso12');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         # Actualizar progreso
         progress.progress(100, text="Paso 12 de 12: Sugerencias de menús - ¡Último paso!")
