@@ -8,6 +8,221 @@ from email.mime.multipart import MIMEMultipart
 import time
 import re
 
+# ==================== FUNCIÓN PARA CREAR RESUMEN DE EMAIL ====================
+
+def crear_resumen_email():
+    resumen = f"""
+=====================================
+CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA - MUPAI
+=====================================
+Generado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Sistema: MUPAI v2.0 - Muscle Up Performance Assessment Intelligence
+
+=====================================
+DATOS DEL CLIENTE:
+=====================================
+- Nombre completo: {st.session_state.get('nombre', 'No especificado')}
+- Edad: {st.session_state.get('edad', 'No especificado')} años
+- Sexo: {st.session_state.get('sexo', 'No especificado')}
+- Teléfono: {st.session_state.get('telefono', 'No especificado')}
+- Email: {st.session_state.get('email_cliente', 'No especificado')}
+- Fecha evaluación: {st.session_state.get('fecha_llenado', 'No especificado')}
+
+=====================================
+🥩 GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
+=====================================
+🍳 Huevos y embutidos:
+- {', '.join(st.session_state.get('huevos_embutidos', [])) if st.session_state.get('huevos_embutidos') else 'No especificado'}
+
+🐄 Carnes de res grasas:
+- {', '.join(st.session_state.get('carnes_res_grasas', [])) if st.session_state.get('carnes_res_grasas') else 'No especificado'}
+
+🐷 Carnes de cerdo grasas:
+- {', '.join(st.session_state.get('carnes_cerdo_grasas', [])) if st.session_state.get('carnes_cerdo_grasas') else 'No especificado'}
+
+🐔 Carnes de pollo/pavo grasas:
+- {', '.join(st.session_state.get('carnes_pollo_grasas', [])) if st.session_state.get('carnes_pollo_grasas') else 'No especificado'}
+
+🫀 Órganos y vísceras grasas:
+- {', '.join(st.session_state.get('organos_grasos', [])) if st.session_state.get('organos_grasos') else 'No especificado'}
+
+🐟 Pescados grasos:
+- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
+
+🦐 Mariscos/comida marina grasos:
+- {', '.join(st.session_state.get('mariscos_grasos', [])) if st.session_state.get('mariscos_grasos') else 'No especificado'}
+
+🧀 Quesos altos en grasa:
+- {', '.join(st.session_state.get('quesos_grasos', [])) if st.session_state.get('quesos_grasos') else 'No especificado'}
+
+🥛 Lácteos enteros:
+- {', '.join(st.session_state.get('lacteos_enteros', [])) if st.session_state.get('lacteos_enteros') else 'No especificado'}
+
+🐟 Pescados grasos:
+- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
+
+=====================================
+🍗 GRUPO 2: PROTEÍNA ANIMAL MAGRA
+=====================================
+🐄 Carnes de res magras:
+- {', '.join(st.session_state.get('carnes_res_magras', [])) if st.session_state.get('carnes_res_magras') else 'No especificado'}
+
+🐷 Carnes de cerdo magras:
+- {', '.join(st.session_state.get('carnes_cerdo_magras', [])) if st.session_state.get('carnes_cerdo_magras') else 'No especificado'}
+
+🐔 Carnes de pollo/pavo magras:
+- {', '.join(st.session_state.get('carnes_pollo_magras', [])) if st.session_state.get('carnes_pollo_magras') else 'No especificado'}
+
+🫀 Órganos y vísceras magros:
+- {', '.join(st.session_state.get('organos_magros', [])) if st.session_state.get('organos_magros') else 'No especificado'}
+
+🐟 Pescados magros:
+- {', '.join(st.session_state.get('pescados_magros', [])) if st.session_state.get('pescados_magros') else 'No especificado'}
+
+🦐 Mariscos/comida marina magros:
+- {', '.join(st.session_state.get('mariscos_magros', [])) if st.session_state.get('mariscos_magros') else 'No especificado'}
+
+🧀 Quesos magros:
+- {', '.join(st.session_state.get('quesos_magros', [])) if st.session_state.get('quesos_magros') else 'No especificado'}
+
+🥛 Lácteos light o reducidos:
+- {', '.join(st.session_state.get('lacteos_light', [])) if st.session_state.get('lacteos_light') else 'No especificado'}
+
+🥚 Huevos y embutidos light:
+- {', '.join(st.session_state.get('huevos_embutidos_light', [])) if st.session_state.get('huevos_embutidos_light') else 'No especificado'}
+
+=====================================
+🥑 GRUPO 3: FUENTES DE GRASA SALUDABLE
+=====================================
+🥑 Grasas naturales de alimentos:
+- {', '.join(st.session_state.get('grasas_naturales', [])) if st.session_state.get('grasas_naturales') else 'No especificado'}
+
+🌰 Frutos secos y semillas:
+- {', '.join(st.session_state.get('frutos_secos_semillas', [])) if st.session_state.get('frutos_secos_semillas') else 'No especificado'}
+
+🧈 Mantequillas y pastas vegetales:
+- {', '.join(st.session_state.get('mantequillas_vegetales', [])) if st.session_state.get('mantequillas_vegetales') else 'No especificado'}
+
+=====================================
+🍞 GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
+=====================================
+🌾 Cereales y granos integrales:
+- {', '.join(st.session_state.get('cereales_integrales', [])) if st.session_state.get('cereales_integrales') else 'No especificado'}
+
+🍝 Pastas:
+- {', '.join(st.session_state.get('pastas', [])) if st.session_state.get('pastas') else 'No especificado'}
+
+🌽 Tortillas y panes:
+- {', '.join(st.session_state.get('tortillas_panes', [])) if st.session_state.get('tortillas_panes') else 'No especificado'}
+
+🥔 Raíces y tubérculos (forma base):
+- {', '.join(st.session_state.get('raices_tuberculos', [])) if st.session_state.get('raices_tuberculos') else 'No especificado'}
+
+🫘 Leguminosas:
+- {', '.join(st.session_state.get('leguminosas', [])) if st.session_state.get('leguminosas') else 'No especificado'}
+
+=====================================
+🥬 GRUPO 5: VEGETALES
+=====================================
+- {', '.join(st.session_state.get('vegetales_lista', [])) if st.session_state.get('vegetales_lista') else 'No especificado'}
+
+=====================================
+🍎 GRUPO 6: FRUTAS
+=====================================
+- {', '.join(st.session_state.get('frutas_lista', [])) if st.session_state.get('frutas_lista') else 'No especificado'}
+
+=====================================
+🍳 APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA
+=====================================
+- {', '.join(st.session_state.get('aceites_coccion', [])) if st.session_state.get('aceites_coccion') else 'No especificado'}
+
+=====================================
+🥤 BEBIDAS SIN CALORÍAS PARA HIDRATACIÓN
+=====================================
+- {', '.join(st.session_state.get('bebidas_sin_calorias', [])) if st.session_state.get('bebidas_sin_calorias') else 'No especificado'}
+
+=====================================
+🚨 SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS
+=====================================
+❗ 1. Alergias alimentarias:
+- {', '.join(st.session_state.get('alergias_alimentarias', [])) if st.session_state.get('alergias_alimentarias') else 'No especificado'}
+- Otra alergia especificada: {st.session_state.get('otra_alergia', 'No especificado')}
+
+⚠️ 2. Intolerancias o malestar digestivo:
+- {', '.join(st.session_state.get('intolerancias_digestivas', [])) if st.session_state.get('intolerancias_digestivas') else 'No especificado'}
+- Otra intolerancia especificada: {st.session_state.get('otra_intolerancia', 'No especificado')}
+
+➕ 3. Alimentos o bebidas adicionales deseados:
+- {st.session_state.get('alimento_adicional', 'No especificado')}
+
+➕ 4. Métodos de cocción más accesibles para el día a día:
+- {', '.join(st.session_state.get('metodos_coccion_accesibles', [])) if st.session_state.get('metodos_coccion_accesibles') else 'No especificado'}
+- Otro método especificado: {st.session_state.get('otro_metodo_coccion', 'No especificado')}
+
+=====================================
+😋 SECCIÓN DE ANTOJOS ALIMENTARIOS
+=====================================
+🍫 Alimentos dulces / postres:
+- {', '.join(st.session_state.get('antojos_dulces', [])) if st.session_state.get('antojos_dulces') else 'No especificado'}
+
+🧂 Alimentos salados / snacks:
+- {', '.join(st.session_state.get('antojos_salados', [])) if st.session_state.get('antojos_salados') else 'No especificado'}
+
+🌮 Comidas rápidas / callejeras:
+- {', '.join(st.session_state.get('antojos_comida_rapida', [])) if st.session_state.get('antojos_comida_rapida') else 'No especificado'}
+
+🍹 Bebidas y postres líquidos:
+- {', '.join(st.session_state.get('antojos_bebidas', [])) if st.session_state.get('antojos_bebidas') else 'No especificado'}
+
+🔥 Alimentos con condimentos estimulantes:
+- {', '.join(st.session_state.get('antojos_picantes', [])) if st.session_state.get('antojos_picantes') else 'No especificado'}
+
+❓ Otros antojos especificados:
+- {st.session_state.get('otros_antojos', 'No especificado')}
+
+=====================================
+🍽️ FRECUENCIA DE COMIDAS PREFERIDA
+=====================================
+- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas', 'No especificado')}
+- Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
+
+=====================================
+📝 SUGERENCIAS DE MENÚS Y PREFERENCIAS
+=====================================
+- Sugerencias del cliente: {st.session_state.get('sugerencias_menus', 'No especificado')}
+- Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
+
+=====================================
+RESUMEN DE ANÁLISIS IDENTIFICADO:
+=====================================
+Este cuestionario completo de patrones alimentarios proporciona una base integral 
+para el desarrollo de recomendaciones nutricionales altamente personalizadas basadas en:
+
+1. 6 grupos alimentarios principales evaluados
+2. Métodos de cocción disponibles y preferidos
+3. Restricciones específicas (alergias e intolerancias)  
+4. Patrones de preferencias detallados
+5. Análisis de antojos y alimentación emocional
+6. Frecuencia de comidas preferida del cliente
+7. Sugerencias específicas de menús y preferencias adicionales
+8. Contexto personal, familiar y social completo
+
+RECOMENDACIONES PARA SEGUIMIENTO:
+- Desarrollar plan nutricional personalizado basado en estos patrones
+- Considerar restricciones y alergias como prioridad absoluta
+- Aprovechar métodos de cocción preferidos y disponibles
+- Integrar estrategias para manejo de antojos identificados
+- Estructurar la frecuencia de comidas según la preferencia del cliente
+- Incorporar sugerencias específicas de menús proporcionadas por el cliente
+- Adaptar recomendaciones al contexto personal y familiar específico
+
+=====================================
+© 2025 MUPAI - Muscle up GYM
+Alimentary Pattern Assessment Intelligence
+=====================================
+"""
+    return resumen
+
 # ==================== FUNCIONES DE VALIDACIÓN PROGRESIVA ====================
 
 def validate_step_1():
@@ -2958,219 +3173,6 @@ if datos_personales_completos and st.session_state.datos_completos:
 
             st.markdown('</div>', unsafe_allow_html=True)
 
-# Construir resumen completo para email
-def crear_resumen_email():
-    resumen = f"""
-=====================================
-CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA - MUPAI
-=====================================
-Generado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Sistema: MUPAI v2.0 - Muscle Up Performance Assessment Intelligence
-
-=====================================
-DATOS DEL CLIENTE:
-=====================================
-- Nombre completo: {st.session_state.get('nombre', 'No especificado')}
-- Edad: {st.session_state.get('edad', 'No especificado')} años
-- Sexo: {st.session_state.get('sexo', 'No especificado')}
-- Teléfono: {st.session_state.get('telefono', 'No especificado')}
-- Email: {st.session_state.get('email_cliente', 'No especificado')}
-- Fecha evaluación: {st.session_state.get('fecha_llenado', 'No especificado')}
-
-=====================================
-🥩 GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-=====================================
-🍳 Huevos y embutidos:
-- {', '.join(st.session_state.get('huevos_embutidos', [])) if st.session_state.get('huevos_embutidos') else 'No especificado'}
-
-🐄 Carnes de res grasas:
-- {', '.join(st.session_state.get('carnes_res_grasas', [])) if st.session_state.get('carnes_res_grasas') else 'No especificado'}
-
-🐷 Carnes de cerdo grasas:
-- {', '.join(st.session_state.get('carnes_cerdo_grasas', [])) if st.session_state.get('carnes_cerdo_grasas') else 'No especificado'}
-
-🐔 Carnes de pollo/pavo grasas:
-- {', '.join(st.session_state.get('carnes_pollo_grasas', [])) if st.session_state.get('carnes_pollo_grasas') else 'No especificado'}
-
-🫀 Órganos y vísceras grasas:
-- {', '.join(st.session_state.get('organos_grasos', [])) if st.session_state.get('organos_grasos') else 'No especificado'}
-
-🐟 Pescados grasos:
-- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
-
-🦐 Mariscos/comida marina grasos:
-- {', '.join(st.session_state.get('mariscos_grasos', [])) if st.session_state.get('mariscos_grasos') else 'No especificado'}
-
-🧀 Quesos altos en grasa:
-- {', '.join(st.session_state.get('quesos_grasos', [])) if st.session_state.get('quesos_grasos') else 'No especificado'}
-
-🥛 Lácteos enteros:
-- {', '.join(st.session_state.get('lacteos_enteros', [])) if st.session_state.get('lacteos_enteros') else 'No especificado'}
-
-🐟 Pescados grasos:
-- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
-
-=====================================
-🍗 GRUPO 2: PROTEÍNA ANIMAL MAGRA
-=====================================
-🐄 Carnes de res magras:
-- {', '.join(st.session_state.get('carnes_res_magras', [])) if st.session_state.get('carnes_res_magras') else 'No especificado'}
-
-🐷 Carnes de cerdo magras:
-- {', '.join(st.session_state.get('carnes_cerdo_magras', [])) if st.session_state.get('carnes_cerdo_magras') else 'No especificado'}
-
-🐔 Carnes de pollo/pavo magras:
-- {', '.join(st.session_state.get('carnes_pollo_magras', [])) if st.session_state.get('carnes_pollo_magras') else 'No especificado'}
-
-🫀 Órganos y vísceras magros:
-- {', '.join(st.session_state.get('organos_magros', [])) if st.session_state.get('organos_magros') else 'No especificado'}
-
-🐟 Pescados magros:
-- {', '.join(st.session_state.get('pescados_magros', [])) if st.session_state.get('pescados_magros') else 'No especificado'}
-
-🦐 Mariscos/comida marina magros:
-- {', '.join(st.session_state.get('mariscos_magros', [])) if st.session_state.get('mariscos_magros') else 'No especificado'}
-
-🧀 Quesos magros:
-- {', '.join(st.session_state.get('quesos_magros', [])) if st.session_state.get('quesos_magros') else 'No especificado'}
-
-🥛 Lácteos light o reducidos:
-- {', '.join(st.session_state.get('lacteos_light', [])) if st.session_state.get('lacteos_light') else 'No especificado'}
-
-🥚 Huevos y embutidos light:
-- {', '.join(st.session_state.get('huevos_embutidos_light', [])) if st.session_state.get('huevos_embutidos_light') else 'No especificado'}
-
-=====================================
-🥑 GRUPO 3: FUENTES DE GRASA SALUDABLE
-=====================================
-🥑 Grasas naturales de alimentos:
-- {', '.join(st.session_state.get('grasas_naturales', [])) if st.session_state.get('grasas_naturales') else 'No especificado'}
-
-🌰 Frutos secos y semillas:
-- {', '.join(st.session_state.get('frutos_secos_semillas', [])) if st.session_state.get('frutos_secos_semillas') else 'No especificado'}
-
-🧈 Mantequillas y pastas vegetales:
-- {', '.join(st.session_state.get('mantequillas_vegetales', [])) if st.session_state.get('mantequillas_vegetales') else 'No especificado'}
-
-=====================================
-🍞 GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
-=====================================
-🌾 Cereales y granos integrales:
-- {', '.join(st.session_state.get('cereales_integrales', [])) if st.session_state.get('cereales_integrales') else 'No especificado'}
-
-🍝 Pastas:
-- {', '.join(st.session_state.get('pastas', [])) if st.session_state.get('pastas') else 'No especificado'}
-
-🌽 Tortillas y panes:
-- {', '.join(st.session_state.get('tortillas_panes', [])) if st.session_state.get('tortillas_panes') else 'No especificado'}
-
-🥔 Raíces y tubérculos (forma base):
-- {', '.join(st.session_state.get('raices_tuberculos', [])) if st.session_state.get('raices_tuberculos') else 'No especificado'}
-
-🫘 Leguminosas:
-- {', '.join(st.session_state.get('leguminosas', [])) if st.session_state.get('leguminosas') else 'No especificado'}
-
-=====================================
-🥬 GRUPO 5: VEGETALES
-=====================================
-- {', '.join(st.session_state.get('vegetales_lista', [])) if st.session_state.get('vegetales_lista') else 'No especificado'}
-
-=====================================
-🍎 GRUPO 6: FRUTAS
-=====================================
-- {', '.join(st.session_state.get('frutas_lista', [])) if st.session_state.get('frutas_lista') else 'No especificado'}
-
-=====================================
-🍳 APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA
-=====================================
-- {', '.join(st.session_state.get('aceites_coccion', [])) if st.session_state.get('aceites_coccion') else 'No especificado'}
-
-=====================================
-🥤 BEBIDAS SIN CALORÍAS PARA HIDRATACIÓN
-=====================================
-- {', '.join(st.session_state.get('bebidas_sin_calorias', [])) if st.session_state.get('bebidas_sin_calorias') else 'No especificado'}
-
-=====================================
-🚨 SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS
-=====================================
-❗ 1. Alergias alimentarias:
-- {', '.join(st.session_state.get('alergias_alimentarias', [])) if st.session_state.get('alergias_alimentarias') else 'No especificado'}
-- Otra alergia especificada: {st.session_state.get('otra_alergia', 'No especificado')}
-
-⚠️ 2. Intolerancias o malestar digestivo:
-- {', '.join(st.session_state.get('intolerancias_digestivas', [])) if st.session_state.get('intolerancias_digestivas') else 'No especificado'}
-- Otra intolerancia especificada: {st.session_state.get('otra_intolerancia', 'No especificado')}
-
-➕ 3. Alimentos o bebidas adicionales deseados:
-- {st.session_state.get('alimento_adicional', 'No especificado')}
-
-➕ 4. Métodos de cocción más accesibles para el día a día:
-- {', '.join(st.session_state.get('metodos_coccion_accesibles', [])) if st.session_state.get('metodos_coccion_accesibles') else 'No especificado'}
-- Otro método especificado: {st.session_state.get('otro_metodo_coccion', 'No especificado')}
-
-=====================================
-😋 SECCIÓN DE ANTOJOS ALIMENTARIOS
-=====================================
-🍫 Alimentos dulces / postres:
-- {', '.join(st.session_state.get('antojos_dulces', [])) if st.session_state.get('antojos_dulces') else 'No especificado'}
-
-🧂 Alimentos salados / snacks:
-- {', '.join(st.session_state.get('antojos_salados', [])) if st.session_state.get('antojos_salados') else 'No especificado'}
-
-🌮 Comidas rápidas / callejeras:
-- {', '.join(st.session_state.get('antojos_comida_rapida', [])) if st.session_state.get('antojos_comida_rapida') else 'No especificado'}
-
-🍹 Bebidas y postres líquidos:
-- {', '.join(st.session_state.get('antojos_bebidas', [])) if st.session_state.get('antojos_bebidas') else 'No especificado'}
-
-🔥 Alimentos con condimentos estimulantes:
-- {', '.join(st.session_state.get('antojos_picantes', [])) if st.session_state.get('antojos_picantes') else 'No especificado'}
-
-❓ Otros antojos especificados:
-- {st.session_state.get('otros_antojos', 'No especificado')}
-
-=====================================
-🍽️ FRECUENCIA DE COMIDAS PREFERIDA
-=====================================
-- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas', 'No especificado')}
-- Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
-
-=====================================
-📝 SUGERENCIAS DE MENÚS Y PREFERENCIAS
-=====================================
-- Sugerencias del cliente: {st.session_state.get('sugerencias_menus', 'No especificado')}
-- Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
-
-=====================================
-RESUMEN DE ANÁLISIS IDENTIFICADO:
-=====================================
-Este cuestionario completo de patrones alimentarios proporciona una base integral 
-para el desarrollo de recomendaciones nutricionales altamente personalizadas basadas en:
-
-1. 6 grupos alimentarios principales evaluados
-2. Métodos de cocción disponibles y preferidos
-3. Restricciones específicas (alergias e intolerancias)  
-4. Patrones de preferencias detallados
-5. Análisis de antojos y alimentación emocional
-6. Frecuencia de comidas preferida del cliente
-7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
-
-RECOMENDACIONES PARA SEGUIMIENTO:
-- Desarrollar plan nutricional personalizado basado en estos patrones
-- Considerar restricciones y alergias como prioridad absoluta
-- Aprovechar métodos de cocción preferidos y disponibles
-- Integrar estrategias para manejo de antojos identificados
-- Estructurar la frecuencia de comidas según la preferencia del cliente
-- Incorporar sugerencias específicas de menús proporcionadas por el cliente
-- Adaptar recomendaciones al contexto personal y familiar específico
-
-=====================================
-© 2025 MUPAI - Muscle up GYM
-Alimentary Pattern Assessment Intelligence
-=====================================
-"""
-    return resumen
 
 # Opción para reenviar manualmente (solo si ya se envió)
 if st.session_state.get("correo_enviado", False):
