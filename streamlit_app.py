@@ -1233,27 +1233,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso1"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso1');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1422,27 +1402,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso2"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso2');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1613,27 +1573,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso3"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso3');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1738,27 +1678,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso4"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso4');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1887,27 +1807,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso5"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso5');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1998,27 +1898,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso6"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso6');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -2117,27 +1997,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso7"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso7');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
@@ -2215,27 +2075,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso8"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso8');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
@@ -2314,27 +2154,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso9"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso9');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
@@ -2478,27 +2298,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso10"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso10');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
@@ -2660,19 +2460,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso11"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso11');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         # Actualizar progreso
         progress.progress(92, text="Paso 11 de 12: Frecuencia de comidas preferida")
@@ -2764,19 +2552,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso12"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso12');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         # Actualizar progreso
         progress.progress(100, text="Paso 12 de 12: Sugerencias de menús - ¡Último paso!")
