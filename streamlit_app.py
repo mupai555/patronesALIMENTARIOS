@@ -11,106 +11,203 @@ import re
 # ==================== FUNCIONES DE VALIDACIÓN PROGRESIVA ====================
 
 def validate_step_1():
-    """Valida que se haya seleccionado al menos una opción en proteínas grasas"""
-    selections = (
-        st.session_state.get('huevos_embutidos', []) + 
-        st.session_state.get('carnes_res_grasas', []) + 
-        st.session_state.get('carnes_cerdo_grasas', []) + 
-        st.session_state.get('carnes_pollo_grasas', []) + 
-        st.session_state.get('organos_grasos', []) + 
-        st.session_state.get('quesos_grasos', []) + 
-        st.session_state.get('lacteos_enteros', []) + 
-        st.session_state.get('pescados_grasos', []) + 
-        st.session_state.get('mariscos_grasos', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en proteínas grasas"""
+    subgroups = {
+        'huevos_embutidos': 'Huevos y embutidos',
+        'carnes_res_grasas': 'Carnes de res grasas',
+        'carnes_cerdo_grasas': 'Carnes de cerdo grasas', 
+        'carnes_pollo_grasas': 'Carnes de pollo/pavo grasas',
+        'organos_grasos': 'Órganos y vísceras grasas',
+        'quesos_grasos': 'Quesos altos en grasa',
+        'lacteos_enteros': 'Lácteos enteros',
+        'pescados_grasos': 'Pescados grasos',
+        'mariscos_grasos': 'Mariscos/comida marina grasos'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_2():
-    """Valida que se haya seleccionado al menos una opción en proteínas magras"""
-    selections = (
-        st.session_state.get('carnes_res_magras', []) + 
-        st.session_state.get('carnes_cerdo_magras', []) + 
-        st.session_state.get('carnes_pollo_magras', []) + 
-        st.session_state.get('organos_magros', []) + 
-        st.session_state.get('pescados_magros', []) + 
-        st.session_state.get('mariscos_magros', []) + 
-        st.session_state.get('quesos_magros', []) + 
-        st.session_state.get('lacteos_light', []) + 
-        st.session_state.get('huevos_embutidos_light', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en proteínas magras"""
+    subgroups = {
+        'carnes_res_magras': 'Carnes de res magras',
+        'carnes_cerdo_magras': 'Carnes de cerdo magras',
+        'carnes_pollo_magras': 'Carnes de pollo/pavo magras',
+        'organos_magros': 'Órganos y vísceras magros',
+        'pescados_magros': 'Pescados magros',
+        'mariscos_magros': 'Mariscos/comida marina magros',
+        'quesos_magros': 'Quesos bajos en grasa',
+        'lacteos_light': 'Lácteos light/descremados',
+        'huevos_embutidos_light': 'Huevos y embutidos light'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_3():
-    """Valida que se haya seleccionado al menos una opción en grasas saludables"""
-    selections = (
-        st.session_state.get('grasas_naturales', []) + 
-        st.session_state.get('frutos_secos_semillas', []) + 
-        st.session_state.get('mantequillas_vegetales', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en grasas saludables"""
+    subgroups = {
+        'grasas_naturales': 'Grasas naturales',
+        'frutos_secos_semillas': 'Frutos secos y semillas',
+        'mantequillas_vegetales': 'Mantequillas vegetales'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_4():
-    """Valida que se haya seleccionado al menos una opción en carbohidratos"""
-    selections = (
-        st.session_state.get('cereales_integrales', []) + 
-        st.session_state.get('pastas', []) + 
-        st.session_state.get('tortillas_panes', []) + 
-        st.session_state.get('raices_tuberculos', []) + 
-        st.session_state.get('leguminosas', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en carbohidratos"""
+    subgroups = {
+        'cereales_integrales': 'Cereales integrales',
+        'pastas': 'Pastas',
+        'tortillas_panes': 'Tortillas y panes',
+        'raices_tuberculos': 'Raíces y tubérculos',
+        'leguminosas': 'Leguminosas'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_5():
     """Valida que se haya seleccionado al menos una opción en vegetales"""
-    return len(st.session_state.get('vegetales_lista', [])) > 0
+    selections = st.session_state.get('vegetales_lista', [])
+    if len(selections) == 0:
+        return False, ['Vegetales']
+    return True, []
 
 def validate_step_6():
     """Valida que se haya seleccionado al menos una opción en frutas"""
-    return len(st.session_state.get('frutas_lista', [])) > 0
+    selections = st.session_state.get('frutas_lista', [])
+    if len(selections) == 0:
+        return False, ['Frutas']
+    return True, []
 
 def validate_step_7():
     """Valida que se haya seleccionado al menos una opción en aceites de cocción"""
-    return len(st.session_state.get('aceites_coccion', [])) > 0
+    selections = st.session_state.get('aceites_coccion', [])
+    if len(selections) == 0:
+        return False, ['Aceites de cocción']
+    return True, []
 
 def validate_step_8():
     """Valida que se haya seleccionado al menos una opción en bebidas"""
-    return len(st.session_state.get('bebidas_sin_calorias', [])) > 0
+    selections = st.session_state.get('bebidas_sin_calorias', [])
+    if len(selections) == 0:
+        return False, ['Bebidas para hidratación']
+    return True, []
 
 def validate_step_9():
-    """Valida que se haya seleccionado al menos una opción en alergias/intolerancias"""
+    """Valida que cada subgrupo tenga al menos una selección en alergias/intolerancias y campos de texto completos"""
+    missing_items = []
+    
+    # Validar subgrupos de selección múltiple
     alergias_selections = st.session_state.get('alergias_alimentarias', [])
     intolerancias_selections = st.session_state.get('intolerancias_digestivas', [])
     
-    # Al menos una selección en alguno de los dos grupos (puede ser "Ninguna")
-    return len(alergias_selections) > 0 or len(intolerancias_selections) > 0
+    if len(alergias_selections) == 0:
+        missing_items.append('Alergias alimentarias')
+    if len(intolerancias_selections) == 0:
+        missing_items.append('Intolerancias digestivas')
+    
+    # Validar campos de texto - deben tener contenido o "No aplica"
+    text_fields = {
+        'otra_alergia': 'Otra alergia (campo de texto)',
+        'otra_intolerancia': 'Otra intolerancia (campo de texto)',
+        'alimento_adicional': 'Alimento adicional (campo de texto)',
+        'otro_metodo_coccion': 'Otro método de cocción (campo de texto)'
+    }
+    
+    for field_key, field_name in text_fields.items():
+        field_value = st.session_state.get(field_key, '').strip()
+        if not field_value:
+            missing_items.append(f'{field_name} - escribir "No aplica" si no aplica')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
 
 def validate_step_10():
-    """Valida que se haya seleccionado al menos una opción en antojos"""
-    selections = (
-        st.session_state.get('antojos_dulces', []) +
-        st.session_state.get('antojos_salados', []) +
-        st.session_state.get('antojos_comida_rapida', []) +
-        st.session_state.get('antojos_bebidas', []) +
-        st.session_state.get('antojos_picantes', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en antojos"""
+    subgroups = {
+        'antojos_dulces': 'Antojos de alimentos dulces/postres',
+        'antojos_salados': 'Antojos de alimentos salados/snacks',
+        'antojos_comida_rapida': 'Antojos de comidas rápidas/callejeras',
+        'antojos_bebidas': 'Antojos de bebidas y postres líquidos',
+        'antojos_picantes': 'Antojos de alimentos con condimentos estimulantes'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    # Validar campo de texto de otros antojos
+    otros_antojos = st.session_state.get('otros_antojos', '').strip()
+    if not otros_antojos:
+        missing_subgroups.append('Otros antojos (campo de texto) - escribir "No aplica" si no aplica')
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_11():
     """Valida que se haya seleccionado una frecuencia de comidas"""
+    missing_items = []
     frecuencia = st.session_state.get('frecuencia_comidas', '')
-    # Si selecciona "Otro (especificar)", debe llenar el campo adicional
-    if frecuencia == "Otro (especificar)":
-        otra_frecuencia = st.session_state.get('otra_frecuencia', '')
-        return bool(frecuencia and otra_frecuencia.strip())
-    # Para otras opciones, solo necesita seleccionar una opción
-    return bool(frecuencia)
+    
+    if not frecuencia:
+        missing_items.append('Frecuencia de comidas')
+    elif frecuencia == "Otro (especificar)":
+        otra_frecuencia = st.session_state.get('otra_frecuencia', '').strip()
+        if not otra_frecuencia:
+            missing_items.append('Especificación de frecuencia (campo de texto)')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
 
 def validate_step_12():
-    """Valida que se haya proporcionado alguna sugerencia de menús o seleccionado una opción rápida"""
-    sugerencias = st.session_state.get('sugerencias_menus', '')
+    """Valida que se haya proporcionado alguna sugerencia de menús"""
+    missing_items = []
+    sugerencias = st.session_state.get('sugerencias_menus', '').strip()
     opcion_rapida = st.session_state.get('opcion_rapida_menu', '')
-    # Válido si hay texto en sugerencias O si seleccionó una opción rápida (diferente a "Seleccionar...")
-    return bool(sugerencias.strip()) or (opcion_rapida and opcion_rapida != "Seleccionar...")
+    
+    # Debe tener texto en sugerencias O una opción rápida válida
+    if not sugerencias and (not opcion_rapida or opcion_rapida == "Seleccionar..."):
+        missing_items.append('Sugerencias de menús (campo de texto) - escribir "No aplica" si prefieres que el equipo decida')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
 
 def create_vertical_checkboxes(title, options, key, help_text=""):
     """
@@ -184,14 +281,22 @@ def get_step_validator(step_number):
         11: validate_step_11,
         12: validate_step_12
     }
-    return validators.get(step_number, lambda: True)
+    return validators.get(step_number, lambda: (True, []))
+
+def validate_step_legacy(step_number):
+    """Función de compatibilidad que devuelve solo True/False para la UI de progreso"""
+    validator = get_step_validator(step_number)
+    is_valid, _ = validator()
+    return is_valid
 
 def advance_to_next_step():
     """Avanza al siguiente paso si la validación es exitosa"""
     current_step = st.session_state.get('current_step', 1)
     validator = get_step_validator(current_step)
     
-    if validator():
+    is_valid, missing_items = validator()
+    
+    if is_valid:
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
@@ -200,8 +305,14 @@ def advance_to_next_step():
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
     else:
-        # Mostrar mensaje de error profesional
-        st.error("Para continuar, por favor selecciona al menos una opción en este grupo. Esto permitirá generar una evaluación nutricional personalizada y precisa.")
+        # Mostrar mensaje de error específico sobre los subgrupos/campos faltantes
+        if len(missing_items) == 1:
+            st.error(f"⚠️ **Para continuar, debes completar:** {missing_items[0]}")
+        else:
+            missing_list = "\n".join([f"• {item}" for item in missing_items])
+            st.error(f"⚠️ **Para continuar, debes completar los siguientes subgrupos/campos:**\n\n{missing_list}")
+        
+        st.info("💡 **Recuerda:** Si no consumes algo de una categoría, marca 'Ninguno'. Si un campo de texto no aplica, escribe 'No aplica'.")
         return False
 
 def go_to_previous_step():
@@ -286,27 +397,27 @@ def verificar_grupos_obligatorios_completos():
     grupos_incompletos = []
     
     # Grupo 1: Proteínas grasas
-    if not validate_step_1():
+    if not validate_step_legacy(1):
         grupos_incompletos.append("Proteínas con más contenido graso")
     
     # Grupo 2: Proteínas magras  
-    if not validate_step_2():
+    if not validate_step_legacy(2):
         grupos_incompletos.append("Proteínas magras")
         
     # Grupo 3: Grasas saludables
-    if not validate_step_3():
+    if not validate_step_legacy(3):
         grupos_incompletos.append("Fuentes de grasa saludable")
         
     # Grupo 4: Carbohidratos
-    if not validate_step_4():
+    if not validate_step_legacy(4):
         grupos_incompletos.append("Carbohidratos complejos")
         
     # Grupo 5: Vegetales
-    if not validate_step_5():
+    if not validate_step_legacy(5):
         grupos_incompletos.append("Vegetales")
         
     # Grupo 6: Frutas
-    if not validate_step_6():
+    if not validate_step_legacy(6):
         grupos_incompletos.append("Frutas")
         
     return grupos_incompletos
@@ -1207,18 +1318,18 @@ if datos_personales_completos and st.session_state.datos_completos:
     
     # Verificar estado de validación en tiempo real
     step_validators = {
-        1: validate_step_1(),
-        2: validate_step_2(),
-        3: validate_step_3(),
-        4: validate_step_4(),
-        5: validate_step_5(),
-        6: validate_step_6(),
-        7: validate_step_7(),
-        8: validate_step_8(),
-        9: validate_step_9(),
-        10: validate_step_10(),
-        11: validate_step_11(),
-        12: validate_step_12()
+        1: validate_step_legacy(1),
+        2: validate_step_legacy(2),
+        3: validate_step_legacy(3),
+        4: validate_step_legacy(4),
+        5: validate_step_legacy(5),
+        6: validate_step_legacy(6),
+        7: validate_step_legacy(7),
+        8: validate_step_legacy(8),
+        9: validate_step_legacy(9),
+        10: validate_step_legacy(10),
+        11: validate_step_legacy(11),
+        12: validate_step_legacy(12)
     }
     
     st.markdown(f"""
