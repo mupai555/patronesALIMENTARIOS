@@ -1318,7 +1318,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
         st.markdown("#### 🍳 Huevos y embutidos")
-        huevos_embutidos = create_multiselect_with_bullet_list(
+        huevos_embutidos = create_vertical_checkboxes(
             "¿Cuáles de estos huevos y embutidos consumes?",
             ["Huevo entero", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano", "Jamón ibérico", "Salami", "Mortadela", "Pastrami", "Pepperoni", "Ninguno"],
             "huevos_embutidos",
@@ -1326,7 +1326,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🥩 Carnes de res grasas")
-        carnes_res_grasas = create_multiselect_with_bullet_list(
+        carnes_res_grasas = create_vertical_checkboxes(
             "¿Cuáles de estas carnes de res grasas consumes?",
             ["Aguja norteña", "Diezmillo marmoleado", "Costilla/Costillar", "Ribeye", "New York", "T-bone", "Porterhouse", "Prime rib", "Arrachera", "Picaña", "Suadero", "Brisket/Pecho de res", "Chamberete con tuétano", "Falda marmoleada", "Molida 80/20", "Molida 85/15", "Carne para asar con grasa", "Chuck roast (diezmillo graso)", "Paleta con grasa", "Retazo con grasa", "Short ribs", "Cowboy steak", "Tomahawk", "Matambre", "Entraña", "Ninguno"],
             "carnes_res_grasas",
@@ -1334,7 +1334,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🐷 Carnes de cerdo grasas")
-        carnes_cerdo_grasas = create_multiselect_with_bullet_list(
+        carnes_cerdo_grasas = create_vertical_checkboxes(
             "¿Cuáles de estas carnes de cerdo grasas consumes?",
             ["Costilla de cerdo", "Panceta (belly)", "Chuleta con grasa", "Carnitas", "Chicharrón prensado", "Codillo", "Espalda (Boston butt)", "Picnic shoulder", "Pata de cerdo", "Ninguno"],
             "carnes_cerdo_grasas",
@@ -1358,7 +1358,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🧀 Quesos altos en grasa")
-        quesos_grasos = create_multiselect_with_bullet_list(
+        quesos_grasos = create_vertical_checkboxes(
             "¿Cuáles de estos quesos altos en grasa consumes?",
             ["Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar", "Queso roquefort", "Queso brie", "Queso camembert", "Queso parmesano", "Queso gruyere", "Queso de cabra maduro", "Ninguno"],
             "quesos_grasos",
@@ -1366,7 +1366,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🥛 Lácteos enteros")
-        lacteos_enteros = create_multiselect_with_bullet_list(
+        lacteos_enteros = create_vertical_checkboxes(
             "¿Cuáles de estos lácteos enteros consumes?",
             ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)", "Nata", "Crema agria", "Ninguno"],
             "lacteos_enteros",
@@ -1374,7 +1374,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🐟 Pescados grasos")
-        pescados_grasos = create_multiselect_with_bullet_list(
+        pescados_grasos = create_vertical_checkboxes(
             "¿Cuáles de estos pescados grasos consumes?",
             ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha", "Arenque", "Anchovetas", "Pez espada", "Anguila", "Ninguno"],
             "pescados_grasos",
@@ -1464,7 +1464,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
         st.markdown("#### 🐄 Carnes de res magras")
-        carnes_res_magras = create_multiselect_with_bullet_list(
+        carnes_res_magras = create_vertical_checkboxes(
             "¿Cuáles de estas carnes de res magras consumes?",
             ["Filete (lomo fino)", "Lomo bajo (striploin limpio)", "Centro de diezmillo limpio", "Sirloin limpio/Aguayón", "Bola/Pulpa bola", "Cuete", "Pulpa negra", "Pulpa blanca", "Espaldilla limpia", "Milanesa de bola", "Bistec de pierna", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Falda limpia", "Chamorro limpio", "Tampiqueña magra", "Medallones de res magros", "Top round", "Bottom round", "Flank steak limpio", "Maciza limpia", "Ninguno"],
             "carnes_res_magras",
@@ -1496,7 +1496,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🐟 Pescados magros")
-        pescados_magros = create_multiselect_with_bullet_list(
+        pescados_magros = create_vertical_checkboxes(
             "¿Cuáles de estos pescados magros consumes?",
             ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua", "Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
             "pescados_magros",
@@ -1520,7 +1520,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🥛 Lácteos light o reducidos")
-        lacteos_light = create_multiselect_with_bullet_list(
+        lacteos_light = create_vertical_checkboxes(
             "¿Cuáles de estos lácteos light o reducidos consumes?",
             ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
             "lacteos_light",
@@ -1619,7 +1619,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("#### 🌰 Frutos secos y semillas")
-        frutos_secos_semillas = create_multiselect_with_bullet_list(
+        frutos_secos_semillas = create_vertical_checkboxes(
             "¿Cuáles de estos frutos secos y semillas consumes?",
             ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
             "frutos_secos_semillas",
@@ -1707,58 +1707,48 @@ if datos_personales_completos and st.session_state.datos_completos:
         """)
         
         st.markdown("#### 🌾 Cereales y granos integrales")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        cereales_integrales = st.multiselect(
+        cereales_integrales = create_vertical_checkboxes(
             "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
             ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
              "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Ninguno"],
-            key="cereales_integrales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cereales y granos que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
+            "cereales_integrales",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🍝 Pastas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pastas = st.multiselect(
+        pastas = create_vertical_checkboxes(
             "¿Cuáles de estas pastas consumes? (Puedes seleccionar varios)",
             ["Pasta integral", "Pasta de trigo regular", "Pasta de arroz", "Pasta de quinoa", "Pasta de legumbres (lentejas, garbanzos)", "Fideos de arroz", "Fideos chinos", "Spaguetti", "Macarrones", "Lasaña", "Ninguno"],
-            key="pastas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todas las pastas que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+            "pastas",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🌽 Tortillas y panes")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        tortillas_panes = st.multiselect(
+        tortillas_panes = create_vertical_checkboxes(
             "¿Cuáles de estas tortillas y panes consumes? (Puedes seleccionar varios)",
             ["Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
              "Tortilla de avena", "Pan integral", "Pan multigrano", "Pan de centeno", 
              "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)", "Ninguno"],
-            key="tortillas_panes",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los tipos de tortillas y panes que consumes. Marca 'Ninguno' si no consumes ninguno."
+            "tortillas_panes",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🥔 Raíces y tubérculos (forma base)")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        raices_tuberculos = st.multiselect(
+        raices_tuberculos = create_vertical_checkboxes(
             "¿Cuáles de estas raíces y tubérculos consumes? (Puedes seleccionar varios)",
             ["Papa", "Camote", "Yuca", "Plátano macho", "Jícama", "Zanahoria", "Betabel", "Ninguno"],
-            key="raices_tuberculos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los tubérculos y raíces que consumes en su forma base. Marca 'Ninguno' si no consumes ninguno de estos."
+            "raices_tuberculos",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🫘 Leguminosas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        leguminosas = st.multiselect(
+        leguminosas = create_vertical_checkboxes(
             "¿Cuáles de estas leguminosas consumes? (Puedes seleccionar varios)",
             ["Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
              "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)", "Ninguno"],
-            key="leguminosas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las leguminosas que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+            "leguminosas",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -1835,9 +1825,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
         """)
         
-        st.info("💡 **Ayuda:** Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan.")
-        
-        vegetales_lista = st.multiselect(
+        vegetales_lista = create_vertical_checkboxes(
             "¿Cuáles de estos vegetales consumes o toleras fácilmente? (Puedes seleccionar varios)",
             ["Espinaca", "Acelga", "Kale", "Lechuga (romana, italiana, orejona, iceberg)", 
              "Col morada", "Col verde", "Repollo", "Brócoli", "Coliflor", "Ejote", "Chayote", 
@@ -1845,9 +1833,8 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Tomate verde", "Cebolla blanca", "Cebolla morada", "Pimiento morrón (rojo, verde, amarillo, naranja)", 
              "Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
              "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza", "Ninguno"],
-            key="vegetales_lista",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar todos los vegetales que consumes",
-            help="Selecciona todos los vegetales que consumes o toleras. Marca 'Ninguno' si no consumes ninguno de estos vegetales."
+            "vegetales_lista",
+            "Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan."
         )
 
         # Resumen del paso actual con categorización
@@ -1926,9 +1913,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
         """)
         
-        st.info("💡 **Ayuda:** Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional.")
-        
-        frutas_lista = st.multiselect(
+        frutas_lista = create_vertical_checkboxes(
             "¿Cuáles de estas frutas disfrutas o toleras bien? (Puedes seleccionar varios)",
             ["Manzana (roja, verde, gala, fuji)", "Naranja", "Mandarina", "Mango (petacón, ataulfo)", 
              "Papaya", "Sandía", "Melón", "Piña", "Plátano (tabasco, dominico, macho)", "Uvas", 
@@ -1936,9 +1921,8 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Ciruela", "Granada", "Cereza", "Chabacano", "Lima", "Limón", "Guayaba", "Tuna", 
              "Níspero", "Mamey", "Pitahaya (dragon fruit)", "Tamarindo", "Coco (carne, rallado)", 
              "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light", "Ninguno"],
-            key='frutas_lista',
-            placeholder="🔽 Haz clic aquí para ver y seleccionar todas las frutas que disfrutas",
-            help="Selecciona todas las frutas que disfrutas. Marca 'Ninguno' si no consumes ninguna de estas frutas."
+            "frutas_lista",
+            "Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional."
         )
 
         # Resumen del paso actual con categorización
@@ -2020,7 +2004,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
         
-        aceites_coccion = create_multiselect_with_bullet_list(
+        aceites_coccion = create_vertical_checkboxes(
             "¿Cuáles de estas grasas/aceites usas para cocinar?",
             ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
             "aceites_coccion",
@@ -2094,7 +2078,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
         
-        bebidas_sin_calorias = create_multiselect_with_bullet_list(
+        bebidas_sin_calorias = create_vertical_checkboxes(
             "¿Cuáles de estas bebidas sin calorías consumes regularmente?",
             ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
             "bebidas_sin_calorias",
@@ -2168,7 +2152,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria?")
         st.error("🚨 **IMPORTANTE:** Las alergias alimentarias pueden ser graves. Marca todas las que tengas, aunque sean leves.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes alergias, selecciona 'Ninguna'.")
-        alergias_alimentarias = create_multiselect_with_bullet_list(
+        alergias_alimentarias = create_vertical_checkboxes(
             "Selecciona TODAS las alergias alimentarias que tienes:",
             ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas", "Ninguna"],
             "alergias_alimentarias",
@@ -2214,13 +2198,12 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### 👨‍🍳 4. ¿Cuáles son tus métodos de cocción más accesibles?")
         st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
         
-        metodos_coccion_accesibles = st.multiselect(
+        metodos_coccion_accesibles = create_vertical_checkboxes(
             "Selecciona los métodos de cocción que más usas o prefieres:",
             ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
              "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
-            key='metodos_coccion_accesibles',
-            placeholder="🔽 Selecciona los métodos de cocción que usas",
-            help="Incluye todos los métodos que uses regularmente o que tengas disponibles"
+            "metodos_coccion_accesibles",
+            "Incluye todos los métodos que uses regularmente o que tengas disponibles"
         )
         
         otro_metodo_coccion = st.text_input(
@@ -2313,69 +2296,59 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown("---")
         st.markdown("### 🍫 Antojos de alimentos dulces / postres")
-        st.info("💡 **Ayuda:** Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente. Si no tienes antojos dulces, selecciona 'Ninguno'.")
-        antojos_dulces = st.multiselect(
+        antojos_dulces = create_vertical_checkboxes(
             "¿Cuáles de estos alimentos dulces se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chocolate con leche", "Chocolate amargo", "Pan dulce (conchas, donas, cuernitos)", 
              "Pastel (tres leches, chocolate, etc.)", "Galletas (Marías, Emperador, Chokis, etc.)", 
              "Helado / Nieve", "Flan / Gelatina", "Dulces tradicionales (cajeta, obleas, jamoncillo, glorias)", 
              "Cereal azucarado", "Leche condensada", "Churros", "Ninguno"],
-            key='antojos_dulces',
-            placeholder="🔽 Selecciona los alimentos dulces que se te antojan o marca 'Ninguno'",
-            help="Incluye todos los dulces que frecuentemente deseas. Si no tienes antojos dulces, selecciona 'Ninguno'."
+            "antojos_dulces",
+            "Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente. Si no tienes antojos dulces, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🧂 Antojos de alimentos salados / snacks")
-        st.info("💡 **Ayuda:** Incluye botanas, frituras o alimentos salados que se te antojen. Si no tienes antojos salados, selecciona 'Ninguno'.")
-        antojos_salados = st.multiselect(
+        antojos_salados = create_vertical_checkboxes(
             "¿Cuáles de estos alimentos salados se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Papas fritas (Sabritas, Ruffles, etc.)", "Cacahuates enchilados", "Frituras (Doritos, Cheetos, Takis, etc.)", 
              "Totopos con salsa", "Galletas saladas", "Cacahuates japoneses", "Chicharrón (de cerdo o harina)", 
              "Nachos con queso", "Queso derretido o gratinado", "Ninguno"],
-            key='antojos_salados',
-            placeholder="🔽 Selecciona los alimentos salados que se te antojan o marca 'Ninguno'",
-            help="Incluye todas las botanas y snacks salados que frecuentemente deseas. Si no tienes antojos salados, selecciona 'Ninguno'."
+            "antojos_salados",
+            "Incluye botanas, frituras o alimentos salados que se te antojen. Si no tienes antojos salados, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🌮 Antojos de comidas rápidas / callejeras")
-        st.info("💡 **Ayuda:** Incluye comida rápida, platillos callejeros o preparaciones que se te antojen. Si no tienes antojos de comida rápida, selecciona 'Ninguno'.")
-        antojos_comida_rapida = st.multiselect(
+        antojos_comida_rapida = create_vertical_checkboxes(
             "¿Cuáles de estas comidas rápidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Tacos (pastor, asada, birria, etc.)", "Tortas (cubana, ahogada, etc.)", "Hamburguesas", "Hot dogs", 
              "Pizza", "Quesadillas fritas", "Tamales", "Pambazos", "Sopes / gorditas", "Elotes / esquites", 
              "Burritos", "Enchiladas", "Empanadas", "Ninguno"],
-            key='antojos_comida_rapida',
-            placeholder="🔽 Selecciona las comidas rápidas que se te antojan o marca 'Ninguno'",
-            help="Incluye toda la comida rápida o callejera que frecuentemente deseas. Si no tienes antojos de comida rápida, selecciona 'Ninguno'."
+            "antojos_comida_rapida",
+            "Incluye comida rápida, platillos callejeros o preparaciones que se te antojen. Si no tienes antojos de comida rápida, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🍹 Antojos de bebidas y postres líquidos")
-        st.info("💡 **Ayuda:** Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen. Si no tienes antojos de bebidas, selecciona 'Ninguno'.")
-        antojos_bebidas = st.multiselect(
+        antojos_bebidas = create_vertical_checkboxes(
             "¿Cuáles de estas bebidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Refrescos regulares (Coca-Cola, Fanta, etc.)", "Jugos industrializados (Boing, Jumex, etc.)", 
              "Malteadas / Frappés", "Agua de sabor con azúcar (jamaica, horchata, tamarindo)", 
              "Café con azúcar y leche", "Champurrado / atole", "Licuado de plátano con azúcar", 
              "Bebidas alcohólicas (cerveza, tequila, vino, etc.)", "Ninguno"],
-            key='antojos_bebidas',
-            placeholder="🔽 Selecciona las bebidas que se te antojan o marca 'Ninguno'",
-            help="Incluye todas las bebidas con calorías que frecuentemente deseas. Si no tienes antojos de bebidas, selecciona 'Ninguno'."
+            "antojos_bebidas",
+            "Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen. Si no tienes antojos de bebidas, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🔥 Antojos de alimentos con condimentos estimulantes")
-        st.info("💡 **Ayuda:** Incluye alimentos picantes, con chile o condimentos intensos que se te antojen. Si no tienes antojos picantes, selecciona 'Ninguno'.")
-        antojos_picantes = st.multiselect(
+        antojos_picantes = create_vertical_checkboxes(
             "¿Cuáles de estos alimentos picantes se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chiles en escabeche", "Salsas picantes", "Salsa Valentina, Tajín o Chamoy", 
              "Pepinos con chile y limón", "Mangos verdes con chile", "Gomitas enchiladas", 
              "Fruta con Miguelito o chile en polvo", "Ninguno"],
-            key='antojos_picantes',
-            placeholder="🔽 Selecciona los alimentos picantes que se te antojan o marca 'Ninguno'",
-            help="Incluye todos los alimentos con chile o condimentos estimulantes que deseas. Si no tienes antojos picantes, selecciona 'Ninguno'."
+            "antojos_picantes",
+            "Incluye alimentos picantes, con chile o condimentos intensos que se te antojen. Si no tienes antojos picantes, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
