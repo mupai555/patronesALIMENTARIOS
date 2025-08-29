@@ -2038,7 +2038,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
             ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
-             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "galleta de arroz inflado","Ninguno"],
+             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Galleta de arroz inflado","Ninguno"],
             "cereales_integrales",
             "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
