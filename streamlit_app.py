@@ -155,7 +155,10 @@ DATOS DEL CLIENTE:
 ➕ 3. Alimentos o bebidas adicionales deseados:
 - {st.session_state.get('alimento_adicional', 'No especificado')}
 
-➕ 4. Métodos de cocción más accesibles para el día a día:
+=====================================
+👨‍🍳 MÉTODOS DE COCCIÓN DISPONIBLES
+=====================================
+🔥 Métodos de cocción más accesibles para el día a día:
 - {', '.join(st.session_state.get('metodos_coccion_accesibles', [])) if st.session_state.get('metodos_coccion_accesibles') else 'No especificado'}
 - Otro método especificado: {st.session_state.get('otro_metodo_coccion', 'No especificado')}
 
@@ -340,6 +343,24 @@ def validate_step_8():
     return True, []
 
 def validate_step_9():
+    """Valida que se haya completado la sección de métodos de cocción"""
+    missing_items = []
+    
+    # Validar que haya al menos una selección de métodos de cocción
+    metodos_selections = st.session_state.get('metodos_coccion_accesibles', [])
+    if len(metodos_selections) == 0:
+        missing_items.append('Métodos de cocción accesibles')
+    
+    # Validar campo de texto de otro método de cocción
+    otro_metodo = st.session_state.get('otro_metodo_coccion', '').strip()
+    if not otro_metodo:
+        missing_items.append('Otro método de cocción (campo de texto) - escribir "No aplica" si no aplica')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
+def validate_step_10():
     """Valida que cada subgrupo tenga al menos una selección en alergias/intolerancias y campos de texto completos"""
     missing_items = []
     
@@ -356,8 +377,7 @@ def validate_step_9():
     text_fields = {
         'otra_alergia': 'Otra alergia (campo de texto)',
         'otra_intolerancia': 'Otra intolerancia (campo de texto)',
-        'alimento_adicional': 'Alimento adicional (campo de texto)',
-        'otro_metodo_coccion': 'Otro método de cocción (campo de texto)'
+        'alimento_adicional': 'Alimento adicional (campo de texto)'
     }
     
     for field_key, field_name in text_fields.items():
@@ -369,7 +389,7 @@ def validate_step_9():
         return False, missing_items
     return True, []
 
-def validate_step_10():
+def validate_step_11():
     """Valida que cada subgrupo tenga al menos una selección en antojos"""
     subgroups = {
         'antojos_dulces': 'Antojos de alimentos dulces/postres',
@@ -394,7 +414,7 @@ def validate_step_10():
         return False, missing_subgroups
     return True, []
 
-def validate_step_11():
+def validate_step_12():
     """Valida que se haya seleccionado una frecuencia de comidas"""
     missing_items = []
     frecuencia = st.session_state.get('frecuencia_comidas', '')
@@ -410,7 +430,7 @@ def validate_step_11():
         return False, missing_items
     return True, []
 
-def validate_step_12():
+def validate_step_13():
     """Valida que se haya proporcionado alguna sugerencia de menús"""
     missing_items = []
     sugerencias = st.session_state.get('sugerencias_menus', '').strip()
@@ -494,7 +514,8 @@ def get_step_validator(step_number):
         9: validate_step_9,
         10: validate_step_10,
         11: validate_step_11,
-        12: validate_step_12
+        12: validate_step_12,
+        13: validate_step_13
     }
     return validators.get(step_number, lambda: (True, []))
 
@@ -1160,10 +1181,11 @@ defaults = {
         6: False,  # Frutas
         7: False,  # Aceites de cocción
         8: False,  # Bebidas
-        9: False,  # Alergias/intolerancias
-        10: False,  # Antojos
-        11: False,  # Frecuencia de comidas
-        12: False   # Sugerencias de menús
+        9: False,  # Métodos de cocción
+        10: False,  # Alergias/intolerancias
+        11: False,  # Antojos
+        12: False,  # Frecuencia de comidas
+        13: False   # Sugerencias de menús
     },
     "max_unlocked_step": 1
 }
@@ -1472,15 +1494,27 @@ if not st.session_state.datos_completos:
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
-                        <span style="font-size:1.3rem;">🚨</span> <b>Paso 8:</b> Alergias, intolerancias y métodos de cocción<br>
+                        <span style="font-size:1.3rem;">👨‍🍳</span> <b>Paso 9:</b> Métodos de cocción disponibles<br>
                         <span style="color:#F5F5F5;font-size:1rem;">
-                            Identificamos restricciones alimentarias y métodos de cocción disponibles.
+                            Identificamos los métodos de cocción que tienes accesibles para personalizar recetas.
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
-                        <span style="font-size:1.3rem;">😋</span> <b>Paso 9:</b> Patrones de antojos alimentarios<br>
+                        <span style="font-size:1.3rem;">🚨</span> <b>Paso 10:</b> Alergias e intolerancias alimentarias<br>
+                        <span style="color:#F5F5F5;font-size:1rem;">
+                            Identificamos restricciones alimentarias críticas para tu seguridad.
+                        </span>
+                    </li>
+                    <li style="margin-bottom:1.1em;">
+                        <span style="font-size:1.3rem;">😋</span> <b>Paso 11:</b> Patrones de antojos alimentarios<br>
                         <span style="color:#F5F5F5;font-size:1rem;">
                             Analizamos antojos dulces, salados, comida rápida y condimentos estimulantes.
+                        </span>
+                    </li>
+                    <li style="margin-bottom:1.1em;">
+                        <span style="font-size:1.3rem;">🍽️</span> <b>Paso 12:</b> Frecuencia de comidas preferida<br>
+                        <span style="color:#F5F5F5;font-size:1rem;">
+                            Adaptamos el plan a tu rutina diaria y estilo de vida.
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
@@ -1544,7 +1578,8 @@ if datos_personales_completos and st.session_state.datos_completos:
         9: validate_step_legacy(9),
         10: validate_step_legacy(10),
         11: validate_step_legacy(11),
-        12: validate_step_legacy(12)
+        12: validate_step_legacy(12),
+        13: validate_step_legacy(13)
     }
     
     st.markdown(f"""
@@ -1577,7 +1612,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
-            <small>Paso {current_step} de 12 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
+            <small>Paso {current_step} de 13 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
         <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;">
             <span style="color: #27AE60;">● Completo</span> | 
@@ -2438,8 +2473,95 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # APARTADO EXTRA 3: ALERGIAS/INTOLERANCIAS (PASO 9)
+    # APARTADO EXTRA 3: MÉTODOS DE COCCIÓN (PASO 9)
     elif current_step == 9:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                👨‍🍳 PASO 9: MÉTODOS DE COCCIÓN DISPONIBLES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 9 de 13 - Optimización de Recetas
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #FF9800;">
+            <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
+                👨‍🍳 PASO 9: MÉTODOS DE COCCIÓN DISPONIBLES
+            </h2>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Personalización de Recetas Según tus Recursos</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(69, text="Paso 9 de 13: Métodos de cocción disponibles")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🎯 ¿Por qué necesitamos esta información?
+        Conocer los **métodos de cocción** que tienes disponibles nos permite:
+        - Sugerir recetas que realmente puedas preparar en tu cocina
+        - Optimizar las preparaciones según tus herramientas y equipos
+        - Adaptar las técnicas de cocción a tus recursos disponibles
+        - Maximizar sabores y texturas con los métodos que prefieres
+        
+        **💡 Instrucción:** Selecciona TODOS los métodos de cocción que uses regularmente o que tengas disponibles en tu cocina.
+        """)
+        
+        st.markdown("### 👨‍🍳 ¿Cuáles son tus métodos de cocción más accesibles?")
+        st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
+        
+        metodos_coccion_accesibles = create_vertical_checkboxes(
+            "Selecciona los métodos de cocción que más usas o prefieres:",
+            ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
+             "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
+            "metodos_coccion_accesibles",
+            "Incluye todos los métodos que uses regularmente o que tengas disponibles"
+        )
+        
+        otro_metodo_coccion = st.text_input(
+            "¿Otro método de cocción? Especifica aquí:",
+            value=st.session_state.get('otro_metodo_coccion', ''),
+            placeholder="Ej: cocina de leña, olla de presión, wok, etc.",
+            help="Especifica cualquier otro método de cocción que uses"
+        )
+
+        # Guardar en session state (solo text input)
+        st.session_state.otro_metodo_coccion = otro_metodo_coccion
+        
+        # Resumen de métodos de cocción
+        metodos_count = len(st.session_state.get('metodos_coccion_accesibles', []))
+        if metodos_count > 0:
+            st.success(f"✅ **Excelente!** Has seleccionado {metodos_count} métodos de cocción. Esto nos permite personalizar las recetas según tus recursos disponibles.")
+        else:
+            st.info("ℹ️ **Nota:** Te recomendamos seleccionar al menos un método de cocción para poder adaptar las recetas a tus posibilidades.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # APARTADO EXTRA 4: ALERGIAS/INTOLERANCIAS (PASO 10)
+    elif current_step == 10:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2454,10 +2576,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+                🚨 PASO 10: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 9 de 12 - Información Crítica para tu Seguridad
+                Estás en el paso 10 de 13 - Información Crítica para tu Seguridad
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2467,14 +2589,14 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
-                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+                🚨 PASO 10: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
             <p style="text-align: center; margin: 0; font-weight: bold;">Información Crítica para tu Seguridad</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(75, text="Paso 9 de 12: Alergias e intolerancias (Crítico)")
+        progress.progress(77, text="Paso 10 de 13: Alergias e intolerancias (Crítico)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2528,31 +2650,11 @@ if datos_personales_completos and st.session_state.datos_completos:
             placeholder="Ej: agua de jamaica casera, proteína en polvo marca X, alimentos regionales como quelites, etc.",
             help="Incluye cualquier alimento importante que no esté en las listas anteriores"
         )
-        
-        st.markdown("---")
-        st.markdown("### 👨‍🍳 4. ¿Cuáles son tus métodos de cocción más accesibles?")
-        st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
-        
-        metodos_coccion_accesibles = create_vertical_checkboxes(
-            "Selecciona los métodos de cocción que más usas o prefieres:",
-            ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
-             "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
-            "metodos_coccion_accesibles",
-            "Incluye todos los métodos que uses regularmente o que tengas disponibles"
-        )
-        
-        otro_metodo_coccion = st.text_input(
-            "¿Otro método de cocción? Especifica aquí:",
-            value=st.session_state.get('otro_metodo_coccion', ''),
-            placeholder="Ej: cocina de leña, olla de presión, wok, etc.",
-            help="Especifica cualquier otro método de cocción que uses"
-        )
 
         # Guardar en session state (solo text inputs)
         st.session_state.otra_alergia = otra_alergia
         st.session_state.otra_intolerancia = otra_intolerancia
         st.session_state.alimento_adicional = alimento_adicional
-        st.session_state.otro_metodo_coccion = otro_metodo_coccion
         
         # Resumen de restricciones
         alergias_count = len(st.session_state.get('alergias_alimentarias', []))
@@ -2579,8 +2681,8 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # APARTADO EXTRA 4: ANTOJOS (PASO 10)
-    elif current_step == 10:
+    # APARTADO EXTRA 5: ANTOJOS (PASO 11)
+    elif current_step == 11:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2595,10 +2697,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+                😋 PASO 11: EVALUACIÓN DE ANTOJOS ALIMENTARIOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 10 de 12 - Información para Estrategias
+                Estás en el paso 11 de 13 - Información para Estrategias
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2608,14 +2710,14 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
-                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+                😋 PASO 11: EVALUACIÓN DE ANTOJOS ALIMENTARIOS
             </h2>
-            <p style="text-align: center; margin: 0; font-weight: bold;">¡Último Paso! - Información para Estrategias</p>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información para Estrategias</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(83, text="Paso 10 de 12: Antojos alimentarios")
+        progress.progress(85, text="Paso 11 de 13: Antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2731,8 +2833,8 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # PASO 11: FRECUENCIA DE COMIDAS
-    elif current_step == 11:
+    # PASO 12: FRECUENCIA DE COMIDAS
+    elif current_step == 12:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2747,10 +2849,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                🍽️ PASO 11: FRECUENCIA DE COMIDAS PREFERIDA
+                🍽️ PASO 12: FRECUENCIA DE COMIDAS PREFERIDA
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 11 de 12 - Adaptación a tu Estilo de Vida
+                Estás en el paso 12 de 13 - Adaptación a tu Estilo de Vida
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2758,7 +2860,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(92, text="Paso 11 de 12: Frecuencia de comidas preferida")
+        progress.progress(92, text="Paso 12 de 13: Frecuencia de comidas preferida")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2829,8 +2931,8 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # PASO 12: SUGERENCIAS DE MENÚS
-    elif current_step == 12:
+    # PASO 13: SUGERENCIAS DE MENÚS
+    elif current_step == 13:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2845,10 +2947,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 12: SUGERENCIAS DE MENÚS
+                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 12 de 12 - Personalización Final
+                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2856,7 +2958,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 12 de 12: Sugerencias de menús - ¡Último paso!")
+        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
