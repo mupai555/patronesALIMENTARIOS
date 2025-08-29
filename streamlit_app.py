@@ -1630,8 +1630,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         **¿Cómo completar este paso?**
         - Revisa cada categoría de alimentos verticalmente
-        - Para listas cortas: marca las casillas de verificación directamente
-        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
         - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
         **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
@@ -1776,13 +1775,12 @@ if datos_personales_completos and st.session_state.datos_completos:
         - Son ideales para construir masa muscular y controlar calorías
         - Proporcionan saciedad sin exceso de grasas saturadas
         
-        **¿Cómo completar este paso?**
+       **¿Cómo completar este paso?**
         - Revisa cada categoría de alimentos verticalmente
-        - Para listas cortas: marca las casillas de verificación directamente
-        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
         - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        **💡 Consejo:** Las proteínas magras son especialmente útiles para objetivos de composición corporal.
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         # Actualizar progreso
         progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
@@ -1922,12 +1920,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         - Proporcionan saciedad y mejoran el sabor de los alimentos
         
         **¿Cómo completar este paso?**
-        - Revisa cada categoría de grasas saludables verticalmente
-        - Para listas cortas: marca las casillas de verificación directamente
-        - Para listas largas: revisa las opciones disponibles y luego selecciona del menú
+        - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
         - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        **💡 Consejo:** Las grasas saludables son fundamentales en una alimentación equilibrada, no las evites.
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
 
@@ -2029,7 +2026,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este paso evaluaremos los **carbohidratos complejos y cereales** que consumes. 
         Estos alimentos proporcionan energía sostenida y fibra importante para tu digestión.
         
-        **💡 Instrucción:** Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente.
+        **💡 Instrucción:** - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
         st.markdown("#### 🌾 Cereales y granos integrales")
@@ -2037,7 +2038,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
             ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
-             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Ninguno"],
+             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "galleta de arroz inflado","Ninguno"],
             "cereales_integrales",
             "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
@@ -2148,7 +2149,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este paso evaluaremos los **vegetales** que consumes o toleras fácilmente. 
         Los vegetales aportan vitaminas, minerales, fibra y antioxidantes esenciales para tu salud.
         
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+       **💡 Instrucción:** - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
         vegetales_lista = create_vertical_checkboxes(
@@ -2236,7 +2241,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este último paso de los grupos principales evaluaremos las **frutas** que disfrutas o toleras bien. 
         Las frutas aportan vitaminas, antioxidantes, fibra y azúcares naturales para energía.
         
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+      **💡 Instrucción:** - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
         frutas_lista = create_vertical_checkboxes(
@@ -2489,7 +2498,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Otra alergia no mencionada? Especifica aquí:",
             value=st.session_state.get('otra_alergia', ''),
             placeholder="Ej: alergia al apio, maní, sulfitos, etc.",
-            help="Especifica cualquier otra alergia alimentaria que tengas"
+            help="Especifica cualquier otra alergia alimentaria que tengas, en caso de que no tengas escribe ninguna"
         )
         
         st.markdown("---")
@@ -2507,7 +2516,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             "¿Otra intolerancia no mencionada? Especifica aquí:",
             value=st.session_state.get('otra_intolerancia', ''),
             placeholder="Ej: intolerancia a la fructosa, sorbitol, etc.",
-            help="Especifica cualquier otra intolerancia o malestar digestivo"
+            help="Especifica cualquier otra intolerancia o malestar digestivo derivado de alimentos que tengas, en caso de que no tengas escribe ninguna"
         )
         
         st.markdown("---")
@@ -2769,6 +2778,9 @@ if datos_personales_completos and st.session_state.datos_completos:
                 "Desayuno, comida, cena y una colación",
                 "Desayuno, comida, cena y dos colaciones", 
                 "Solo dos comidas principales al día",
+                "Ayuno intermitente con dos comidas principales al día",
+                "Ayuno intermitente con tres comidas principales al día",
+                "Ayuno intermitente con tres comidas principales al día y una colación",
                 "Otro (especificar)"
             ],
             key='frecuencia_comidas',
