@@ -536,7 +536,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 12:
+        if current_step < 13:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
