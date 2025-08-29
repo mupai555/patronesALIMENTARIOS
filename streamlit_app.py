@@ -2947,10 +2947,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 12: SUGERENCIAS DE MENÚS
+                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 12 de 12 - Personalización Final
+                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2958,7 +2958,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 12 de 12: Sugerencias de menús - ¡Último paso!")
+        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
