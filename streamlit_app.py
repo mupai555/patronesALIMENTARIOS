@@ -190,6 +190,15 @@ DATOS DEL CLIENTE:
 - Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
 
 =====================================
+💊 SUPLEMENTOS ERGOGÉNICOS Y FUNCIONALES
+=====================================
+🔹 Pérdida de Grasa Corporal - Termogénicos:
+- {', '.join(st.session_state.get('suplementos_termogenicos', [])) if st.session_state.get('suplementos_termogenicos') else 'No especificado'}
+
+🔹 Pérdida de Grasa Corporal - Reductores de Apetito y Saciedad:
+- {', '.join(st.session_state.get('suplementos_saciedad', [])) if st.session_state.get('suplementos_saciedad') else 'No especificado'}
+
+=====================================
 📝 SUGERENCIAS DE MENÚS Y PREFERENCIAS
 =====================================
 - Sugerencias del cliente: {st.session_state.get('sugerencias_menus', 'No especificado')}
@@ -207,8 +216,9 @@ para el desarrollo de recomendaciones nutricionales altamente personalizadas bas
 4. Patrones de preferencias detallados
 5. Análisis de antojos y alimentación emocional
 6. Frecuencia de comidas preferida del cliente
-7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
+7. Evaluación de suplementos ergogénicos y funcionales de interés
+8. Sugerencias específicas de menús y preferencias adicionales
+9. Contexto personal, familiar y social completo
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
@@ -216,6 +226,7 @@ RECOMENDACIONES PARA SEGUIMIENTO:
 - Aprovechar métodos de cocción preferidos y disponibles
 - Integrar estrategias para manejo de antojos identificados
 - Estructurar la frecuencia de comidas según la preferencia del cliente
+- Evaluar la incorporación de suplementos de interés identificados
 - Incorporar sugerencias específicas de menús proporcionadas por el cliente
 - Adaptar recomendaciones al contexto personal y familiar específico
 
@@ -431,6 +442,25 @@ def validate_step_12():
     return True, []
 
 def validate_step_13():
+    """Valida que se haya seleccionado al menos una opción en suplementos"""
+    missing_items = []
+    termogenicos = st.session_state.get('suplementos_termogenicos', [])
+    saciedad = st.session_state.get('suplementos_saciedad', [])
+    
+    if not termogenicos:
+        missing_items.append('Termogénicos (puedes seleccionar "Ninguno")')
+    if not saciedad:
+        missing_items.append('Reductores de Apetito y Saciedad (puedes seleccionar "Ninguno")')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
+def validate_step_14():
+    """Valida que el paso 14 esté completo (no requiere validación específica)"""
+    return True, []
+
+def validate_step_15():
     """Valida que se haya proporcionado alguna sugerencia de menús"""
     missing_items = []
     sugerencias = st.session_state.get('sugerencias_menus', '').strip()
@@ -515,7 +545,9 @@ def get_step_validator(step_number):
         10: validate_step_10,
         11: validate_step_11,
         12: validate_step_12,
-        13: validate_step_13
+        13: validate_step_13,
+        14: validate_step_14,
+        15: validate_step_15
     }
     return validators.get(step_number, lambda: (True, []))
 
@@ -536,7 +568,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 13:
+        if current_step < 15:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
@@ -1579,7 +1611,9 @@ if datos_personales_completos and st.session_state.datos_completos:
         10: validate_step_legacy(10),
         11: validate_step_legacy(11),
         12: validate_step_legacy(12),
-        13: validate_step_legacy(13)
+        13: validate_step_legacy(13),
+        14: validate_step_legacy(14),
+        15: validate_step_legacy(15)
     }
     
     st.markdown(f"""
@@ -1612,7 +1646,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
-            <small>Paso {current_step} de 13 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
+            <small>Paso {current_step} de 15 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
         <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;">
             <span style="color: #27AE60;">● Completo</span> | 
@@ -1673,7 +1707,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
 
         # Actualizar progreso
-        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+        progress.progress(8, text="Paso 1 de 15: Proteínas con más contenido graso")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -1818,7 +1852,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         # Actualizar progreso
-        progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
+        progress.progress(17, text="Paso 2 de 15: Proteínas animales magras")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -1964,7 +1998,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
 
         # Actualizar progreso
-        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+        progress.progress(25, text="Paso 3 de 15: Fuentes de grasa saludable")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2045,7 +2079,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(33, text="Paso 4 de 12: Carbohidratos complejos y cereales")
+        progress.progress(33, text="Paso 4 de 15: Carbohidratos complejos y cereales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2168,7 +2202,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(42, text="Paso 5 de 12: Vegetales")
+        progress.progress(42, text="Paso 5 de 15: Vegetales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2260,7 +2294,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(50, text="Paso 6 de 12: Frutas - ¡Completando grupos principales!")
+        progress.progress(50, text="Paso 6 de 15: Frutas - ¡Completando grupos principales!")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2361,7 +2395,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(58, text="Paso 7 de 12: Aceites de cocción (Opcional)")
+        progress.progress(58, text="Paso 7 de 15: Aceites de cocción (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2435,7 +2469,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(67, text="Paso 8 de 12: Bebidas para hidratación (Opcional)")
+        progress.progress(67, text="Paso 8 de 15: Bebidas para hidratación (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2507,7 +2541,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(69, text="Paso 9 de 13: Métodos de cocción disponibles")
+        progress.progress(69, text="Paso 9 de 15: Métodos de cocción disponibles")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2596,7 +2630,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(77, text="Paso 10 de 13: Alergias e intolerancias (Crítico)")
+        progress.progress(77, text="Paso 10 de 15: Alergias e intolerancias (Crítico)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2717,7 +2751,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(85, text="Paso 11 de 13: Antojos alimentarios")
+        progress.progress(85, text="Paso 11 de 15: Antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2860,7 +2894,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(92, text="Paso 12 de 13: Frecuencia de comidas preferida")
+        progress.progress(92, text="Paso 12 de 15: Frecuencia de comidas preferida")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2934,8 +2968,175 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # PASO 13: SUGERENCIAS DE MENÚS
+    # PASO 13: SUPLEMENTOS ERGOGÉNICOS Y FUNCIONALES 
     elif current_step == 13:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+            border: 3px solid #9C27B0;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                💊 PASO 13: SUPLEMENTOS ERGOGÉNICOS Y FUNCIONALES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Paso 13 de 15 - Optimización Nutricional Avanzada
+            </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar suplementos que puedan optimizar tu composición corporal y rendimiento
+                </p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
+        
+        **¿Por qué evaluamos los suplementos?**
+        - Los suplementos pueden complementar tu alimentación para objetivos específicos
+        - Son herramientas adicionales, NO reemplazos de una buena alimentación
+        - Te ayudaremos a identificar cuáles pueden ser útiles para tus metas
+        
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de suplementos cuidadosamente
+        - Marca SOLO los que te interesan o ya usas
+        - Si no te interesan los suplementos, puedes marcar "Ninguno" en cada sección
+        
+        **💡 Consejo:** Los suplementos son opcionales. Una buena alimentación es siempre la base.
+        """)
+        
+        # Actualizar progreso
+        progress.progress(96, text="Paso 13 de 15: Suplementos ergogénicos y funcionales")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
+        # SECCIÓN PRINCIPAL: Pérdida de Grasa Corporal
+        st.markdown("## 🔹 Pérdida de Grasa Corporal")
+        
+        st.markdown("### Subapartado A – Termogénicos")
+        st.markdown("""
+        Los termogénicos pueden ayudar a aumentar el gasto calórico y la oxidación de grasa.
+        """)
+        
+        suplementos_termogenicos = create_multiselect_with_bullet_list(
+            "Termogénicos de interés:",
+            [
+                "Cafeína – aumenta el gasto calórico y la oxidación de grasa, además de mejorar el rendimiento",
+                "Té verde (catequinas + cafeína) – efecto moderado en oxidación de grasas", 
+                "Capsaicina (extracto de chile picante) – ligero aumento de gasto energético y reducción de apetito a corto plazo",
+                "Ninguno"
+            ],
+            "suplementos_termogenicos",
+            "Selecciona los termogénicos que te interesen o que ya uses"
+        )
+        
+        st.markdown("### Subapartado B – Reductores de Apetito y Saciedad")
+        st.markdown("""
+        Estos suplementos pueden ayudar a controlar el apetito y aumentar la sensación de saciedad.
+        """)
+        
+        suplementos_saciedad = create_multiselect_with_bullet_list(
+            "Reductores de Apetito y Saciedad de interés:",
+            [
+                "Proteína (incluida en polvo) – favorece saciedad y preserva masa muscular en déficit",
+                "Fibra soluble (ej. glucomanano, psyllium) – fuerte efecto en saciedad y control de ingesta",
+                "Cafeína – apoyo leve en control del hambre",
+                "Ninguno"
+            ],
+            "suplementos_saciedad", 
+            "Selecciona los suplementos para saciedad que te interesen"
+        )
+        
+        # Mostrar resumen de selecciones
+        total_seleccionados = len(suplementos_termogenicos) + len(suplementos_saciedad)
+        if total_seleccionados > 0:
+            # Filtrar "Ninguno" del conteo
+            termogenicos_sin_ninguno = [s for s in suplementos_termogenicos if s != "Ninguno"]
+            saciedad_sin_ninguno = [s for s in suplementos_saciedad if s != "Ninguno"]
+            total_real = len(termogenicos_sin_ninguno) + len(saciedad_sin_ninguno)
+            
+            if total_real > 0:
+                st.success(f"✅ **Selección registrada:** {total_real} suplementos de interés para pérdida de grasa corporal.")
+            else:
+                st.info("ℹ️ **Nota:** Has indicado que no te interesan los suplementos para pérdida de grasa. Esto está perfectamente bien.")
+        else:
+            st.info("ℹ️ **Pendiente:** Selecciona al menos una opción en cada categoría (puedes elegir 'Ninguno' si no te interesan).")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 14: PREPARACIÓN PARA FINALIZACIÓN
+    elif current_step == 14:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🏁 PASO 14: PREPARACIÓN PARA FINALIZACIÓN
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Paso 14 de 15 - Revisión Final Antes de Completar
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(98, text="Paso 14 de 15: Preparación para finalización")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🎯 ¡Estás a un paso de completar tu evaluación!
+        
+        Has proporcionado información muy valiosa sobre tus patrones alimentarios. En el siguiente paso podrás:
+        
+        - ✅ Revisar un resumen de toda tu información
+        - ✅ Añadir sugerencias finales de menús (opcional)
+        - ✅ Finalizar y enviar tu evaluación por email
+        
+        **¿Todo listo para continuar?**
+        """)
+        
+        st.success("🎊 ¡Excelente trabajo! Tu perfil nutricional está casi completo.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Finalizar ➡️"):
+                advance_to_next_step()
+
+    # PASO 15: SUGERENCIAS DE MENÚS
+    elif current_step == 15:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2950,10 +3151,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
+                📝 PASO 15: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
+                ¡Último Paso! Estás en el paso 15 de 15 - Personalización Final
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2961,7 +3162,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
+        progress.progress(100, text="Paso 15 de 15: Sugerencias de menús y finalización - ¡Último paso!")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3069,7 +3270,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                             )
                             if ok:
                                 st.session_state["correo_enviado"] = True
-                                st.session_state.step_completed[12] = True
+                                st.session_state.step_completed[14] = True
                                 st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
                                 st.balloons()
                             else:
