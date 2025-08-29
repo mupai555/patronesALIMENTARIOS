@@ -2775,9 +2775,6 @@ if datos_personales_completos and st.session_state.datos_completos:
             help="Selecciona la estructura de comidas que mejor se ajuste a tu rutina diaria"
         )
         
-        # Guardar explícitamente la selección de frecuencia en session state
-        st.session_state.frecuencia_comidas = frecuencia_comidas
-        
         # Campo adicional si selecciona "Otro"
         otra_frecuencia = ""
         if frecuencia_comidas == "Otro (especificar)":
