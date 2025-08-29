@@ -155,10 +155,6 @@ DATOS DEL CLIENTE:
 ➕ 3. Alimentos o bebidas adicionales deseados:
 - {st.session_state.get('alimento_adicional', 'No especificado')}
 
-➕ 4. Métodos de cocción más accesibles para el día a día:
-- {', '.join(st.session_state.get('metodos_coccion_accesibles', [])) if st.session_state.get('metodos_coccion_accesibles') else 'No especificado'}
-- Otro método especificado: {st.session_state.get('otro_metodo_coccion', 'No especificado')}
-
 =====================================
 😋 SECCIÓN DE ANTOJOS ALIMENTARIOS
 =====================================
@@ -356,8 +352,7 @@ def validate_step_9():
     text_fields = {
         'otra_alergia': 'Otra alergia (campo de texto)',
         'otra_intolerancia': 'Otra intolerancia (campo de texto)',
-        'alimento_adicional': 'Alimento adicional (campo de texto)',
-        'otro_metodo_coccion': 'Otro método de cocción (campo de texto)'
+        'alimento_adicional': 'Alimento adicional (campo de texto)'
     }
     
     for field_key, field_name in text_fields.items():
@@ -1472,15 +1467,21 @@ if not st.session_state.datos_completos:
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
-                        <span style="font-size:1.3rem;">🚨</span> <b>Paso 8:</b> Alergias, intolerancias y métodos de cocción<br>
+                        <span style="font-size:1.3rem;">🚨</span> <b>Paso 9:</b> Alergias e intolerancias alimentarias<br>
                         <span style="color:#F5F5F5;font-size:1rem;">
-                            Identificamos restricciones alimentarias y métodos de cocción disponibles.
+                            Identificamos restricciones alimentarias para garantizar tu seguridad.
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
-                        <span style="font-size:1.3rem;">😋</span> <b>Paso 9:</b> Patrones de antojos alimentarios<br>
+                        <span style="font-size:1.3rem;">😋</span> <b>Paso 10:</b> Patrones de antojos alimentarios<br>
                         <span style="color:#F5F5F5;font-size:1rem;">
                             Analizamos antojos dulces, salados, comida rápida y condimentos estimulantes.
+                        </span>
+                    </li>
+                    <li style="margin-bottom:1.1em;">
+                        <span style="font-size:1.3rem;">🍽️</span> <b>Paso 11:</b> Frecuencia de comidas preferida<br>
+                        <span style="color:#F5F5F5;font-size:1rem;">
+                            Determinamos la estructura de comidas que mejor se adapta a tu estilo de vida.
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
@@ -2454,10 +2455,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+                🚨 PASO 9: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 9 de 12 - Información Crítica para tu Seguridad
+                Estás en el paso 9 de 12 - Información Crítica para tu Seguridad Alimentaria
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2467,9 +2468,9 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
-                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+                🚨 PASO 9: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
-            <p style="text-align: center; margin: 0; font-weight: bold;">Información Crítica para tu Seguridad</p>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información Crítica para tu Seguridad Alimentaria</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -2520,7 +2521,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         )
         
         st.markdown("---")
-        st.markdown("### ➕ 3. ¿Hay algún alimento o bebida especial que desees incluir?")
+        st.markdown("### ➕ 3. ¿Hay algún alimento especial que desees incluir en tu plan?")
         st.info("💡 **Ayuda:** Menciona alimentos regionales, marcas específicas, preparaciones especiales o cualquier cosa importante que no aparezca en las listas anteriores.")
         alimento_adicional = st.text_area(
             "Escribe aquí alimentos o bebidas adicionales:",
@@ -2529,30 +2530,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             help="Incluye cualquier alimento importante que no esté en las listas anteriores"
         )
         
-        st.markdown("---")
-        st.markdown("### 👨‍🍳 4. ¿Cuáles son tus métodos de cocción más accesibles?")
-        st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
-        
-        metodos_coccion_accesibles = create_vertical_checkboxes(
-            "Selecciona los métodos de cocción que más usas o prefieres:",
-            ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
-             "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
-            "metodos_coccion_accesibles",
-            "Incluye todos los métodos que uses regularmente o que tengas disponibles"
-        )
-        
-        otro_metodo_coccion = st.text_input(
-            "¿Otro método de cocción? Especifica aquí:",
-            value=st.session_state.get('otro_metodo_coccion', ''),
-            placeholder="Ej: cocina de leña, olla de presión, wok, etc.",
-            help="Especifica cualquier otro método de cocción que uses"
-        )
-
         # Guardar en session state (solo text inputs)
         st.session_state.otra_alergia = otra_alergia
         st.session_state.otra_intolerancia = otra_intolerancia
         st.session_state.alimento_adicional = alimento_adicional
-        st.session_state.otro_metodo_coccion = otro_metodo_coccion
         
         # Resumen de restricciones
         alergias_count = len(st.session_state.get('alergias_alimentarias', []))
@@ -2595,10 +2576,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+                😋 PASO 10: PATRONES DE ANTOJOS ALIMENTARIOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 10 de 12 - Información para Estrategias
+                Estás en el paso 10 de 12 - Información para Estrategias Nutricionales
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2608,14 +2589,14 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
-                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+                😋 PASO 10: PATRONES DE ANTOJOS ALIMENTARIOS
             </h2>
-            <p style="text-align: center; margin: 0; font-weight: bold;">¡Último Paso! - Información para Estrategias</p>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información para Estrategias Nutricionales</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(83, text="Paso 10 de 12: Antojos alimentarios")
+        progress.progress(83, text="Paso 10 de 12: Patrones de antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3053,19 +3034,23 @@ if datos_personales_completos and st.session_state.datos_completos:
                         st.write(f"  - {bebida}")
             
             with col2:
-                st.markdown("#### 👨‍🍳 Métodos de Cocción")
-                if st.session_state.get('metodos_coccion_accesibles'):
-                    st.write(f"• **Métodos preferidos:** {len(st.session_state.get('metodos_coccion_accesibles', []))} seleccionados")
-                    metodos_top = st.session_state.get('metodos_coccion_accesibles', [])[:3]
-                    for metodo in metodos_top:
-                        st.write(f"  - {metodo}")
-                
-                if st.session_state.get('otro_metodo_coccion'):
-                    st.write(f"• **Otro método:** {st.session_state.get('otro_metodo_coccion', 'No especificado')}")
+                st.markdown("#### ⚠️ Restricciones Alimentarias")
+                if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
+                    if st.session_state.get('alergias_alimentarias'):
+                        st.warning(f"**Alergias:** {len(st.session_state.get('alergias_alimentarias', []))} identificadas")
+                        for alergia in st.session_state.get('alergias_alimentarias', [])[:3]:
+                            st.write(f"  - {alergia}")
+                    
+                    if st.session_state.get('intolerancias_digestivas'):
+                        st.info(f"**Intolerancias:** {len(st.session_state.get('intolerancias_digestivas', []))} identificadas")
+                        for intolerancia in st.session_state.get('intolerancias_digestivas', [])[:3]:
+                            st.write(f"  - {intolerancia}")
+                else:
+                    st.success("✅ Sin restricciones identificadas")
 
-            # Restricciones importantes
+            # Restricciones importantes (detalle completo)
             if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
-                st.markdown("### ⚠️ Restricciones Importantes")
+                st.markdown("### ⚠️ Restricciones Importantes (Detalle Completo)")
                 if st.session_state.get('alergias_alimentarias'):
                     st.warning(f"**Alergias alimentarias:** {', '.join(st.session_state.get('alergias_alimentarias', []))}")
                     if st.session_state.get('otra_alergia'):
@@ -3146,12 +3131,6 @@ if datos_personales_completos and st.session_state.datos_completos:
                 recomendaciones.append("🔄 **Diversidad nutricional moderada:** Considera ampliar la variedad en algunos grupos alimentarios.")
             else:
                 recomendaciones.append("📈 **Oportunidad de mejora:** Ampliar la variedad de alimentos puede enriquecer tu plan nutricional.")
-            
-            # Verificar métodos de cocción
-            if len(st.session_state.get('metodos_coccion_accesibles', [])) >= 4:
-                recomendaciones.append("👨‍🍳 **Versatilidad culinaria:** Tienes múltiples métodos de cocción disponibles, ideal para variedad en preparaciones.")
-            elif len(st.session_state.get('metodos_coccion_accesibles', [])) >= 2:
-                recomendaciones.append("🔧 **Métodos básicos:** Con tus métodos de cocción actuales puedes crear preparaciones nutritivas y variadas.")
             
             # Verificar restricciones
             if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
