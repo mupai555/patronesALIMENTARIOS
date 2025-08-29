@@ -2797,6 +2797,9 @@ if datos_personales_completos and st.session_state.datos_completos:
                 help="Describe tu rutina alimentaria ideal con el mayor detalle posible"
             )
             st.session_state.otra_frecuencia = otra_frecuencia
+        else:
+            # Limpiar el campo otra_frecuencia si se selecciona una opción diferente
+            st.session_state.otra_frecuencia = ""
         
         # Resumen de la selección
         if frecuencia_comidas:
