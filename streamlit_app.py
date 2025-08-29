@@ -1678,7 +1678,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
             </h1>
             <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
-                Paso 1 de 12 en tu evaluación personalizada de patrones alimentarios
+                Paso 1 de 15 en tu evaluación personalizada de patrones alimentarios
             </p>
             <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
                 <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
