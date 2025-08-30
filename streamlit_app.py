@@ -196,6 +196,33 @@ DATOS DEL CLIENTE:
 - Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
 
 =====================================
+🏥 CONDICIONES MÉDICAS CRÓNICAS Y MEDICACIÓN ACTUAL
+=====================================
+🩺 Condiciones médicas actuales:
+- {', '.join(st.session_state.get('condiciones_medicas', [])) if st.session_state.get('condiciones_medicas') else 'Ninguna condición médica reportada'}
+
+💊 Medicación y suplementos actuales:
+- {st.session_state.get('medicamentos_actuales', 'No especificado')}
+
+=====================================
+💊 MICRONUTRIENTES Y SUPLEMENTOS POR OBJETIVO
+=====================================
+⚡ Suplementos para energía y rendimiento:
+- {', '.join(st.session_state.get('suplementos_energia', [])) if st.session_state.get('suplementos_energia') else 'No especificado'}
+
+💪 Suplementos para recuperación muscular:
+- {', '.join(st.session_state.get('suplementos_recuperacion', [])) if st.session_state.get('suplementos_recuperacion') else 'No especificado'}
+
+🌿 Suplementos para salud general:
+- {', '.join(st.session_state.get('suplementos_salud', [])) if st.session_state.get('suplementos_salud') else 'No especificado'}
+
+⚖️ Suplementos para control de peso:
+- {', '.join(st.session_state.get('suplementos_peso', [])) if st.session_state.get('suplementos_peso') else 'No especificado'}
+
+🎯 Suplementos específicos por objetivo:
+- {', '.join(st.session_state.get('suplementos_especificos', [])) if st.session_state.get('suplementos_especificos') else 'No especificado'}
+
+=====================================
 RESUMEN DE ANÁLISIS IDENTIFICADO:
 =====================================
 Este cuestionario completo de patrones alimentarios proporciona una base integral 
@@ -208,16 +235,25 @@ para el desarrollo de recomendaciones nutricionales altamente personalizadas bas
 5. Análisis de antojos y alimentación emocional
 6. Frecuencia de comidas preferida del cliente
 7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
+8. Condiciones médicas crónicas y medicación actual (información crítica de seguridad)
+9. Preferencias de suplementos y micronutrientes por objetivo específico
+10. Contexto personal, familiar y social completo
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
 - Considerar restricciones y alergias como prioridad absoluta
+- PRIORIZAR SEGURIDAD: evaluar todas las recomendaciones considerando condiciones médicas y medicamentos actuales
+- Consultar con equipo médico si hay condiciones complejas antes de implementar cambios significativos
 - Aprovechar métodos de cocción preferidos y disponibles
 - Integrar estrategias para manejo de antojos identificados
 - Estructurar la frecuencia de comidas según la preferencia del cliente
 - Incorporar sugerencias específicas de menús proporcionadas por el cliente
+- Evaluar suplementos seleccionados considerando medicación actual y condiciones médicas
 - Adaptar recomendaciones al contexto personal y familiar específico
+
+⚠️ NOTA IMPORTANTE DE SEGURIDAD:
+Las recomendaciones nutricionales deben considerar las condiciones médicas y medicación reportadas.
+En casos de condiciones médicas complejas, se recomienda coordinación con el equipo médico del cliente.
 
 =====================================
 © 2025 MUPAI - Muscle up GYM
@@ -444,6 +480,46 @@ def validate_step_13():
         return False, missing_items
     return True, []
 
+def validate_step_14():
+    """Valida que se hayan completado las condiciones médicas y medicación"""
+    missing_items = []
+    
+    # Validar condiciones médicas
+    condiciones_selections = st.session_state.get('condiciones_medicas', [])
+    if len(condiciones_selections) == 0:
+        missing_items.append('Condiciones médicas crónicas')
+    
+    # Validar campo de medicamentos
+    medicamentos = st.session_state.get('medicamentos_actuales', '').strip()
+    if not medicamentos:
+        missing_items.append('Medicamentos actuales (campo de texto) - escribir "Ninguno" si no tomas medicamentos')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
+def validate_step_15():
+    """Valida que se hayan completado todos los grupos de suplementos"""
+    missing_items = []
+    
+    # Validar cada grupo de suplementos
+    grupos_suplementos = [
+        ('suplementos_energia', 'Suplementos para energía y rendimiento'),
+        ('suplementos_recuperacion', 'Suplementos para recuperación muscular'),
+        ('suplementos_salud', 'Suplementos para salud general'),
+        ('suplementos_peso', 'Suplementos para control de peso'),
+        ('suplementos_especificos', 'Suplementos específicos por objetivo')
+    ]
+    
+    for key, name in grupos_suplementos:
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_items.append(name)
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
 def create_vertical_checkboxes(title, options, key, help_text=""):
     """
     Create vertical checkboxes for short option lists.
@@ -515,7 +591,9 @@ def get_step_validator(step_number):
         10: validate_step_10,
         11: validate_step_11,
         12: validate_step_12,
-        13: validate_step_13
+        13: validate_step_13,
+        14: validate_step_14,
+        15: validate_step_15
     }
     return validators.get(step_number, lambda: (True, []))
 
@@ -536,7 +614,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 13:
+        if current_step < 15:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
@@ -1185,7 +1263,9 @@ defaults = {
         10: False,  # Alergias/intolerancias
         11: False,  # Antojos
         12: False,  # Frecuencia de comidas
-        13: False   # Sugerencias de menús
+        13: False,  # Sugerencias de menús
+        14: False,  # Condiciones médicas crónicas y medicación
+        15: False   # Micronutrientes y suplementos
     },
     "max_unlocked_step": 1
 }
@@ -1612,7 +1692,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
-            <small>Paso {current_step} de 13 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
+            <small>Paso {current_step} de 15 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
         <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;">
             <span style="color: #27AE60;">● Completo</span> | 
@@ -1644,7 +1724,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
             </h1>
             <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
-                Paso 1 de 12 en tu evaluación personalizada de patrones alimentarios
+                Paso 1 de 15 en tu evaluación personalizada de patrones alimentarios
             </p>
             <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
                 <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
@@ -1673,7 +1753,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
 
         # Actualizar progreso
-        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+        progress.progress(5, text="Paso 1 de 15: Proteínas con más contenido graso")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -1791,7 +1871,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
             </h1>
             <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
-                Paso 2 de 12 en tu evaluación personalizada de patrones alimentarios
+                Paso 2 de 15 en tu evaluación personalizada de patrones alimentarios
             </p>
             <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
                 <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
@@ -1818,7 +1898,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         # Actualizar progreso
-        progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
+        progress.progress(13, text="Paso 2 de 15: Proteínas animales magras")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -1935,7 +2015,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥑 PASO 3: FUENTES DE GRASA SALUDABLE
             </h1>
             <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
-                Paso 3 de 12 en tu evaluación personalizada de patrones alimentarios
+                Paso 3 de 15 en tu evaluación personalizada de patrones alimentarios
             </p>
             <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
                 <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
@@ -1964,7 +2044,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
 
         # Actualizar progreso
-        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+        progress.progress(20, text="Paso 3 de 15: Fuentes de grasa saludable")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2029,7 +2109,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍞 PASO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 4 de 12 - Selecciona los carbohidratos que consumes
+                Estás en el paso 4 de 15 - Selecciona los carbohidratos que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2045,7 +2125,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(33, text="Paso 4 de 12: Carbohidratos complejos y cereales")
+        progress.progress(27, text="Paso 4 de 15: Carbohidratos complejos y cereales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2152,7 +2232,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥬 PASO 5: VEGETALES
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 5 de 12 - Selecciona los vegetales que consumes
+                Estás en el paso 5 de 15 - Selecciona los vegetales que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2168,7 +2248,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(42, text="Paso 5 de 12: Vegetales")
+        progress.progress(33, text="Paso 5 de 15: Vegetales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2244,7 +2324,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍎 PASO 6: FRUTAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 6 de 12 - Selecciona las frutas que consumes
+                Estás en el paso 6 de 15 - Selecciona las frutas que consumes
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2260,7 +2340,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(50, text="Paso 6 de 12: Frutas - ¡Completando grupos principales!")
+        progress.progress(40, text="Paso 6 de 15: Frutas - ¡Completando grupos principales!")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2344,7 +2424,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍳 PASO 7: ACEITES DE COCCIÓN PREFERIDOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 7 de 12 - Información Adicional (Opcional)
+                Estás en el paso 7 de 15 - Información Adicional (Opcional)
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2361,7 +2441,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(58, text="Paso 7 de 12: Aceites de cocción (Opcional)")
+        progress.progress(47, text="Paso 7 de 15: Aceites de cocción (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2418,7 +2498,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🥤 PASO 8: BEBIDAS PARA HIDRATACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 8 de 12 - Información Adicional (Opcional)
+                Estás en el paso 8 de 15 - Información Adicional (Opcional)
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2435,7 +2515,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(67, text="Paso 8 de 12: Bebidas para hidratación (Opcional)")
+        progress.progress(53, text="Paso 8 de 15: Bebidas para hidratación (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2492,7 +2572,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 👨‍🍳 PASO 9: MÉTODOS DE COCCIÓN DISPONIBLES
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 9 de 13 - Optimización de Recetas
+                Estás en el paso 9 de 15 - Optimización de Recetas
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2507,7 +2587,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(69, text="Paso 9 de 13: Métodos de cocción disponibles")
+        progress.progress(60, text="Paso 9 de 15: Métodos de cocción disponibles")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2579,7 +2659,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🚨 PASO 10: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 10 de 13 - Información Crítica para tu Seguridad
+                Estás en el paso 10 de 15 - Información Crítica para tu Seguridad
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2596,7 +2676,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(77, text="Paso 10 de 13: Alergias e intolerancias (Crítico)")
+        progress.progress(67, text="Paso 10 de 15: Alergias e intolerancias (Crítico)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2700,7 +2780,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 😋 PASO 11: EVALUACIÓN DE ANTOJOS ALIMENTARIOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 11 de 13 - Información para Estrategias
+                Estás en el paso 11 de 15 - Información para Estrategias
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2717,7 +2797,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(85, text="Paso 11 de 13: Antojos alimentarios")
+        progress.progress(73, text="Paso 11 de 15: Antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2852,7 +2932,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 🍽️ PASO 12: FRECUENCIA DE COMIDAS PREFERIDA
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 12 de 13 - Adaptación a tu Estilo de Vida
+                Estás en el paso 12 de 15 - Adaptación a tu Estilo de Vida
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2860,7 +2940,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(92, text="Paso 12 de 13: Frecuencia de comidas preferida")
+        progress.progress(80, text="Paso 12 de 15: Frecuencia de comidas preferida")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2950,10 +3030,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
+                📝 PASO 13: SUGERENCIAS DE MENÚS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
+                Estás en el paso 13 de 15 - Personalización de Menús
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -2961,7 +3041,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
+        progress.progress(87, text="Paso 13 de 15: Sugerencias de menús")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3032,6 +3112,413 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
+        # Botones de navegación estándar
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 14: CONDICIONES MÉDICAS CRÓNICAS Y MEDICACIÓN ACTUAL
+    elif current_step == 14:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🏥 PASO 14: CONDICIONES MÉDICAS CRÓNICAS Y MEDICACIÓN ACTUAL
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 14 de 15 - Información Médica Importante
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(93, text="Paso 14 de 15: Condiciones médicas crónicas y medicación actual")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🩺 Condiciones Médicas Crónicas y Medicación Actual
+        Esta información es **crítica** para desarrollar un plan nutricional seguro y efectivo. 
+        Por favor, selecciona todas las condiciones médicas que actualmente tengas diagnosticadas y 
+        especifica todos los medicamentos que tomas regularmente.
+        
+        **⚠️ Importante:** Esta información es confidencial y solo será utilizada para personalizar tu plan nutricional de manera segura.
+        """)
+        
+        st.warning("🔒 **Confidencialidad:** Toda la información médica proporcionada será tratada con estricta confidencialidad y solo será utilizada por nuestro equipo de nutrición certificado.")
+        
+        # SUBGRUPO 1: Condiciones Cardiovasculares
+        st.markdown("#### 🫀 **Condiciones Cardiovasculares**")
+        condiciones_cardiovasculares = st.multiselect(
+            "Selecciona todas las condiciones cardiovasculares que tengas:",
+            [
+                "Ninguna",
+                "Hipertensión arterial (presión alta)",
+                "Hipotensión arterial (presión baja)",
+                "Colesterol alto",
+                "Triglicéridos altos",
+                "Enfermedad coronaria",
+                "Arritmias cardíacas",
+                "Insuficiencia cardíaca",
+                "Antecedentes de infarto",
+                "Antecedentes de accidente cerebrovascular (ACV)"
+            ],
+            key='condiciones_cardiovasculares',
+            help="Incluye cualquier condición diagnosticada por un médico"
+        )
+        
+        # SUBGRUPO 2: Condiciones Metabólicas y Endocrinas
+        st.markdown("#### 🍯 **Condiciones Metabólicas y Endocrinas**")
+        condiciones_metabolicas = st.multiselect(
+            "Selecciona todas las condiciones metabólicas/endocrinas que tengas:",
+            [
+                "Ninguna",
+                "Diabetes tipo 1",
+                "Diabetes tipo 2",
+                "Prediabetes/Resistencia a la insulina",
+                "Síndrome metabólico",
+                "Hipotiroidismo",
+                "Hipertiroidismo",
+                "Síndrome de ovario poliquístico (SOP)",
+                "Síndrome de Cushing",
+                "Enfermedad de Addison"
+            ],
+            key='condiciones_metabolicas',
+            help="Incluye trastornos hormonales y del metabolismo"
+        )
+        
+        # SUBGRUPO 3: Condiciones Digestivas
+        st.markdown("#### 🍽️ **Condiciones Digestivas**")
+        condiciones_digestivas = st.multiselect(
+            "Selecciona todas las condiciones digestivas que tengas:",
+            [
+                "Ninguna",
+                "Síndrome de intestino irritable (SII)",
+                "Enfermedad de Crohn",
+                "Colitis ulcerosa",
+                "Reflujo gastroesofágico (ERGE)",
+                "Úlceras pépticas",
+                "Gastritis crónica",
+                "Celiaquía (enfermedad celíaca)",
+                "Intolerancia a la lactosa severa",
+                "Enfermedad del hígado graso"
+            ],
+            key='condiciones_digestivas',
+            help="Incluye trastornos del sistema digestivo"
+        )
+        
+        # SUBGRUPO 4: Condiciones Renales y Hepáticas
+        st.markdown("#### 🫘 **Condiciones Renales y Hepáticas**")
+        condiciones_renales = st.multiselect(
+            "Selecciona todas las condiciones renales/hepáticas que tengas:",
+            [
+                "Ninguna",
+                "Enfermedad renal crónica",
+                "Cálculos renales (piedras en el riñón)",
+                "Cirrosis hepática",
+                "Hepatitis B o C",
+                "Hígado graso no alcohólico",
+                "Insuficiencia renal",
+                "Trasplante renal",
+                "Trasplante hepático"
+            ],
+            key='condiciones_renales',
+            help="Incluye problemas de riñones e hígado"
+        )
+        
+        # SUBGRUPO 5: Otras Condiciones Importantes
+        st.markdown("#### 🏥 **Otras Condiciones Médicas Importantes**")
+        otras_condiciones = st.multiselect(
+            "Selecciona otras condiciones médicas relevantes:",
+            [
+                "Ninguna",
+                "Cáncer (en tratamiento o remisión)",
+                "Enfermedades autoinmunes",
+                "Artritis reumatoide",
+                "Lupus",
+                "Fibromialgia",
+                "Migrañas crónicas",
+                "Trastornos de ansiedad",
+                "Depresión",
+                "Trastornos alimentarios",
+                "Osteoporosis",
+                "Anemia crónica"
+            ],
+            key='otras_condiciones',
+            help="Incluye cualquier otra condición médica relevante"
+        )
+        
+        # Consolidar todas las condiciones médicas
+        todas_condiciones = (condiciones_cardiovasculares + condiciones_metabolicas + 
+                           condiciones_digestivas + condiciones_renales + otras_condiciones)
+        
+        # Remover duplicados y "Ninguna" si hay otras selecciones
+        condiciones_unicas = list(set(todas_condiciones))
+        if "Ninguna" in condiciones_unicas and len(condiciones_unicas) > 1:
+            condiciones_unicas.remove("Ninguna")
+        
+        # Guardar en session state
+        st.session_state.condiciones_medicas = condiciones_unicas
+        
+        # MEDICACIÓN ACTUAL
+        st.markdown("#### 💊 **Medicación Actual**")
+        st.markdown("""
+        **Instrucciones:** Lista todos los medicamentos que tomas regularmente, incluyendo:
+        - Medicamentos recetados
+        - Medicamentos de venta libre que tomas frecuentemente  
+        - Suplementos nutricionales actuales
+        - Vitaminas
+        - Hierbas medicinales
+        
+        **Formato sugerido:** Nombre del medicamento - dosis - frecuencia
+        """)
+        
+        medicamentos_actuales = st.text_area(
+            "Lista completa de medicamentos y suplementos actuales:",
+            value=st.session_state.get('medicamentos_actuales', ''),
+            placeholder="""Ejemplo:
+- Metformina 500mg - 2 veces al día
+- Omega 3 1000mg - 1 al día  
+- Vitamina D 2000 UI - 1 al día
+- Ibuprofeno 400mg - según necesidad
+- Ninguno
+
+Nota: Si no tomas ningún medicamento, escribe "Ninguno".""",
+            height=150,
+            help="Es importante incluir TODOS los medicamentos y suplementos para evitar interacciones nutricionales"
+        )
+        
+        # Guardar en session state
+        st.session_state.medicamentos_actuales = medicamentos_actuales
+        
+        # Nota de seguridad
+        st.error("""
+        🚨 **NOTA DE SEGURIDAD IMPORTANTE:**
+        
+        • La información proporcionada será revisada por nuestro equipo de nutrición certificado
+        • Si tienes condiciones médicas complejas, recomendamos consultar con tu médico antes de hacer cambios dietéticos significativos
+        • Nuestras recomendaciones nutricionales complementan, pero NO reemplazan, el tratamiento médico
+        • En caso de dudas sobre interacciones alimentarias con medicamentos, consulta a tu médico o farmacéutico
+        """)
+        
+        # Resumen de condiciones
+        if condiciones_unicas:
+            total_condiciones = len([c for c in condiciones_unicas if c != "Ninguna"])
+            if total_condiciones > 0:
+                st.info(f"📋 **Resumen:** Has seleccionado {total_condiciones} condición(es) médica(s). Esta información nos ayudará a personalizar tu plan nutricional de manera segura.")
+            else:
+                st.success("✅ **Excelente:** No tienes condiciones médicas crónicas reportadas.")
+        
+        if medicamentos_actuales.strip():
+            palabra_count = len(medicamentos_actuales.split())
+            if palabra_count > 3:
+                st.success(f"✅ **Medicación registrada:** {palabra_count} palabras de información médica registradas.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 15: MICRONUTRIENTES Y SUPLEMENTOS POR OBJETIVO
+    elif current_step == 15:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+            border: 3px solid #9C27B0;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                💊 PASO 15: MICRONUTRIENTES Y SUPLEMENTOS POR OBJETIVO
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                ¡Último Paso! Estás en el paso 15 de 15 - Finalización y Envío
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(100, text="Paso 15 de 15: Micronutrientes y suplementos por objetivo - ¡Último paso!")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 💊 Micronutrientes y Suplementos por Objetivo
+        Para completar tu perfil nutricional, necesitamos conocer qué suplementos te interesan según tus objetivos específicos.
+        Esto nos permitirá hacer recomendaciones precisas y evitar duplicaciones o interacciones.
+        
+        **📋 Instrucciones:** Para cada grupo, selecciona todos los suplementos que te interesan o que ya tomas. 
+        Si no te interesa ninguno de un grupo, selecciona "Ninguno".
+        """)
+        
+        st.info("💡 **Importante:** Esta información se combinará con tus condiciones médicas del paso anterior para hacer recomendaciones seguras.")
+        
+        # GRUPO 1: Suplementos para Energía y Rendimiento
+        st.markdown("#### ⚡ **Suplementos para Energía y Rendimiento**")
+        st.markdown("*Para mejorar energía, resistencia y rendimiento físico:*")
+        suplementos_energia = st.multiselect(
+            "Selecciona los suplementos de energía/rendimiento que te interesan:",
+            [
+                "Ninguno",
+                "Creatina monohidrato",
+                "Beta-alanina", 
+                "Citrulina malato",
+                "Arginina",
+                "Cafeína/Pre-entrenamientos",
+                "Rhodiola rosea",
+                "Ginseng",
+                "Coenzima Q10",
+                "Complejo B",
+                "Hierro (para energía)",
+                "Guaraná"
+            ],
+            key='suplementos_energia',
+            help="Suplementos enfocados en mejorar rendimiento y energía"
+        )
+        
+        # GRUPO 2: Suplementos para Recuperación Muscular
+        st.markdown("#### 💪 **Suplementos para Recuperación Muscular**")
+        st.markdown("*Para recuperación, crecimiento muscular y reparación de tejidos:*")
+        suplementos_recuperacion = st.multiselect(
+            "Selecciona los suplementos de recuperación que te interesan:",
+            [
+                "Ninguno",
+                "Proteína en polvo (whey, caseína, vegetal)",
+                "Aminoácidos esenciales (EAA)",
+                "BCAA (aminoácidos ramificados)",
+                "Glutamina",
+                "HMB (β-hidroxi β-metilbutirato)",
+                "Magnesio (para músculos)",
+                "Zinc (para recuperación)",
+                "Colágeno hidrolizado",
+                "Cúrcuma/Curcumina (antiinflamatorio)",
+                "Omega 3 (para inflamación)",
+                "Electrolitos/Sales minerales"
+            ],
+            key='suplementos_recuperacion',
+            help="Suplementos para recuperación post-entrenamiento y desarrollo muscular"
+        )
+        
+        # GRUPO 3: Suplementos para Salud General
+        st.markdown("#### 🌿 **Suplementos para Salud General**")
+        st.markdown("*Para salud general, inmunidad y bienestar:*")
+        suplementos_salud = st.multiselect(
+            "Selecciona los suplementos de salud general que te interesan:",
+            [
+                "Ninguno",
+                "Multivitamínico completo",
+                "Vitamina D3",
+                "Vitamina C",
+                "Vitamina E",
+                "Probióticos",
+                "Prebióticos",
+                "Omega 3/Aceite de pescado",
+                "Aceite de linaza",
+                "Spirulina/Chlorella",
+                "Antioxidantes (resveratrol, etc.)",
+                "Ácido fólico",
+                "Calcio + Vitamina K2"
+            ],
+            key='suplementos_salud',
+            help="Suplementos para mantener salud general y prevenir deficiencias"
+        )
+        
+        # GRUPO 4: Suplementos para Control de Peso
+        st.markdown("#### ⚖️ **Suplementos para Control de Peso**")
+        st.markdown("*Para manejo de peso, metabolismo y composición corporal:*")
+        suplementos_peso = st.multiselect(
+            "Selecciona los suplementos para control de peso que te interesan:",
+            [
+                "Ninguno",
+                "L-Carnitina",
+                "CLA (ácido linoleico conjugado)",
+                "Té verde (EGCG)",
+                "Garcinia cambogia",
+                "Cromo picolinato",
+                "Fibra soluble/Glucomanano",
+                "Chitosán",
+                "Extracto de café verde",
+                "Termogénicos naturales",
+                "Suplementos de fibra",
+                "Vinagre de manzana en cápsulas"
+            ],
+            key='suplementos_peso',
+            help="Suplementos que pueden ayudar con objetivos de peso y composición corporal"
+        )
+        
+        # GRUPO 5: Suplementos Específicos por Objetivo
+        st.markdown("#### 🎯 **Suplementos Específicos por Objetivo**")
+        st.markdown("*Para objetivos específicos como estrés, sueño, articulaciones, etc.:*")
+        suplementos_especificos = st.multiselect(
+            "Selecciona suplementos específicos que te interesan:",
+            [
+                "Ninguno",
+                "Melatonina (para sueño)",
+                "Ashwagandha (para estrés)",
+                "Valeriana (para relajación)",
+                "Glucosamina + Condroitina (articulaciones)",
+                "MSM (articulaciones)",
+                "Ácido hialurónico (piel/articulaciones)",
+                "Biotina (cabello/uñas)",
+                "Silicio (cabello/piel/uñas)",
+                "Ginkgo biloba (circulación/memoria)",
+                "Lecitina de soja (memoria)",
+                "Enzimas digestivas"
+            ],
+            key='suplementos_especificos',
+            help="Suplementos para objetivos muy específicos de salud y bienestar"
+        )
+        
+        # Explicación importante
+        st.warning("""
+        ⚠️ **IMPORTANTE - Consideraciones de Seguridad:**
+        
+        • Estas selecciones son orientativas para personalizar tus recomendaciones
+        • Nuestro equipo evaluará cada suplemento considerando tus condiciones médicas y medicamentos actuales
+        • Algunos suplementos pueden interactuar con medicamentos o condiciones específicas
+        • Las recomendaciones finales priorizarán tu seguridad por encima de cualquier objetivo deportivo
+        • Siempre consulta con tu médico antes de iniciar nuevos suplementos si tienes condiciones médicas
+        """)
+        
+        # Resumen de selecciones
+        total_suplementos = (len([s for s in suplementos_energia if s != "Ninguno"]) +
+                           len([s for s in suplementos_recuperacion if s != "Ninguno"]) +
+                           len([s for s in suplementos_salud if s != "Ninguno"]) +
+                           len([s for s in suplementos_peso if s != "Ninguno"]) +
+                           len([s for s in suplementos_especificos if s != "Ninguno"]))
+        
+        if total_suplementos > 0:
+            st.success(f"✅ **Selecciones registradas:** Has seleccionado {total_suplementos} suplementos de interés en total.")
+            st.info("🧠 **Próximo paso:** Nuestro equipo analizará estas selecciones junto con tu información médica para hacer recomendaciones seguras y personalizadas.")
+        else:
+            st.info("📝 **Nota:** Si no seleccionaste ningún suplemento, nuestro equipo se enfocará en optimizar tu nutrición a través de alimentos naturales.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
         # Botones de navegación - En el último paso solo mostrar anterior y finalizar
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
@@ -3069,7 +3556,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                             )
                             if ok:
                                 st.session_state["correo_enviado"] = True
-                                st.session_state.step_completed[12] = True
+                                st.session_state.step_completed[15] = True
                                 st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
                                 st.balloons()
                             else:
