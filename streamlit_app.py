@@ -183,7 +183,7 @@ DATOS DEL CLIENTE:
 =====================================
 🍽️ FRECUENCIA DE COMIDAS PREFERIDA
 =====================================
-- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas', 'No especificado')}
+- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas_ck', ['No especificado'])[0] if st.session_state.get('frecuencia_comidas_ck') else 'No especificado'}
 - Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
 
 =====================================
@@ -411,16 +411,21 @@ def validate_step_11():
     return True, []
 
 def validate_step_12():
-    """Valida que se haya seleccionado una frecuencia de comidas"""
+    """Valida que se haya seleccionado una frecuencia de comidas usando checkboxes"""
     missing_items = []
-    frecuencia = st.session_state.get('frecuencia_comidas', '')
+    # CAMBIO: Usar la nueva variable de checkboxes en lugar de radio
+    frecuencia_list = st.session_state.get('frecuencia_comidas_ck', [])
     
-    if not frecuencia:
+    if not frecuencia_list or len(frecuencia_list) == 0:
         missing_items.append('Frecuencia de comidas')
-    elif frecuencia == "Otro (especificar)":
-        otra_frecuencia = st.session_state.get('otra_frecuencia', '').strip()
-        if not otra_frecuencia:
-            missing_items.append('Especificación de frecuencia (campo de texto)')
+    elif len(frecuencia_list) > 1:
+        missing_items.append('Solo se puede seleccionar UNA frecuencia de comidas (tienes seleccionadas varias)')
+    elif len(frecuencia_list) == 1:
+        frecuencia = frecuencia_list[0]
+        if frecuencia == "Otro (especificar)":
+            otra_frecuencia = st.session_state.get('otra_frecuencia', '').strip()
+            if not otra_frecuencia:
+                missing_items.append('Especificación de frecuencia (campo de texto)')
     
     if missing_items:
         return False, missing_items
@@ -2822,6 +2827,10 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # PASO 12: FRECUENCIA DE COMIDAS
     elif current_step == 12:
+        # CAMBIO: Limpiar antigua variable de radio button para evitar conflictos
+        if 'frecuencia_comidas' in st.session_state:
+            del st.session_state['frecuencia_comidas']
+            
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2860,7 +2869,9 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Piensa en tu horario de trabajo, actividades y preferencias personales para elegir la frecuencia más conveniente.")
         
-        frecuencia_comidas = st.radio(
+        # CAMBIO: Usar checkboxes verticales en lugar de radio buttons para consistencia con otros pasos
+        # y para resolver problemas de persistencia
+        frecuencia_comidas_ck = create_vertical_checkboxes(
             "¿Cuál es la frecuencia de comidas que mejor se adapta a tu agenda diaria?",
             [
                 "Desayuno, comida y cena (3 comidas principales)",
@@ -2872,13 +2883,22 @@ if datos_personales_completos and st.session_state.datos_completos:
                 "Ayuno intermitente con tres comidas principales al día y una colación",
                 "Otro (especificar)"
             ],
-            key='frecuencia_comidas',
-            help="Selecciona la estructura de comidas que mejor se ajuste a tu rutina diaria"
+            "frecuencia_comidas_ck",
+            "Selecciona UNA SOLA opción que mejor se ajuste a tu rutina diaria. Si seleccionas más de una, se mostrará un error."
         )
+        
+        # Validación para asegurar que solo se seleccione UNA opción
+        if len(frecuencia_comidas_ck) > 1:
+            st.error("❌ **Error:** Solo puedes seleccionar UNA frecuencia de comidas. Por favor, desmarca las opciones adicionales.")
+        elif len(frecuencia_comidas_ck) == 0:
+            st.warning("⚠️ **Atención:** Debes seleccionar una frecuencia de comidas para continuar.")
+        
+        # Obtener la opción seleccionada (si hay exactamente una)
+        frecuencia_seleccionada = frecuencia_comidas_ck[0] if len(frecuencia_comidas_ck) == 1 else ""
         
         # Campo adicional si selecciona "Otro"
         otra_frecuencia = ""
-        if frecuencia_comidas == "Otro (especificar)":
+        if frecuencia_seleccionada == "Otro (especificar)":
             otra_frecuencia = st.text_input(
                 "Especifica tu frecuencia de comidas preferida:",
                 value=st.session_state.get('otra_frecuencia', ''),
@@ -2891,20 +2911,20 @@ if datos_personales_completos and st.session_state.datos_completos:
             st.session_state.otra_frecuencia = ""
         
         # Resumen de la selección
-        if frecuencia_comidas:
-            if frecuencia_comidas == "Otro (especificar)" and otra_frecuencia:
+        if frecuencia_seleccionada and len(frecuencia_comidas_ck) == 1:
+            if frecuencia_seleccionada == "Otro (especificar)" and otra_frecuencia:
                 st.success(f"✅ **Frecuencia seleccionada:** {otra_frecuencia}")
-            elif frecuencia_comidas != "Otro (especificar)":
-                st.success(f"✅ **Frecuencia seleccionada:** {frecuencia_comidas}")
+            elif frecuencia_seleccionada != "Otro (especificar)":
+                st.success(f"✅ **Frecuencia seleccionada:** {frecuencia_seleccionada}")
             
             # Información adicional según la selección
-            if "3 comidas principales" in frecuencia_comidas:
+            if "3 comidas principales" in frecuencia_seleccionada:
                 st.info("🍽️ **Estructura clásica:** Ideal para horarios regulares y control de porciones.")
-            elif "una colación" in frecuencia_comidas:
+            elif "una colación" in frecuencia_seleccionada:
                 st.info("🥪 **Con una colación:** Excelente para mantener energía estable durante el día.")
-            elif "dos colaciones" in frecuencia_comidas:
+            elif "dos colaciones" in frecuencia_seleccionada:
                 st.info("🍎 **Con dos colaciones:** Perfecta para personas con horarios largos o alta actividad física.")
-            elif "dos comidas principales" in frecuencia_comidas:
+            elif "dos comidas principales" in frecuencia_seleccionada:
                 st.info("⏰ **Ayuno intermitente:** Ideal para quienes prefieren ventanas de alimentación más concentradas.")
         
         st.markdown('</div>', unsafe_allow_html=True)
@@ -3186,9 +3206,11 @@ if datos_personales_completos and st.session_state.datos_completos:
                     st.write(f"• **Otros antojos especificados:** Sí")
 
             # Información de frecuencia de comidas
-            if st.session_state.get('frecuencia_comidas'):
+            # CAMBIO: Usar nueva variable de checkboxes
+            frecuencia_list = st.session_state.get('frecuencia_comidas_ck', [])
+            if frecuencia_list and len(frecuencia_list) > 0:
                 st.markdown("### 🍽️ Frecuencia de Comidas Preferida")
-                frecuencia = st.session_state.get('frecuencia_comidas', 'No especificado')
+                frecuencia = frecuencia_list[0]  # Tomar la primera (debería ser la única)
                 if frecuencia == "Otro (especificar)" and st.session_state.get('otra_frecuencia'):
                     st.info(f"**Frecuencia personalizada:** {st.session_state.get('otra_frecuencia')}")
                 else:
