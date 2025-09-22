@@ -152,9 +152,6 @@ DATOS DEL CLIENTE:
 - {', '.join(st.session_state.get('intolerancias_digestivas', [])) if st.session_state.get('intolerancias_digestivas') else 'No especificado'}
 - Otra intolerancia especificada: {st.session_state.get('otra_intolerancia', 'No especificado')}
 
-➕ 3. Alimentos o bebidas adicionales deseados:
-- {st.session_state.get('alimento_adicional', 'No especificado')}
-
 =====================================
 👨‍🍳 MÉTODOS DE COCCIÓN DISPONIBLES
 =====================================
@@ -376,8 +373,7 @@ def validate_step_10():
     # Validar campos de texto - deben tener contenido o "No aplica"
     text_fields = {
         'otra_alergia': 'Otra alergia (campo de texto)',
-        'otra_intolerancia': 'Otra intolerancia (campo de texto)',
-        'alimento_adicional': 'Alimento adicional (campo de texto)'
+        'otra_intolerancia': 'Otra intolerancia (campo de texto)'
     }
     
     for field_key, field_name in text_fields.items():
@@ -2641,20 +2637,11 @@ if datos_personales_completos and st.session_state.datos_completos:
             help="Especifica cualquier otra intolerancia o malestar digestivo derivado de alimentos que tengas, en caso de que no tengas escribe ninguna"
         )
         
-        st.markdown("---")
-        st.markdown("### ➕ 3. ¿Hay algún alimento o bebida especial que desees incluir?")
-        st.info("💡 **Ayuda:** Menciona alimentos regionales, marcas específicas, preparaciones especiales o cualquier cosa importante que no aparezca en las listas anteriores.")
-        alimento_adicional = st.text_area(
-            "Escribe aquí alimentos o bebidas adicionales:",
-            value=st.session_state.get('alimento_adicional', ''),
-            placeholder="Ej: agua de jamaica casera, proteína en polvo marca X, alimentos regionales como quelites, etc.",
-            help="Incluye cualquier alimento importante que no esté en las listas anteriores"
-        )
+
 
         # Guardar en session state (solo text inputs)
         st.session_state.otra_alergia = otra_alergia
         st.session_state.otra_intolerancia = otra_intolerancia
-        st.session_state.alimento_adicional = alimento_adicional
         
         # Resumen de restricciones
         alergias_count = len(st.session_state.get('alergias_alimentarias', []))
@@ -2888,9 +2875,6 @@ if datos_personales_completos and st.session_state.datos_completos:
             key='frecuencia_comidas',
             help="Selecciona la estructura de comidas que mejor se ajuste a tu rutina diaria"
         )
-        
-        # Guardar explícitamente en session_state
-        st.session_state.frecuencia_comidas = frecuencia_comidas
         
         # Campo adicional si selecciona "Otro"
         otra_frecuencia = ""
@@ -3200,11 +3184,6 @@ if datos_personales_completos and st.session_state.datos_completos:
                     st.write(f"• **Condimentos picantes:** {len(st.session_state.get('antojos_picantes', []))} tipos")
                 if st.session_state.get('otros_antojos'):
                     st.write(f"• **Otros antojos especificados:** Sí")
-
-            # Información adicional especificada
-            if st.session_state.get('alimento_adicional'):
-                st.markdown("### ➕ Alimentos Adicionales Especificados")
-                st.info(f"**Alimentos mencionados:** {st.session_state.get('alimento_adicional', 'No especificado')}")
 
             # Información de frecuencia de comidas
             if st.session_state.get('frecuencia_comidas'):
