@@ -8,109 +8,498 @@ from email.mime.multipart import MIMEMultipart
 import time
 import re
 
+# ==================== FUNCIÓN PARA CREAR RESUMEN DE EMAIL ====================
+
+def crear_resumen_email():
+    resumen = f"""
+=====================================
+CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA - MUPAI
+=====================================
+Generado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Sistema: MUPAI v2.0 - Muscle Up Performance Assessment Intelligence
+
+=====================================
+DATOS DEL CLIENTE:
+=====================================
+- Nombre completo: {st.session_state.get('nombre', 'No especificado')}
+- Edad: {st.session_state.get('edad', 'No especificado')} años
+- Sexo: {st.session_state.get('sexo', 'No especificado')}
+- Teléfono: {st.session_state.get('telefono', 'No especificado')}
+- Email: {st.session_state.get('email_cliente', 'No especificado')}
+- Fecha evaluación: {st.session_state.get('fecha_llenado', 'No especificado')}
+
+=====================================
+🥩 GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
+=====================================
+🍳 Huevos y embutidos:
+- {', '.join(st.session_state.get('huevos_embutidos', [])) if st.session_state.get('huevos_embutidos') else 'No especificado'}
+
+🐄 Carnes de res grasas:
+- {', '.join(st.session_state.get('carnes_res_grasas', [])) if st.session_state.get('carnes_res_grasas') else 'No especificado'}
+
+🐷 Carnes de cerdo grasas:
+- {', '.join(st.session_state.get('carnes_cerdo_grasas', [])) if st.session_state.get('carnes_cerdo_grasas') else 'No especificado'}
+
+🐔 Carnes de pollo/pavo grasas:
+- {', '.join(st.session_state.get('carnes_pollo_grasas', [])) if st.session_state.get('carnes_pollo_grasas') else 'No especificado'}
+
+🫀 Órganos y vísceras grasas:
+- {', '.join(st.session_state.get('organos_grasos', [])) if st.session_state.get('organos_grasos') else 'No especificado'}
+
+🐟 Pescados grasos:
+- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
+
+🦐 Mariscos/comida marina grasos:
+- {', '.join(st.session_state.get('mariscos_grasos', [])) if st.session_state.get('mariscos_grasos') else 'No especificado'}
+
+🧀 Quesos altos en grasa:
+- {', '.join(st.session_state.get('quesos_grasos', [])) if st.session_state.get('quesos_grasos') else 'No especificado'}
+
+🥛 Lácteos enteros:
+- {', '.join(st.session_state.get('lacteos_enteros', [])) if st.session_state.get('lacteos_enteros') else 'No especificado'}
+
+🐟 Pescados grasos:
+- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
+
+=====================================
+🍗 GRUPO 2: PROTEÍNA ANIMAL MAGRA
+=====================================
+🐄 Carnes de res magras:
+- {', '.join(st.session_state.get('carnes_res_magras', [])) if st.session_state.get('carnes_res_magras') else 'No especificado'}
+
+🐷 Carnes de cerdo magras:
+- {', '.join(st.session_state.get('carnes_cerdo_magras', [])) if st.session_state.get('carnes_cerdo_magras') else 'No especificado'}
+
+🐔 Carnes de pollo/pavo magras:
+- {', '.join(st.session_state.get('carnes_pollo_magras', [])) if st.session_state.get('carnes_pollo_magras') else 'No especificado'}
+
+🫀 Órganos y vísceras magros:
+- {', '.join(st.session_state.get('organos_magros', [])) if st.session_state.get('organos_magros') else 'No especificado'}
+
+🐟 Pescados magros:
+- {', '.join(st.session_state.get('pescados_magros', [])) if st.session_state.get('pescados_magros') else 'No especificado'}
+
+🦐 Mariscos/comida marina magros:
+- {', '.join(st.session_state.get('mariscos_magros', [])) if st.session_state.get('mariscos_magros') else 'No especificado'}
+
+🧀 Quesos magros:
+- {', '.join(st.session_state.get('quesos_magros', [])) if st.session_state.get('quesos_magros') else 'No especificado'}
+
+🥛 Lácteos light o reducidos:
+- {', '.join(st.session_state.get('lacteos_light', [])) if st.session_state.get('lacteos_light') else 'No especificado'}
+
+🥚 Huevos y embutidos light:
+- {', '.join(st.session_state.get('huevos_embutidos_light', [])) if st.session_state.get('huevos_embutidos_light') else 'No especificado'}
+
+=====================================
+🥑 GRUPO 3: FUENTES DE GRASA SALUDABLE
+=====================================
+🥑 Grasas naturales de alimentos:
+- {', '.join(st.session_state.get('grasas_naturales', [])) if st.session_state.get('grasas_naturales') else 'No especificado'}
+
+🌰 Frutos secos y semillas:
+- {', '.join(st.session_state.get('frutos_secos_semillas', [])) if st.session_state.get('frutos_secos_semillas') else 'No especificado'}
+
+🧈 Mantequillas y pastas vegetales:
+- {', '.join(st.session_state.get('mantequillas_vegetales', [])) if st.session_state.get('mantequillas_vegetales') else 'No especificado'}
+
+=====================================
+🍞 GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
+=====================================
+🌾 Cereales y granos integrales:
+- {', '.join(st.session_state.get('cereales_integrales', [])) if st.session_state.get('cereales_integrales') else 'No especificado'}
+
+🍝 Pastas:
+- {', '.join(st.session_state.get('pastas', [])) if st.session_state.get('pastas') else 'No especificado'}
+
+🌽 Tortillas y panes:
+- {', '.join(st.session_state.get('tortillas_panes', [])) if st.session_state.get('tortillas_panes') else 'No especificado'}
+
+🥔 Raíces y tubérculos (forma base):
+- {', '.join(st.session_state.get('raices_tuberculos', [])) if st.session_state.get('raices_tuberculos') else 'No especificado'}
+
+🫘 Leguminosas:
+- {', '.join(st.session_state.get('leguminosas', [])) if st.session_state.get('leguminosas') else 'No especificado'}
+
+=====================================
+🥬 GRUPO 5: VEGETALES
+=====================================
+- {', '.join(st.session_state.get('vegetales_lista', [])) if st.session_state.get('vegetales_lista') else 'No especificado'}
+
+=====================================
+🍎 GRUPO 6: FRUTAS
+=====================================
+- {', '.join(st.session_state.get('frutas_lista', [])) if st.session_state.get('frutas_lista') else 'No especificado'}
+
+=====================================
+🍳 APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA
+=====================================
+- {', '.join(st.session_state.get('aceites_coccion', [])) if st.session_state.get('aceites_coccion') else 'No especificado'}
+
+=====================================
+🥤 BEBIDAS SIN CALORÍAS PARA HIDRATACIÓN
+=====================================
+- {', '.join(st.session_state.get('bebidas_sin_calorias', [])) if st.session_state.get('bebidas_sin_calorias') else 'No especificado'}
+
+=====================================
+🚨 SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS
+=====================================
+❗ 1. Alergias alimentarias:
+- {', '.join(st.session_state.get('alergias_alimentarias', [])) if st.session_state.get('alergias_alimentarias') else 'No especificado'}
+- Otra alergia especificada: {st.session_state.get('otra_alergia', 'No especificado')}
+
+⚠️ 2. Intolerancias o malestar digestivo:
+- {', '.join(st.session_state.get('intolerancias_digestivas', [])) if st.session_state.get('intolerancias_digestivas') else 'No especificado'}
+- Otra intolerancia especificada: {st.session_state.get('otra_intolerancia', 'No especificado')}
+
+=====================================
+👨‍🍳 MÉTODOS DE COCCIÓN DISPONIBLES
+=====================================
+🔥 Métodos de cocción más accesibles para el día a día:
+- {', '.join(st.session_state.get('metodos_coccion_accesibles', [])) if st.session_state.get('metodos_coccion_accesibles') else 'No especificado'}
+- Otro método especificado: {st.session_state.get('otro_metodo_coccion', 'No especificado')}
+
+=====================================
+😋 SECCIÓN DE ANTOJOS ALIMENTARIOS
+=====================================
+🍫 Alimentos dulces / postres:
+- {', '.join(st.session_state.get('antojos_dulces', [])) if st.session_state.get('antojos_dulces') else 'No especificado'}
+
+🧂 Alimentos salados / snacks:
+- {', '.join(st.session_state.get('antojos_salados', [])) if st.session_state.get('antojos_salados') else 'No especificado'}
+
+🌮 Comidas rápidas / callejeras:
+- {', '.join(st.session_state.get('antojos_comida_rapida', [])) if st.session_state.get('antojos_comida_rapida') else 'No especificado'}
+
+🍹 Bebidas y postres líquidos:
+- {', '.join(st.session_state.get('antojos_bebidas', [])) if st.session_state.get('antojos_bebidas') else 'No especificado'}
+
+🔥 Alimentos con condimentos estimulantes:
+- {', '.join(st.session_state.get('antojos_picantes', [])) if st.session_state.get('antojos_picantes') else 'No especificado'}
+
+❓ Otros antojos especificados:
+- {st.session_state.get('otros_antojos', 'No especificado')}
+
+=====================================
+🍽️ FRECUENCIA DE COMIDAS PREFERIDA
+=====================================
+- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas_ck', ['No especificado'])[0] if st.session_state.get('frecuencia_comidas_ck') else 'No especificado'}
+- Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
+
+=====================================
+📝 SUGERENCIAS DE MENÚS Y PREFERENCIAS
+=====================================
+- Sugerencias del cliente: {st.session_state.get('sugerencias_menus', 'No especificado')}
+- Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
+
+=====================================
+RESUMEN DE ANÁLISIS IDENTIFICADO:
+=====================================
+Este cuestionario completo de patrones alimentarios proporciona una base integral 
+para el desarrollo de recomendaciones nutricionales altamente personalizadas basadas en:
+
+1. 6 grupos alimentarios principales evaluados
+2. Métodos de cocción disponibles y preferidos
+3. Restricciones específicas (alergias e intolerancias)  
+4. Patrones de preferencias detallados
+5. Análisis de antojos y alimentación emocional
+6. Frecuencia de comidas preferida del cliente
+7. Sugerencias específicas de menús y preferencias adicionales
+8. Contexto personal, familiar y social completo
+
+RECOMENDACIONES PARA SEGUIMIENTO:
+- Desarrollar plan nutricional personalizado basado en estos patrones
+- Considerar restricciones y alergias como prioridad absoluta
+- Aprovechar métodos de cocción preferidos y disponibles
+- Integrar estrategias para manejo de antojos identificados
+- Estructurar la frecuencia de comidas según la preferencia del cliente
+- Incorporar sugerencias específicas de menús proporcionadas por el cliente
+- Adaptar recomendaciones al contexto personal y familiar específico
+
+=====================================
+© 2025 MUPAI - Muscle up GYM
+Alimentary Pattern Assessment Intelligence
+=====================================
+"""
+    return resumen
+
 # ==================== FUNCIONES DE VALIDACIÓN PROGRESIVA ====================
 
 def validate_step_1():
-    """Valida que se haya seleccionado al menos una opción en proteínas grasas"""
-    selections = (
-        st.session_state.get('huevos_embutidos', []) + 
-        st.session_state.get('carnes_res_grasas', []) + 
-        st.session_state.get('carnes_cerdo_grasas', []) + 
-        st.session_state.get('carnes_pollo_grasas', []) + 
-        st.session_state.get('organos_grasos', []) + 
-        st.session_state.get('quesos_grasos', []) + 
-        st.session_state.get('lacteos_enteros', []) + 
-        st.session_state.get('pescados_grasos', []) + 
-        st.session_state.get('mariscos_grasos', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en proteínas grasas"""
+    subgroups = {
+        'huevos_embutidos': 'Huevos y embutidos',
+        'carnes_res_grasas': 'Carnes de res grasas',
+        'carnes_cerdo_grasas': 'Carnes de cerdo grasas', 
+        'carnes_pollo_grasas': 'Carnes de pollo/pavo grasas',
+        'organos_grasos': 'Órganos y vísceras grasas',
+        'quesos_grasos': 'Quesos altos en grasa',
+        'lacteos_enteros': 'Lácteos enteros',
+        'pescados_grasos': 'Pescados grasos',
+        'mariscos_grasos': 'Mariscos/comida marina grasos'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_2():
-    """Valida que se haya seleccionado al menos una opción en proteínas magras"""
-    selections = (
-        st.session_state.get('carnes_res_magras', []) + 
-        st.session_state.get('carnes_cerdo_magras', []) + 
-        st.session_state.get('carnes_pollo_magras', []) + 
-        st.session_state.get('organos_magros', []) + 
-        st.session_state.get('pescados_magros', []) + 
-        st.session_state.get('mariscos_magros', []) + 
-        st.session_state.get('quesos_magros', []) + 
-        st.session_state.get('lacteos_light', []) + 
-        st.session_state.get('huevos_embutidos_light', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en proteínas magras"""
+    subgroups = {
+        'carnes_res_magras': 'Carnes de res magras',
+        'carnes_cerdo_magras': 'Carnes de cerdo magras',
+        'carnes_pollo_magras': 'Carnes de pollo/pavo magras',
+        'organos_magros': 'Órganos y vísceras magros',
+        'pescados_magros': 'Pescados magros',
+        'mariscos_magros': 'Mariscos/comida marina magros',
+        'quesos_magros': 'Quesos bajos en grasa',
+        'lacteos_light': 'Lácteos light/descremados',
+        'huevos_embutidos_light': 'Huevos y embutidos light'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_3():
-    """Valida que se haya seleccionado al menos una opción en grasas saludables"""
-    selections = (
-        st.session_state.get('grasas_naturales', []) + 
-        st.session_state.get('frutos_secos_semillas', []) + 
-        st.session_state.get('mantequillas_vegetales', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en grasas saludables"""
+    subgroups = {
+        'grasas_naturales': 'Grasas naturales',
+        'frutos_secos_semillas': 'Frutos secos y semillas',
+        'mantequillas_vegetales': 'Mantequillas vegetales'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_4():
-    """Valida que se haya seleccionado al menos una opción en carbohidratos"""
-    selections = (
-        st.session_state.get('cereales_integrales', []) + 
-        st.session_state.get('pastas', []) + 
-        st.session_state.get('tortillas_panes', []) + 
-        st.session_state.get('raices_tuberculos', []) + 
-        st.session_state.get('leguminosas', [])
-    )
-    return len(selections) > 0
+    """Valida que cada subgrupo tenga al menos una selección en carbohidratos"""
+    subgroups = {
+        'cereales_integrales': 'Cereales integrales',
+        'pastas': 'Pastas',
+        'tortillas_panes': 'Tortillas y panes',
+        'raices_tuberculos': 'Raíces y tubérculos',
+        'leguminosas': 'Leguminosas'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_5():
     """Valida que se haya seleccionado al menos una opción en vegetales"""
-    return len(st.session_state.get('vegetales_lista', [])) > 0
+    selections = st.session_state.get('vegetales_lista', [])
+    if len(selections) == 0:
+        return False, ['Vegetales']
+    return True, []
 
 def validate_step_6():
     """Valida que se haya seleccionado al menos una opción en frutas"""
-    return len(st.session_state.get('frutas_lista', [])) > 0
+    selections = st.session_state.get('frutas_lista', [])
+    if len(selections) == 0:
+        return False, ['Frutas']
+    return True, []
 
 def validate_step_7():
     """Valida que se haya seleccionado al menos una opción en aceites de cocción"""
-    return len(st.session_state.get('aceites_coccion', [])) > 0
+    selections = st.session_state.get('aceites_coccion', [])
+    if len(selections) == 0:
+        return False, ['Aceites de cocción']
+    return True, []
 
 def validate_step_8():
     """Valida que se haya seleccionado al menos una opción en bebidas"""
-    return len(st.session_state.get('bebidas_sin_calorias', [])) > 0
+    selections = st.session_state.get('bebidas_sin_calorias', [])
+    if len(selections) == 0:
+        return False, ['Bebidas para hidratación']
+    return True, []
 
 def validate_step_9():
-    """Valida que se haya seleccionado al menos una opción en alergias/intolerancias"""
+    """Valida que se haya completado la sección de métodos de cocción"""
+    missing_items = []
+    
+    # Validar que haya al menos una selección de métodos de cocción
+    metodos_selections = st.session_state.get('metodos_coccion_accesibles', [])
+    if len(metodos_selections) == 0:
+        missing_items.append('Métodos de cocción accesibles')
+    
+    # Validar campo de texto de otro método de cocción
+    otro_metodo = st.session_state.get('otro_metodo_coccion', '').strip()
+    if not otro_metodo:
+        missing_items.append('Otro método de cocción (campo de texto) - escribir "No aplica" si no aplica')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
+def validate_step_10():
+    """Valida que cada subgrupo tenga al menos una selección en alergias/intolerancias y campos de texto completos"""
+    missing_items = []
+    
+    # Validar subgrupos de selección múltiple
     alergias_selections = st.session_state.get('alergias_alimentarias', [])
     intolerancias_selections = st.session_state.get('intolerancias_digestivas', [])
     
-    # Al menos una selección en alguno de los dos grupos (puede ser "Ninguna")
-    return len(alergias_selections) > 0 or len(intolerancias_selections) > 0
-
-def validate_step_10():
-    """Valida que se haya seleccionado al menos una opción en antojos"""
-    selections = (
-        st.session_state.get('antojos_dulces', []) +
-        st.session_state.get('antojos_salados', []) +
-        st.session_state.get('antojos_comida_rapida', []) +
-        st.session_state.get('antojos_bebidas', []) +
-        st.session_state.get('antojos_picantes', [])
-    )
-    return len(selections) > 0
+    if len(alergias_selections) == 0:
+        missing_items.append('Alergias alimentarias')
+    if len(intolerancias_selections) == 0:
+        missing_items.append('Intolerancias digestivas')
+    
+    # Validar campos de texto - deben tener contenido o "No aplica"
+    text_fields = {
+        'otra_alergia': 'Otra alergia (campo de texto)',
+        'otra_intolerancia': 'Otra intolerancia (campo de texto)'
+    }
+    
+    for field_key, field_name in text_fields.items():
+        field_value = st.session_state.get(field_key, '').strip()
+        if not field_value:
+            missing_items.append(f'{field_name} - escribir "No aplica" si no aplica')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
 
 def validate_step_11():
-    """Valida que se haya seleccionado una frecuencia de comidas"""
-    frecuencia = st.session_state.get('frecuencia_comidas', '')
-    # Si selecciona "Otro (especificar)", debe llenar el campo adicional
-    if frecuencia == "Otro (especificar)":
-        otra_frecuencia = st.session_state.get('otra_frecuencia', '')
-        return bool(frecuencia and otra_frecuencia.strip())
-    # Para otras opciones, solo necesita seleccionar una opción
-    return bool(frecuencia)
+    """Valida que cada subgrupo tenga al menos una selección en antojos"""
+    subgroups = {
+        'antojos_dulces': 'Antojos de alimentos dulces/postres',
+        'antojos_salados': 'Antojos de alimentos salados/snacks',
+        'antojos_comida_rapida': 'Antojos de comidas rápidas/callejeras',
+        'antojos_bebidas': 'Antojos de bebidas y postres líquidos',
+        'antojos_picantes': 'Antojos de alimentos con condimentos estimulantes'
+    }
+    
+    missing_subgroups = []
+    for key, name in subgroups.items():
+        selections = st.session_state.get(key, [])
+        if len(selections) == 0:
+            missing_subgroups.append(name)
+    
+    # Validar campo de texto de otros antojos
+    otros_antojos = st.session_state.get('otros_antojos', '').strip()
+    if not otros_antojos:
+        missing_subgroups.append('Otros antojos (campo de texto) - escribir "No aplica" si no aplica')
+    
+    if missing_subgroups:
+        return False, missing_subgroups
+    return True, []
 
 def validate_step_12():
-    """Valida que se haya proporcionado alguna sugerencia de menús o seleccionado una opción rápida"""
-    sugerencias = st.session_state.get('sugerencias_menus', '')
+    """Valida que se haya seleccionado una frecuencia de comidas usando checkboxes"""
+    missing_items = []
+    # CAMBIO: Usar la nueva variable de checkboxes en lugar de radio
+    frecuencia_list = st.session_state.get('frecuencia_comidas_ck', [])
+    
+    if not frecuencia_list or len(frecuencia_list) == 0:
+        missing_items.append('Frecuencia de comidas')
+    elif len(frecuencia_list) > 1:
+        missing_items.append('Solo se puede seleccionar UNA frecuencia de comidas (tienes seleccionadas varias)')
+    elif len(frecuencia_list) == 1:
+        frecuencia = frecuencia_list[0]
+        if frecuencia == "Otro (especificar)":
+            otra_frecuencia = st.session_state.get('otra_frecuencia', '').strip()
+            if not otra_frecuencia:
+                missing_items.append('Especificación de frecuencia (campo de texto)')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
+def validate_step_13():
+    """Valida que se haya proporcionado alguna sugerencia de menús"""
+    missing_items = []
+    sugerencias = st.session_state.get('sugerencias_menus', '').strip()
     opcion_rapida = st.session_state.get('opcion_rapida_menu', '')
-    # Válido si hay texto en sugerencias O si seleccionó una opción rápida (diferente a "Seleccionar...")
-    return bool(sugerencias.strip()) or (opcion_rapida and opcion_rapida != "Seleccionar...")
+    
+    # Debe tener texto en sugerencias O una opción rápida válida
+    if not sugerencias and (not opcion_rapida or opcion_rapida == "Seleccionar..."):
+        missing_items.append('Sugerencias de menús (campo de texto) - escribir "No aplica" si prefieres que el equipo decida')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
+def create_vertical_checkboxes(title, options, key, help_text=""):
+    """
+    Create vertical checkboxes for short option lists.
+    Returns the selected options as a list.
+    """
+    st.markdown(f"**{title}**")
+    if help_text:
+        st.info(f"💡 **Instrucción:** {help_text}")
+    
+    # Initialize session state for this key if it doesn't exist
+    if key not in st.session_state:
+        st.session_state[key] = []
+    
+    selected_options = []
+    
+    # Create checkboxes in a clean vertical layout
+    for option in options:
+        checkbox_key = f"{key}_{option.replace(' ', '_').replace('(', '').replace(')', '').replace('/', '_')}"
+        is_checked = st.checkbox(
+            option, 
+            key=checkbox_key, 
+            value=(option in st.session_state.get(key, []))
+        )
+        if is_checked:
+            selected_options.append(option)
+    
+    # Update session state
+    st.session_state[key] = selected_options
+    return selected_options
+
+def create_multiselect_with_bullet_list(title, options, key, help_text=""):
+    """
+    Create a multiselect with a bullet list above it for longer option lists.
+    Returns the selected options as a list.
+    """
+    st.markdown(f"**{title}**")
+    if help_text:
+        st.info(f"💡 **Instrucción:** {help_text}")
+    
+    # Display available options as a bullet list
+    st.markdown("**Opciones disponibles:**")
+    with st.expander("Ver todas las opciones disponibles", expanded=False):
+        for option in options:
+            st.markdown(f"• {option}")
+    
+    # Create the multiselect
+    selected = st.multiselect(
+        f"Selecciona de la lista de {len(options)} opciones:",
+        options,
+        key=key,
+        default=st.session_state.get(key, []),
+        placeholder=f"🔽 Haz clic para seleccionar de {len(options)} opciones disponibles"
+    )
+    
+    return selected
 
 def get_step_validator(step_number):
     """Obtiene la función de validación para un paso específico"""
@@ -126,26 +515,41 @@ def get_step_validator(step_number):
         9: validate_step_9,
         10: validate_step_10,
         11: validate_step_11,
-        12: validate_step_12
+        12: validate_step_12,
+        13: validate_step_13
     }
-    return validators.get(step_number, lambda: True)
+    return validators.get(step_number, lambda: (True, []))
+
+def validate_step_legacy(step_number):
+    """Función de compatibilidad que devuelve solo True/False para la UI de progreso"""
+    validator = get_step_validator(step_number)
+    is_valid, _ = validator()
+    return is_valid
 
 def advance_to_next_step():
     """Avanza al siguiente paso si la validación es exitosa"""
     current_step = st.session_state.get('current_step', 1)
     validator = get_step_validator(current_step)
     
-    if validator():
+    is_valid, missing_items = validator()
+    
+    if is_valid:
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 12:
+        if current_step < 13:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
     else:
-        # Mostrar mensaje de error profesional
-        st.error("Para continuar, por favor selecciona al menos una opción en este grupo. Esto permitirá generar una evaluación nutricional personalizada y precisa.")
+        # Mostrar mensaje de error específico sobre los subgrupos/campos faltantes
+        if len(missing_items) == 1:
+            st.error(f"⚠️ **Para continuar, debes completar:** {missing_items[0]}")
+        else:
+            missing_list = "\n".join([f"• {item}" for item in missing_items])
+            st.error(f"⚠️ **Para continuar, debes completar los siguientes subgrupos/campos:**\n\n{missing_list}")
+        
+        st.info("💡 **Recuerda:** Si no consumes algo de una categoría, marca 'Ninguno'. Si un campo de texto no aplica, escribe 'No aplica'.")
         return False
 
 def go_to_previous_step():
@@ -214,6 +618,47 @@ def validate_email(email):
     
     return True, ""
 
+# Función para verificar datos completos
+def datos_completos_para_email():
+    obligatorios = {
+        "Nombre": st.session_state.get('nombre'),
+        "Email": st.session_state.get('email_cliente'), 
+        "Teléfono": st.session_state.get('telefono'),
+        "Edad": st.session_state.get('edad')
+    }
+    faltantes = [campo for campo, valor in obligatorios.items() if not valor]
+    return faltantes
+
+def verificar_grupos_obligatorios_completos():
+    """Verifica que los grupos obligatorios (1-6) estén completados"""
+    grupos_incompletos = []
+    
+    # Grupo 1: Proteínas grasas
+    if not validate_step_legacy(1):
+        grupos_incompletos.append("Proteínas con más contenido graso")
+    
+    # Grupo 2: Proteínas magras  
+    if not validate_step_legacy(2):
+        grupos_incompletos.append("Proteínas magras")
+        
+    # Grupo 3: Grasas saludables
+    if not validate_step_legacy(3):
+        grupos_incompletos.append("Fuentes de grasa saludable")
+        
+    # Grupo 4: Carbohidratos
+    if not validate_step_legacy(4):
+        grupos_incompletos.append("Carbohidratos complejos")
+        
+    # Grupo 5: Vegetales
+    if not validate_step_legacy(5):
+        grupos_incompletos.append("Vegetales")
+        
+    # Grupo 6: Frutas
+    if not validate_step_legacy(6):
+        grupos_incompletos.append("Frutas")
+        
+    return grupos_incompletos
+
 # ==================== CONFIGURACIÓN DE PÁGINA Y CSS MEJORADO ====================
 st.set_page_config(
     page_title="MUPAI - Evaluación de Patrones Alimentarios",
@@ -221,6 +666,60 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# CSS principal para ocultar elementos de UI y establecer espaciado profesional
+st.markdown("""
+<style>
+/* Hide Streamlit header, toolbar, and GitHub/Fork elements */
+#MainMenu {visibility: hidden !important;}
+header[data-testid="stHeader"] {visibility: hidden !important;}
+.stApp > header {visibility: hidden !important;}
+[data-testid="stToolbar"] {display: none !important;}
+[data-testid="stDecoration"] {display: none !important;}
+[data-testid="stStatusWidget"] {display: none !important;}
+section[data-testid="stToolbar"] {display: none !important;}
+div[data-testid="stToolbar"] {display: none !important;}
+.stToolbar {display: none !important;}
+.stDeployButton {display: none !important;}
+.stActionButton {display: none !important;}
+button[title="View fullscreen"] {visibility: hidden !important;}
+footer {visibility: hidden !important;}
+
+/* Hide hamburger menu */
+.css-14xtw13.e8zbici0 {display: none !important;}
+.css-vk3wp9 {display: none !important;}
+.css-1544g2n {display: none !important;}
+
+/* Hide any GitHub/Fork related elements */
+a[href*="github"] {display: none !important;}
+a[href*="fork"] {display: none !important;}
+button[data-baseweb="button"]:has-text("Fork") {display: none !important;}
+*[title*="GitHub"] {display: none !important;}
+*[title*="Fork"] {display: none !important;}
+*[alt*="GitHub"] {display: none !important;}
+*[alt*="Fork"] {display: none !important;}
+
+/* Professional spacing for main container */
+.main .block-container {
+    padding-top: 64px !important;
+    padding-bottom: 2rem !important;
+}
+
+/* Additional spacing adjustments */
+.css-hi6a2p {padding-top: 64px !important;}
+#root > div:nth-child(1) > div > div > div > div > section > div {padding-top: 64px !important;}
+
+/* Ensure proper margin for header containers and footer elements */
+.header-container {
+    margin-top: 1rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.footer-mupai {
+    margin-top: 3rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
@@ -443,8 +942,118 @@ hr {
     font-weight: 600;
     font-size: 1.01rem;
 }
+
+/* Enhanced styling for important checkboxes */
+.stCheckbox:has(span:contains("He leído y acepto la política de privacidad")) {
+    background: rgba(244, 196, 48, 0.05) !important;
+    border: 2px solid var(--mupai-yellow) !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    margin: 0.8rem 0 !important;
+    transition: all 0.3s ease !important;
+}
+.stCheckbox:has(span:contains("He leído y acepto la política de privacidad")):hover {
+    background: rgba(244, 196, 48, 0.1) !important;
+    box-shadow: 0 4px 15px rgba(244, 196, 48, 0.2) !important;
+}
+.stCheckbox:has(span:contains("He leído y acepto la política de privacidad")) label {
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+}
+/* Enhanced styling for disclaimer checkbox inside expander */
+.stCheckbox:has(span:contains("He leído y entiendo completamente el descargo")) {
+    background: rgba(244, 196, 48, 0.03) !important;
+    border: 1px solid rgba(244, 196, 48, 0.4) !important;
+    border-radius: 8px !important;
+    padding: 0.8rem !important;
+    margin: 0.5rem 0 !important;
+    transition: all 0.3s ease !important;
+}
+.stCheckbox:has(span:contains("He leído y entiendo completamente el descargo")):hover {
+    background: rgba(244, 196, 48, 0.08) !important;
+    border-color: var(--mupai-yellow) !important;
+}
+.stCheckbox:has(span:contains("He leído y entiendo completamente el descargo")) label {
+    font-weight: 500 !important;
+    font-size: 1.05rem !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
+
+# JavaScript para ocultar elementos de GitHub/Fork que puedan aparecer dinámicamente
+github_hide_js = """
+<script>
+// Function to hide GitHub/Fork related elements
+function hideGitHubElements() {
+    // Hide elements by text content
+    const elementsToHide = [
+        'a[href*="github"]',
+        'a[href*="fork"]', 
+        'button:contains("Fork")',
+        'button:contains("GitHub")',
+        'button:contains("Share")',
+        'button:contains("Deploy")',
+        '[data-testid="stToolbar"]',
+        '[data-testid="stHeader"]',
+        '.stDeployButton',
+        '.stActionButton'
+    ];
+    
+    elementsToHide.forEach(selector => {
+        try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                if (el) {
+                    el.style.display = 'none !important';
+                    el.style.visibility = 'hidden !important';
+                }
+            });
+        } catch (e) {
+            console.log('Could not hide element:', selector);
+        }
+    });
+    
+    // Hide elements by text content (more aggressive)
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(el => {
+        if (el.textContent && (
+            el.textContent.toLowerCase().includes('fork') ||
+            el.textContent.toLowerCase().includes('github') ||
+            el.textContent.toLowerCase().includes('deploy') ||
+            el.textContent.toLowerCase().includes('share')
+        )) {
+            // Only hide if it's a button or link
+            if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+                el.style.display = 'none !important';
+            }
+        }
+    });
+}
+
+// Run immediately and also on DOM changes
+hideGitHubElements();
+
+// Observer for dynamic content
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.addedNodes.length > 0) {
+            hideGitHubElements();
+        }
+    });
+});
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+// Run again after page load
+window.addEventListener('load', hideGitHubElements);
+</script>
+"""
+
+st.markdown(github_hide_js, unsafe_allow_html=True)
 
 # Header principal visual con logos
 import base64
@@ -573,10 +1182,11 @@ defaults = {
         6: False,  # Frutas
         7: False,  # Aceites de cocción
         8: False,  # Bebidas
-        9: False,  # Alergias/intolerancias
-        10: False,  # Antojos
-        11: False,  # Frecuencia de comidas
-        12: False   # Sugerencias de menús
+        9: False,  # Métodos de cocción
+        10: False,  # Alergias/intolerancias
+        11: False,  # Antojos
+        12: False,  # Frecuencia de comidas
+        13: False   # Sugerencias de menús
     },
     "max_unlocked_step": 1
 }
@@ -703,6 +1313,53 @@ with st.expander("🎯 **Misión, Visión y Compromiso MUPAI**", expanded=False)
             "warning"
         ), unsafe_allow_html=True)
 
+# === DESCARGO DE RESPONSABILIDAD PROFESIONAL ===
+with st.expander("⚖️ **Descargo de Responsabilidad Profesional** (Requerido)", expanded=False):
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(crear_tarjeta(
+            "🔬 Naturaleza Científica",
+            "Esta herramienta proporciona estimaciones basadas en algoritmos científicos validados. Los resultados son orientativos y no constituyen un diagnóstico médico o nutricional.",
+            "info"
+        ), unsafe_allow_html=True)
+    with col2:
+        st.markdown(crear_tarjeta(
+            "⚕️ Limitaciones",
+            "No reemplaza la consulta con profesionales de la salud. Los cálculos pueden tener margen de error según la precisión de los datos ingresados.",
+            "warning"
+        ), unsafe_allow_html=True)
+    with col3:
+        st.markdown(crear_tarjeta(
+            "🎯 Uso Recomendado",
+            "Utiliza estos resultados como punto de partida informativo. Consulta con profesionales certificados antes de implementar cambios significativos.",
+            "success"
+        ), unsafe_allow_html=True)
+    with col4:
+        st.markdown(crear_tarjeta(
+            "📞 Responsabilidad",
+            "MUPAI y Muscle Up GYM no se hacen responsables por el uso inadecuado de esta información. El usuario asume la responsabilidad.",
+            "danger"
+        ), unsafe_allow_html=True)
+    
+    # Checkbox destacado dentro del expander
+    st.markdown("""
+    <div style="background: rgba(244, 196, 48, 0.08); padding: 1rem; border-radius: 10px; border: 1px solid rgba(244, 196, 48, 0.3); margin: 1rem 0;">
+        <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+            <span style="color: var(--mupai-yellow); font-size: 1.1rem; margin-right: 0.5rem;">📋</span>
+            <strong style="color: var(--mupai-yellow); font-size: 1rem;">CONFIRMACIÓN REQUERIDA</strong>
+        </div>
+        <p style="color: #CCCCCC; margin: 0; font-size: 0.95rem;">
+            Marca la siguiente casilla para confirmar que has leído y comprendes completamente el descargo de responsabilidad.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    acepto_descargo = st.checkbox(
+        "✅ **He leído y entiendo completamente el descargo de responsabilidad profesional**",
+        key="acepto_descargo",
+        help="Debes confirmar que has leído y entiendes las limitaciones de esta evaluación"
+    )
+
 # BLOQUE 0: Datos personales con diseño mejorado
 st.markdown('<div class="content-card">', unsafe_allow_html=True)
 st.markdown("### 👤 Información Personal")
@@ -728,9 +1385,29 @@ with col2:
     fecha_llenado = datetime.now().strftime("%Y-%m-%d")
     st.info(f"📅 Fecha de evaluación: {fecha_llenado}")
 
-acepto_terminos = st.checkbox("He leído y acepto la política de privacidad y el descargo de responsabilidad", value=st.session_state.get('acepto_terminos', False))
+# Checkbox principal con diseño destacado (solo se habilita si se acepta el descargo)
+st.markdown(f"""
+<div class="content-card" style="border-left-color: var(--mupai-warning); margin: 1.5rem 0; background: linear-gradient(135deg, #1E1E1E 0%, #252525 100%); border: 2px solid var(--mupai-yellow); box-shadow: 0 8px 25px rgba(244, 196, 48, 0.15);">
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+        <span class="badge badge-warning" style="margin-right: 0.8rem; font-size: 0.9rem;">✅ ACEPTACIÓN REQUERIDA</span>
+        <h4 style="margin: 0; color: #FFF; font-size: 1.1rem;">Confirmación Final de Términos</h4>
+    </div>
+    <div style="background: rgba(244, 196, 48, 0.1); padding: 1rem; border-radius: 10px; border-left: 4px solid var(--mupai-yellow); margin-bottom: 1rem;">
+        <p style="color: #FFF; margin: 0; font-weight: 500; font-size: 1.05rem;">
+            <strong style="color: var(--mupai-yellow);">⚠️ IMPORTANTE:</strong> 
+            Para continuar con tu evaluación personalizada, debes confirmar que has leído y aceptas completamente nuestros términos y el descargo de responsabilidad profesional.
+        </p>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-if st.button("🚀 COMENZAR EVALUACIÓN", disabled=not acepto_terminos):
+acepto_terminos = st.checkbox(
+    "✅ **He leído y acepto la política de privacidad y el descargo de responsabilidad**",
+    disabled=not st.session_state.get("acepto_descargo", False),
+    help="Primero debes leer y aceptar el descargo de responsabilidad profesional arriba" if not st.session_state.get("acepto_descargo", False) else "Acepto los términos para continuar con la evaluación"
+)
+
+if st.button("🚀 COMENZAR EVALUACIÓN", disabled=not (acepto_terminos and st.session_state.get("acepto_descargo", False))):
     # Validación estricta de cada campo
     name_valid, name_error = validate_name(nombre)
     phone_valid, phone_error = validate_phone(telefono)
@@ -818,15 +1495,27 @@ if not st.session_state.datos_completos:
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
-                        <span style="font-size:1.3rem;">🚨</span> <b>Paso 8:</b> Alergias, intolerancias y métodos de cocción<br>
+                        <span style="font-size:1.3rem;">👨‍🍳</span> <b>Paso 9:</b> Métodos de cocción disponibles<br>
                         <span style="color:#F5F5F5;font-size:1rem;">
-                            Identificamos restricciones alimentarias y métodos de cocción disponibles.
+                            Identificamos los métodos de cocción que tienes accesibles para personalizar recetas.
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
-                        <span style="font-size:1.3rem;">😋</span> <b>Paso 9:</b> Patrones de antojos alimentarios<br>
+                        <span style="font-size:1.3rem;">🚨</span> <b>Paso 10:</b> Alergias e intolerancias alimentarias<br>
+                        <span style="color:#F5F5F5;font-size:1rem;">
+                            Identificamos restricciones alimentarias críticas para tu seguridad.
+                        </span>
+                    </li>
+                    <li style="margin-bottom:1.1em;">
+                        <span style="font-size:1.3rem;">😋</span> <b>Paso 11:</b> Patrones de antojos alimentarios<br>
                         <span style="color:#F5F5F5;font-size:1rem;">
                             Analizamos antojos dulces, salados, comida rápida y condimentos estimulantes.
+                        </span>
+                    </li>
+                    <li style="margin-bottom:1.1em;">
+                        <span style="font-size:1.3rem;">🍽️</span> <b>Paso 12:</b> Frecuencia de comidas preferida<br>
+                        <span style="color:#F5F5F5;font-size:1rem;">
+                            Adaptamos el plan a tu rutina diaria y estilo de vida.
                         </span>
                     </li>
                     <li style="margin-bottom:1.1em;">
@@ -846,7 +1535,7 @@ if not st.session_state.datos_completos:
     """, unsafe_allow_html=True)
 
 # VALIDACIÓN DATOS PERSONALES PARA CONTINUAR
-datos_personales_completos = all([nombre, telefono, email_cliente]) and acepto_terminos
+datos_personales_completos = all([nombre, telefono, email_cliente]) and acepto_terminos and st.session_state.get("acepto_descargo", False)
 
 if datos_personales_completos and st.session_state.datos_completos:
     # Progress bar mejorado y más prominente
@@ -879,18 +1568,19 @@ if datos_personales_completos and st.session_state.datos_completos:
     
     # Verificar estado de validación en tiempo real
     step_validators = {
-        1: validate_step_1(),
-        2: validate_step_2(),
-        3: validate_step_3(),
-        4: validate_step_4(),
-        5: validate_step_5(),
-        6: validate_step_6(),
-        7: validate_step_7(),
-        8: validate_step_8(),
-        9: validate_step_9(),
-        10: validate_step_10(),
-        11: validate_step_11(),
-        12: validate_step_12()
+        1: validate_step_legacy(1),
+        2: validate_step_legacy(2),
+        3: validate_step_legacy(3),
+        4: validate_step_legacy(4),
+        5: validate_step_legacy(5),
+        6: validate_step_legacy(6),
+        7: validate_step_legacy(7),
+        8: validate_step_legacy(8),
+        9: validate_step_legacy(9),
+        10: validate_step_legacy(10),
+        11: validate_step_legacy(11),
+        12: validate_step_legacy(12),
+        13: validate_step_legacy(13)
     }
     
     st.markdown(f"""
@@ -923,7 +1613,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
-            <small>Paso {current_step} de 12 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
+            <small>Paso {current_step} de 13 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
         <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;">
             <span style="color: #27AE60;">● Completo</span> | 
@@ -939,167 +1629,125 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
     if current_step == 1:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
             border: 3px solid #4CAF50;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 1 de 12 - Selecciona las proteínas grasas que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 1 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las proteínas animales con mayor contenido graso que consumes habitualmente
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso1"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso1');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🥩 PASO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas proteínas?**
+        - Las proteínas grasas aportan aminoácidos esenciales y grasas saturadas
+        - Son importantes para la saciedad y absorción de vitaminas liposolubles
+        - Nos ayudan a calcular tu perfil nutricional completo
         
-        # Actualizar progreso
-        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">1</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **proteínas animales con mayor contenido graso** que consumes. 
-        Estos alimentos son importantes para la saciedad y el aporte de grasas esenciales.
-        
-        **💡 Instrucción:** Marca TODOS los alimentos que consumes habitualmente o que disfrutas comer.
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
+
+        # Actualizar progreso
+        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
         st.markdown("#### 🍳 Huevos y embutidos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        huevos_embutidos = st.multiselect(
-            "¿Cuáles de estos huevos y embutidos consumes? (Puedes seleccionar varios)",
+        huevos_embutidos = create_vertical_checkboxes(
+            "¿Cuáles de estos huevos y embutidos consumes?",
             ["Huevo entero", "Chorizo", "Salchicha (Viena, alemana, parrillera)", "Longaniza", "Tocino", "Jamón serrano", "Jamón ibérico", "Salami", "Mortadela", "Pastrami", "Pepperoni", "Ninguno"],
-            key="huevos_embutidos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "huevos_embutidos",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥩 Carnes de res grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_res_grasas = st.multiselect(
-            "¿Cuáles de estas carnes de res grasas consumes? (Puedes seleccionar varios)",
+        carnes_res_grasas = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de res grasas consumes?",
             ["Aguja norteña", "Diezmillo marmoleado", "Costilla/Costillar", "Ribeye", "New York", "T-bone", "Porterhouse", "Prime rib", "Arrachera", "Picaña", "Suadero", "Brisket/Pecho de res", "Chamberete con tuétano", "Falda marmoleada", "Molida 80/20", "Molida 85/15", "Carne para asar con grasa", "Chuck roast (diezmillo graso)", "Paleta con grasa", "Retazo con grasa", "Short ribs", "Cowboy steak", "Tomahawk", "Matambre", "Entraña", "Ninguno"],
-            key="carnes_res_grasas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+            "carnes_res_grasas",
+            "Marca todos los cortes que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐷 Carnes de cerdo grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_cerdo_grasas = st.multiselect(
-            "¿Cuáles de estas carnes de cerdo grasas consumes? (Puedes seleccionar varios)",
+        carnes_cerdo_grasas = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de cerdo grasas consumes?",
             ["Costilla de cerdo", "Panceta (belly)", "Chuleta con grasa", "Carnitas", "Chicharrón prensado", "Codillo", "Espalda (Boston butt)", "Picnic shoulder", "Pata de cerdo", "Ninguno"],
-            key="carnes_cerdo_grasas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+            "carnes_cerdo_grasas",
+            "Marca todos los cortes que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐔 Carnes de pollo/pavo grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_pollo_grasas = st.multiselect(
-            "¿Cuáles de estas carnes de pollo/pavo grasas consumes? (Puedes seleccionar varios)",
+        carnes_pollo_grasas = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de pollo/pavo grasas consumes?",
             ["Muslo de pollo con piel", "Pierna de pollo con piel", "Alitas de pollo", "Pollo entero con piel", "Pavo con piel", "Muslo de pavo", "Ninguno"],
-            key="carnes_pollo_grasas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cortes que consumes. Marca 'Ninguno' si no consumes ninguno de estos cortes."
+            "carnes_pollo_grasas",
+            "Marca todas las que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🫀 Órganos y vísceras grasas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        organos_grasos = st.multiselect(
-            "¿Cuáles de estos órganos y vísceras grasas consumes? (Puedes seleccionar varios)",
+        organos_grasos = create_vertical_checkboxes(
+            "¿Cuáles de estos órganos y vísceras grasas consumes?",
             ["Sesos de res", "Tuétano de res", "Molleja de res", "Hígado de res", "Riñón de res", "Ninguno"],
-            key="organos_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los órganos que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "organos_grasos",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧀 Quesos altos en grasa")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        quesos_grasos = st.multiselect(
-            "¿Cuáles de estos quesos altos en grasa consumes? (Puedes seleccionar varios)",
+        quesos_grasos = create_vertical_checkboxes(
+            "¿Cuáles de estos quesos altos en grasa consumes?",
             ["Queso manchego", "Queso doble crema", "Queso oaxaca", "Queso gouda", "Queso crema", "Queso cheddar", "Queso roquefort", "Queso brie", "Queso camembert", "Queso parmesano", "Queso gruyere", "Queso de cabra maduro", "Ninguno"],
-            key="quesos_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
+            "quesos_grasos",
+            "Marca todos los quesos que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥛 Lácteos enteros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        lacteos_enteros = st.multiselect(
-            "¿Cuáles de estos lácteos enteros consumes? (Puedes seleccionar varios)",
-            ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", 
-             "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)", "Nata", "Crema agria", "Ninguno"],
-            key="lacteos_enteros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos enteros que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
+        lacteos_enteros = create_vertical_checkboxes(
+            "¿Cuáles de estos lácteos enteros consumes?",
+            ["Leche entera", "Yogur entero azucarado", "Yogur tipo griego entero", "Yogur de frutas azucarado", "Yogur bebible regular", "Crema", "Queso para untar (tipo Philadelphia original)", "Nata", "Crema agria", "Ninguno"],
+            "lacteos_enteros",
+            "Marca todos los lácteos enteros que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐟 Pescados grasos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pescados_grasos = st.multiselect(
-            "¿Cuáles de estos pescados grasos consumes? (Puedes seleccionar varios)",
+        pescados_grasos = create_vertical_checkboxes(
+            "¿Cuáles de estos pescados grasos consumes?",
             ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha", "Arenque", "Anchovetas", "Pez espada", "Anguila", "Ninguno"],
-            key="pescados_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los pescados grasos que consumes. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+            "pescados_grasos",
+            "Marca todos los pescados grasos que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🦐 Mariscos/comida marina grasos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mariscos_grasos = st.multiselect(
-            "¿Cuáles de estos mariscos/comida marina grasos consumes? (Puedes seleccionar varios)",
+        mariscos_grasos = create_vertical_checkboxes(
+            "¿Cuáles de estos mariscos/comida marina grasos consumes?",
             ["Pulpo", "Calamar", "Mejillones", "Ostras", "Cangrejo", "Langosta", "Caracol de mar", "Ninguno"],
-            key="mariscos_grasos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los mariscos grasos que consumes. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
+            "mariscos_grasos",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -1128,170 +1776,123 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 2: PROTEÍNA ANIMAL MAGRA
     elif current_step == 2:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
             border: 3px solid #2196F3;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 2 de 12 - Selecciona las proteínas magras que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 2 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las proteínas animales magras que consumes habitualmente
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso2"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso2');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🍗 PASO 2: PROTEÍNA ANIMAL MAGRA
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas proteínas?**
+        - Las proteínas magras aportan aminoácidos esenciales con menor contenido graso
+        - Son ideales para construir masa muscular y controlar calorías
+        - Proporcionan saciedad sin exceso de grasas saturadas
         
+       **¿Cómo completar este paso?**
+        - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
+        """)
         # Actualizar progreso
         progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
-        
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">2</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **proteínas animales magras** que consumes. 
-        Estos alimentos son excelentes fuentes de proteína con menor contenido graso.
-        
-        **💡 Instrucción:** Marca TODOS los alimentos que te resultan fáciles de consumir o que disfrutas.
-        """)
         
         st.markdown("#### 🐄 Carnes de res magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_res_magras = st.multiselect(
-            "¿Cuáles de estas carnes de res magras consumes? (Puedes seleccionar varios)",
+        carnes_res_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de res magras consumes?",
             ["Filete (lomo fino)", "Lomo bajo (striploin limpio)", "Centro de diezmillo limpio", "Sirloin limpio/Aguayón", "Bola/Pulpa bola", "Cuete", "Pulpa negra", "Pulpa blanca", "Espaldilla limpia", "Milanesa de bola", "Bistec de pierna", "Molida 90/10", "Molida 95/5", "Molida 97/3", "Falda limpia", "Chamorro limpio", "Tampiqueña magra", "Medallones de res magros", "Top round", "Bottom round", "Flank steak limpio", "Maciza limpia", "Ninguno"],
-            key="carnes_res_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de res magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_res_magras",
+            "Marca todas las carnes de res magras que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐷 Carnes de cerdo magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_cerdo_magras = st.multiselect(
-            "¿Cuáles de estas carnes de cerdo magras consumes? (Puedes seleccionar varios)",
+        carnes_cerdo_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de cerdo magras consumes?",
             ["Lomo de cerdo", "Filete de cerdo", "Chuleta magra sin grasa", "Solomillo de cerdo", "Tenderloin", "Ninguno"],
-            key="carnes_cerdo_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de cerdo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_cerdo_magras",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐔 Carnes de pollo/pavo magras")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        carnes_pollo_magras = st.multiselect(
-            "¿Cuáles de estas carnes de pollo/pavo magras consumes? (Puedes seleccionar varios)",
+        carnes_pollo_magras = create_vertical_checkboxes(
+            "¿Cuáles de estas carnes de pollo/pavo magras consumes?",
             ["Pechuga de pollo sin piel", "Pechuga de pavo sin piel", "Muslo de pollo sin piel", "Pierna de pavo sin piel", "Ninguno"],
-            key="carnes_pollo_magras",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las carnes de pollo/pavo magras que consumas. Marca 'Ninguno' si no consumes ninguna de estas carnes."
+            "carnes_pollo_magras",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🫀 Órganos y vísceras magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        organos_magros = st.multiselect(
-            "¿Cuáles de estos órganos y vísceras magros consumes? (Puedes seleccionar varios)",
+        organos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos órganos y vísceras magros consumes?",
             ["Corazón de res", "Lengua de res", "Hígado de ternera", "Riñones de ternera", "Corazón de pollo", "Hígado de pollo", "Molleja de ternera", "Ninguno"],
-            key="organos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los órganos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "organos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🐟 Pescados magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pescados_magros = st.multiselect(
-            "¿Cuáles de estos pescados magros consumes? (Puedes seleccionar varios)",
+        pescados_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos pescados magros consumes?",
             ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua", "Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
-            key="pescados_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los pescados magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos pescados."
+            "pescados_magros",
+            "Marca todos los pescados magros que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🦐 Mariscos/comida marina magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mariscos_magros = st.multiselect(
-            "¿Cuáles de estos mariscos/comida marina magros consumes? (Puedes seleccionar varios)",
+        mariscos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos mariscos/comida marina magros consumes?",
             ["Camarón", "Callo de hacha", "Almeja", "Langostino", "Jaiba", "Ninguno"],
-            key="mariscos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los mariscos magros que consumas. Marca 'Ninguno' si no consumes ninguno de estos mariscos."
+            "mariscos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧀 Quesos magros")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        quesos_magros = st.multiselect(
-            "¿Cuáles de estos quesos magros consumes? (Puedes seleccionar varios)",
-            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", 
-             "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
-            key="quesos_magros",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los quesos magros que consumes. Marca 'Ninguno' si no consumes ninguno de estos quesos."
+        quesos_magros = create_vertical_checkboxes(
+            "¿Cuáles de estos quesos magros consumes?",
+            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
+            "quesos_magros",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥛 Lácteos light o reducidos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        lacteos_light = st.multiselect(
-            "¿Cuáles de estos lácteos light o reducidos consumes? (Puedes seleccionar varios)",
-            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", 
-             "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", 
-             "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", 
-             "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
-            key="lacteos_light",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los lácteos light que uses. Marca 'Ninguno' si no consumes ninguno de estos lácteos."
+        lacteos_light = create_vertical_checkboxes(
+            "¿Cuáles de estos lácteos light o reducidos consumes?",
+            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
+            "lacteos_light",
+            "Marca todos los lácteos light que uses. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🥚 Huevos y embutidos light")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        huevos_embutidos_light = st.multiselect(
-            "¿Cuáles de estos huevos y embutidos light consumes? (Puedes seleccionar varios)",
+        huevos_embutidos_light = create_vertical_checkboxes(
+            "¿Cuáles de estos huevos y embutidos light consumes?",
             ["Clara de huevo", "Jamón de pechuga de pavo", "Jamón de pierna bajo en grasa", "Salchicha de pechuga de pavo (light)", "Pechuga de pavo rebanada", "Jamón serrano magro", "Ninguno"],
-            key="huevos_embutidos_light",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los huevos y embutidos light que consumes. Marca 'Ninguno' si no consumes ninguno de estos alimentos."
+            "huevos_embutidos_light",
+            "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         # Resumen del paso actual
         total_seleccionados = (len(st.session_state.get('carnes_res_magras', [])) + 
@@ -1319,109 +1920,77 @@ if datos_personales_completos and st.session_state.datos_completos:
 
     # GRUPO 3: FUENTES DE GRASA SALUDABLE
     elif current_step == 3:
-        # Add prominent visual step indicator
+        # Enhanced visual step indicator with orientation info
         st.markdown("""
         <div style="
             background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
             box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
             border: 3px solid #FF9800;
-            animation: slideIn 0.5s ease-out;
         ">
-            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: bold; color: white;">
                 🥑 PASO 3: FUENTES DE GRASA SALUDABLE
-            </h2>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 3 de 12 - Selecciona las grasas saludables que consumes
+            </h1>
+            <p style="margin: 1rem 0 0.5rem 0; font-size: 1.2rem; opacity: 0.9; color: white;">
+                Paso 3 de 12 en tu evaluación personalizada de patrones alimentarios
             </p>
+            <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 10px; margin-top: 1.5rem;">
+                <p style="margin: 0; font-size: 1rem; color: white; font-weight: 500;">
+                    🎯 <strong>Objetivo:</strong> Identificar las fuentes de grasas saludables que incluyes en tu dieta
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso3"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso3');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+        # Informational content box for orientation
+        st.info("""
+        ### 📋 Información importante para este paso:
         
-        st.markdown("""
-        <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
-            <h2 style="color: #1E1E1E; text-align: center; margin-bottom: 1rem;">
-                🥑 PASO 3: FUENTES DE GRASA SALUDABLE
-            </h2>
-        </div>
-        """, unsafe_allow_html=True)
+        **¿Por qué evaluamos estas grasas?**
+        - Las grasas saludables son esenciales para la absorción de vitaminas liposolubles (A, D, E, K)
+        - Favorecen el funcionamiento hormonal y la salud cardiovascular
+        - Proporcionan saciedad y mejoran el sabor de los alimentos
         
-        # Actualizar progreso
-        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+        **¿Cómo completar este paso?**
+        - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
         
-        # Actualizar indicador visual
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem;">
-            <div style="background: #F4C430; color: #1E1E1E; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-weight: bold; font-size: 1.2rem;">3</div>
-            <h4 style="color: #F4C430; margin-top: 0.5rem;">PASO ACTUAL</h4>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        st.markdown("""
-        ### 🎯 ¿Qué necesitamos saber?
-        En este paso evaluaremos las **fuentes de grasa saludable** que consumes. 
-        Estas grasas son esenciales para la absorción de vitaminas y el funcionamiento hormonal.
-        
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
+
+        # Actualizar progreso
+        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
         st.markdown("#### 🥑 Grasas naturales de alimentos")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        grasas_naturales = st.multiselect(
-            "¿Cuáles de estas grasas naturales consumes? (Puedes seleccionar varios)",
-            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", 
-             "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
-            key="grasas_naturales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las grasas naturales que consumes. Marca 'Ninguno' si no consumes ninguna de estas grasas."
+        grasas_naturales = create_vertical_checkboxes(
+            "¿Cuáles de estas grasas naturales consumes?",
+            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
+            "grasas_naturales",
+            "Marca todas las grasas naturales que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
         
         st.markdown("#### 🌰 Frutos secos y semillas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        frutos_secos_semillas = st.multiselect(
-            "¿Cuáles de estos frutos secos y semillas consumes? (Puedes seleccionar varios)",
-            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", 
-             "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
-            key="frutos_secos_semillas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los frutos secos y semillas que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
+        frutos_secos_semillas = create_vertical_checkboxes(
+            "¿Cuáles de estos frutos secos y semillas consumes?",
+            ["Almendras", "Nueces", "Nuez de la India", "Pistaches", "Cacahuates naturales (sin sal)", "Semillas de chía", "Semillas de linaza", "Semillas de girasol", "Semillas de calabaza (pepitas)", "Ninguno"],
+            "frutos_secos_semillas",
+            "Marca todos los frutos secos y semillas que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
         
         st.markdown("#### 🧈 Mantequillas y pastas vegetales")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        mantequillas_vegetales = st.multiselect(
-            "¿Cuáles de estas mantequillas y pastas vegetales consumes? (Puedes seleccionar varios)",
-            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", 
-             "Mantequilla de nuez de la India", "Ninguno"],
-            key="mantequillas_vegetales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las mantequillas vegetales que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+        mantequillas_vegetales = create_vertical_checkboxes(
+            "¿Cuáles de estas mantequillas y pastas vegetales consumes?",
+            ["Mantequilla de maní natural", "Mantequilla de almendra", "Tahini (pasta de ajonjolí)", "Mantequilla de nuez de la India", "Ninguno"],
+            "mantequillas_vegetales",
+            "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -1466,27 +2035,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso4"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso4');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1513,62 +2062,56 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este paso evaluaremos los **carbohidratos complejos y cereales** que consumes. 
         Estos alimentos proporcionan energía sostenida y fibra importante para tu digestión.
         
-        **💡 Instrucción:** Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente.
+        **💡 Instrucción:** - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
         st.markdown("#### 🌾 Cereales y granos integrales")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        cereales_integrales = st.multiselect(
+        cereales_integrales = create_vertical_checkboxes(
             "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
             ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
              "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
-             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Ninguno"],
-            key="cereales_integrales",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los cereales y granos que consumes. Marca 'Ninguno' si no consumes ninguno de estos."
+             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Galleta de arroz inflado","Ninguno"],
+            "cereales_integrales",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🍝 Pastas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        pastas = st.multiselect(
+        pastas = create_vertical_checkboxes(
             "¿Cuáles de estas pastas consumes? (Puedes seleccionar varios)",
             ["Pasta integral", "Pasta de trigo regular", "Pasta de arroz", "Pasta de quinoa", "Pasta de legumbres (lentejas, garbanzos)", "Fideos de arroz", "Fideos chinos", "Spaguetti", "Macarrones", "Lasaña", "Ninguno"],
-            key="pastas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todas las pastas que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+            "pastas",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🌽 Tortillas y panes")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        tortillas_panes = st.multiselect(
+        tortillas_panes = create_vertical_checkboxes(
             "¿Cuáles de estas tortillas y panes consumes? (Puedes seleccionar varios)",
             ["Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
              "Tortilla de avena", "Pan integral", "Pan multigrano", "Pan de centeno", 
              "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)", "Ninguno"],
-            key="tortillas_panes",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todos los tipos de tortillas y panes que consumes. Marca 'Ninguno' si no consumes ninguno."
+            "tortillas_panes",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🥔 Raíces y tubérculos (forma base)")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        raices_tuberculos = st.multiselect(
+        raices_tuberculos = create_vertical_checkboxes(
             "¿Cuáles de estas raíces y tubérculos consumes? (Puedes seleccionar varios)",
             ["Papa", "Camote", "Yuca", "Plátano macho", "Jícama", "Zanahoria", "Betabel", "Ninguno"],
-            key="raices_tuberculos",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Incluye todos los tubérculos y raíces que consumes en su forma base. Marca 'Ninguno' si no consumes ninguno de estos."
+            "raices_tuberculos",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
         
         st.markdown("#### 🫘 Leguminosas")
-        st.info("💡 **Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.")
-        leguminosas = st.multiselect(
+        leguminosas = create_vertical_checkboxes(
             "¿Cuáles de estas leguminosas consumes? (Puedes seleccionar varios)",
             ["Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
              "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)", "Ninguno"],
-            key="leguminosas",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar opciones",
-            help="Selecciona todas las leguminosas que consumes. Marca 'Ninguno' si no consumes ninguna de estas."
+            "leguminosas",
+            "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
 
         # Resumen del paso actual
@@ -1615,27 +2158,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso5"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso5');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1662,12 +2185,14 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este paso evaluaremos los **vegetales** que consumes o toleras fácilmente. 
         Los vegetales aportan vitaminas, minerales, fibra y antioxidantes esenciales para tu salud.
         
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+       **💡 Instrucción:** - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
-        st.info("💡 **Ayuda:** Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan.")
-        
-        vegetales_lista = st.multiselect(
+        vegetales_lista = create_vertical_checkboxes(
             "¿Cuáles de estos vegetales consumes o toleras fácilmente? (Puedes seleccionar varios)",
             ["Espinaca", "Acelga", "Kale", "Lechuga (romana, italiana, orejona, iceberg)", 
              "Col morada", "Col verde", "Repollo", "Brócoli", "Coliflor", "Ejote", "Chayote", 
@@ -1675,9 +2200,8 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Tomate verde", "Cebolla blanca", "Cebolla morada", "Pimiento morrón (rojo, verde, amarillo, naranja)", 
              "Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
              "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza", "Ninguno"],
-            key="vegetales_lista",
-            placeholder="🔽 Haz clic aquí para ver y seleccionar todos los vegetales que consumes",
-            help="Selecciona todos los vegetales que consumes o toleras. Marca 'Ninguno' si no consumes ninguno de estos vegetales."
+            "vegetales_lista",
+            "Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan."
         )
 
         # Resumen del paso actual con categorización
@@ -1726,27 +2250,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso6"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso6');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #DAA520;">
@@ -1773,12 +2277,14 @@ if datos_personales_completos and st.session_state.datos_completos:
         En este último paso de los grupos principales evaluaremos las **frutas** que disfrutas o toleras bien. 
         Las frutas aportan vitaminas, antioxidantes, fibra y azúcares naturales para energía.
         
-        **💡 Instrucción:** Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'.
+      **💡 Instrucción:** - Revisa cada categoría de alimentos verticalmente
+        -Marca TODOS los alimentos que consumas con facilidad, incluso ocasionalmente, estos alimentos se utilizarán para personalizar al máximo tu plan de alimentación.
+        - Si no consumes ningún alimento de una categoría, marca "Ninguno"
+        
+        **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         
-        st.info("💡 **Ayuda:** Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional.")
-        
-        frutas_lista = st.multiselect(
+        frutas_lista = create_vertical_checkboxes(
             "¿Cuáles de estas frutas disfrutas o toleras bien? (Puedes seleccionar varios)",
             ["Manzana (roja, verde, gala, fuji)", "Naranja", "Mandarina", "Mango (petacón, ataulfo)", 
              "Papaya", "Sandía", "Melón", "Piña", "Plátano (tabasco, dominico, macho)", "Uvas", 
@@ -1786,9 +2292,8 @@ if datos_personales_completos and st.session_state.datos_completos:
              "Ciruela", "Granada", "Cereza", "Chabacano", "Lima", "Limón", "Guayaba", "Tuna", 
              "Níspero", "Mamey", "Pitahaya (dragon fruit)", "Tamarindo", "Coco (carne, rallado)", 
              "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light", "Ninguno"],
-            key='frutas_lista',
-            placeholder="🔽 Haz clic aquí para ver y seleccionar todas las frutas que disfrutas",
-            help="Selecciona todas las frutas que disfrutas. Marca 'Ninguno' si no consumes ninguna de estas frutas."
+            "frutas_lista",
+            "Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional."
         )
 
         # Resumen del paso actual con categorización
@@ -1845,27 +2350,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso7"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso7');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
@@ -1890,15 +2375,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier grasa o aceite que uses para cocinar, desde aceites vegetales hasta mantequilla o manteca.")
         
-        aceites_coccion = st.multiselect(
-            "¿Cuáles de estas grasas/aceites usas para cocinar? (Puedes seleccionar varios)",
-            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", 
-             "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", 
-             "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", 
-             "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
-            key='aceites_coccion',
-            placeholder="🔽 Haz clic aquí para seleccionar los aceites que usas para cocinar",
-            help="Selecciona todos los aceites y grasas que usas en tu cocina. Marca 'Ninguno' si no usas ninguno de estos aceites."
+        aceites_coccion = create_vertical_checkboxes(
+            "¿Cuáles de estas grasas/aceites usas para cocinar?",
+            ["🫒 Aceite de oliva extra virgen", "🥑 Aceite de aguacate", "🥥 Aceite de coco virgen", "🧈 Mantequilla con sal", "🧈 Mantequilla sin sal", "🧈 Mantequilla clarificada (ghee)", "🐷 Manteca de cerdo (casera o artesanal)", "🧴 Spray antiadherente sin calorías (aceite de oliva o aguacate)", "❌ Prefiero cocinar sin aceite o con agua", "Ninguno"],
+            "aceites_coccion",
+            "Marca todos los aceites y grasas que usas en tu cocina. Si no usas ninguno, marca 'Ninguno'."
         )
 
         # Resumen
@@ -1943,27 +2424,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso8"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso8');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); color: #1E1E1E; margin-bottom: 2rem; border: 3px solid #27AE60;">
@@ -1988,16 +2449,11 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Incluye cualquier bebida sin calorías o muy bajas en calorías que tomes durante el día.")
         
-        bebidas_sin_calorias = st.multiselect(
-            "¿Cuáles de estas bebidas sin calorías consumes regularmente? (Puedes seleccionar varios)",
-            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", 
-             "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", 
-             "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", 
-             "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", 
-             "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
-            key='bebidas_sin_calorias',
-            placeholder="🔽 Haz clic aquí para seleccionar las bebidas que consumes",
-            help="Selecciona todas las bebidas sin calorías que acostumbres. Marca 'Ninguno' si no consumes ninguna de estas bebidas."
+        bebidas_sin_calorias = create_vertical_checkboxes(
+            "¿Cuáles de estas bebidas sin calorías consumes regularmente?",
+            ["💧 Agua natural", "💦 Agua mineral", "⚡ Bebidas con electrolitos sin azúcar (Electrolit Zero, SueroX, LMNT, etc.)", "🍋 Agua infusionada con frutas naturales (limón, pepino, menta, etc.)", "🍵 Té de hierbas sin azúcar (manzanilla, menta, jengibre, etc.)", "🍃 Té verde o té negro sin azúcar", "☕ Café negro sin azúcar", "🥤 Refrescos sin calorías (Coca Cola Zero, Pepsi Light, etc.)", "Ninguno"],
+            "bebidas_sin_calorias",
+            "Marca todas las bebidas sin calorías que acostumbres. Si no consumes ninguna, marca 'Ninguno'."
         )
 
         # Resumen
@@ -2018,8 +2474,95 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # APARTADO EXTRA 3: ALERGIAS/INTOLERANCIAS (PASO 9)
+    # APARTADO EXTRA 3: MÉTODOS DE COCCIÓN (PASO 9)
     elif current_step == 9:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                👨‍🍳 PASO 9: MÉTODOS DE COCCIÓN DISPONIBLES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Estás en el paso 9 de 13 - Optimización de Recetas
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="content-card" style="background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #FF9800;">
+            <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
+                👨‍🍳 PASO 9: MÉTODOS DE COCCIÓN DISPONIBLES
+            </h2>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Personalización de Recetas Según tus Recursos</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(69, text="Paso 9 de 13: Métodos de cocción disponibles")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🎯 ¿Por qué necesitamos esta información?
+        Conocer los **métodos de cocción** que tienes disponibles nos permite:
+        - Sugerir recetas que realmente puedas preparar en tu cocina
+        - Optimizar las preparaciones según tus herramientas y equipos
+        - Adaptar las técnicas de cocción a tus recursos disponibles
+        - Maximizar sabores y texturas con los métodos que prefieres
+        
+        **💡 Instrucción:** Selecciona TODOS los métodos de cocción que uses regularmente o que tengas disponibles en tu cocina.
+        """)
+        
+        st.markdown("### 👨‍🍳 ¿Cuáles son tus métodos de cocción más accesibles?")
+        st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
+        
+        metodos_coccion_accesibles = create_vertical_checkboxes(
+            "Selecciona los métodos de cocción que más usas o prefieres:",
+            ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
+             "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
+            "metodos_coccion_accesibles",
+            "Incluye todos los métodos que uses regularmente o que tengas disponibles"
+        )
+        
+        otro_metodo_coccion = st.text_input(
+            "¿Otro método de cocción? Especifica aquí:",
+            value=st.session_state.get('otro_metodo_coccion', ''),
+            placeholder="Ej: cocina de leña, olla de presión, wok, etc.",
+            help="Especifica cualquier otro método de cocción que uses"
+        )
+
+        # Guardar en session state (solo text input)
+        st.session_state.otro_metodo_coccion = otro_metodo_coccion
+        
+        # Resumen de métodos de cocción
+        metodos_count = len(st.session_state.get('metodos_coccion_accesibles', []))
+        if metodos_count > 0:
+            st.success(f"✅ **Excelente!** Has seleccionado {metodos_count} métodos de cocción. Esto nos permite personalizar las recetas según tus recursos disponibles.")
+        else:
+            st.info("ℹ️ **Nota:** Te recomendamos seleccionar al menos un método de cocción para poder adaptar las recetas a tus posibilidades.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # APARTADO EXTRA 4: ALERGIAS/INTOLERANCIAS (PASO 10)
+    elif current_step == 10:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2034,47 +2577,27 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+                🚨 PASO 10: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 9 de 12 - Información Crítica para tu Seguridad
+                Estás en el paso 10 de 13 - Información Crítica para tu Seguridad
             </p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso9"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso9');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #E74C3C;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
-                🚨 PASO 9: ALERGIAS E INTOLERANCIAS
+                🚨 PASO 10: ALERGIAS E INTOLERANCIAS ALIMENTARIAS
             </h2>
             <p style="text-align: center; margin: 0; font-weight: bold;">Información Crítica para tu Seguridad</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(75, text="Paso 9 de 12: Alergias e intolerancias (Crítico)")
+        progress.progress(77, text="Paso 10 de 13: Alergias e intolerancias (Crítico)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2087,75 +2610,43 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("### ❗ 1. ¿Tienes alguna alergia alimentaria?")
         st.error("🚨 **IMPORTANTE:** Las alergias alimentarias pueden ser graves. Marca todas las que tengas, aunque sean leves.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes alergias, selecciona 'Ninguna'.")
-        alergias_alimentarias = st.multiselect(
+        alergias_alimentarias = create_vertical_checkboxes(
             "Selecciona TODAS las alergias alimentarias que tienes:",
             ["Lácteos", "Huevo", "Frutos secos", "Mariscos", "Pescado", "Gluten", "Soya", "Semillas", "Ninguna"],
-            key='alergias_alimentarias',
-            placeholder="🔽 Selecciona si tienes alguna alergia alimentaria o marca 'Ninguna'",
-            help="Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
+            "alergias_alimentarias",
+            "Incluye cualquier alergia, desde leve hasta severa. Si no tienes alergias, selecciona 'Ninguna'."
         )
         
         otra_alergia = st.text_input(
             "¿Otra alergia no mencionada? Especifica aquí:",
             value=st.session_state.get('otra_alergia', ''),
             placeholder="Ej: alergia al apio, maní, sulfitos, etc.",
-            help="Especifica cualquier otra alergia alimentaria que tengas"
+            help="Especifica cualquier otra alergia alimentaria que tengas, en caso de que no tengas escribe ninguna"
         )
         
         st.markdown("---")
         st.markdown("### ⚠️ 2. ¿Tienes alguna intolerancia o malestar digestivo?")
         st.warning("💡 **Ayuda:** Las intolerancias causan malestar pero no son tan graves como las alergias. Incluye cualquier alimento que te cause gases, hinchazón, dolor abdominal, etc.")
         st.info("💡 **Instrucción:** Debes seleccionar al menos una opción. Si no tienes intolerancias, selecciona 'Ninguna'.")
-        intolerancias_digestivas = st.multiselect(
+        intolerancias_digestivas = create_vertical_checkboxes(
             "Selecciona las intolerancias o malestares digestivos que experimentas:",
             ["Lácteos con lactosa", "Leguminosas", "FODMAPs", "Gluten", "Crucíferas", "Endulzantes artificiales", "Ninguna"],
-            key='intolerancias_digestivas',
-            placeholder="🔽 Selecciona si tienes intolerancias digestivas o marca 'Ninguna'",
-            help="Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, selecciona 'Ninguna'."
+            "intolerancias_digestivas",
+            "Incluye alimentos que te causen malestar digestivo. Si no tienes intolerancias, marca 'Ninguna'."
         )
         
         otra_intolerancia = st.text_input(
             "¿Otra intolerancia no mencionada? Especifica aquí:",
             value=st.session_state.get('otra_intolerancia', ''),
             placeholder="Ej: intolerancia a la fructosa, sorbitol, etc.",
-            help="Especifica cualquier otra intolerancia o malestar digestivo"
+            help="Especifica cualquier otra intolerancia o malestar digestivo derivado de alimentos que tengas, en caso de que no tengas escribe ninguna"
         )
         
-        st.markdown("---")
-        st.markdown("### ➕ 3. ¿Hay algún alimento o bebida especial que desees incluir?")
-        st.info("💡 **Ayuda:** Menciona alimentos regionales, marcas específicas, preparaciones especiales o cualquier cosa importante que no aparezca en las listas anteriores.")
-        alimento_adicional = st.text_area(
-            "Escribe aquí alimentos o bebidas adicionales:",
-            value=st.session_state.get('alimento_adicional', ''),
-            placeholder="Ej: agua de jamaica casera, proteína en polvo marca X, alimentos regionales como quelites, etc.",
-            help="Incluye cualquier alimento importante que no esté en las listas anteriores"
-        )
-        
-        st.markdown("---")
-        st.markdown("### 👨‍🍳 4. ¿Cuáles son tus métodos de cocción más accesibles?")
-        st.info("💡 **Ayuda:** Selecciona los métodos de cocción que más usas o que tienes disponibles en tu cocina. Esto nos ayuda a sugerir recetas que puedas preparar fácilmente.")
-        
-        metodos_coccion_accesibles = st.multiselect(
-            "Selecciona los métodos de cocción que más usas o prefieres:",
-            ["🔥 A la plancha", "🔥 A la parrilla", "💧 Hervido", "♨️ Al vapor", "🔥 Horneado / al horno", 
-             "💨 Air fryer (freidora de aire)", "⚡ Microondas", "🥄 Salteado (con poco aceite)"],
-            key='metodos_coccion_accesibles',
-            placeholder="🔽 Selecciona los métodos de cocción que usas",
-            help="Incluye todos los métodos que uses regularmente o que tengas disponibles"
-        )
-        
-        otro_metodo_coccion = st.text_input(
-            "¿Otro método de cocción? Especifica aquí:",
-            value=st.session_state.get('otro_metodo_coccion', ''),
-            placeholder="Ej: cocina de leña, olla de presión, wok, etc.",
-            help="Especifica cualquier otro método de cocción que uses"
-        )
+
 
         # Guardar en session state (solo text inputs)
         st.session_state.otra_alergia = otra_alergia
         st.session_state.otra_intolerancia = otra_intolerancia
-        st.session_state.alimento_adicional = alimento_adicional
-        st.session_state.otro_metodo_coccion = otro_metodo_coccion
         
         # Resumen de restricciones
         alergias_count = len(st.session_state.get('alergias_alimentarias', []))
@@ -2182,8 +2673,8 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # APARTADO EXTRA 4: ANTOJOS (PASO 10)
-    elif current_step == 10:
+    # APARTADO EXTRA 5: ANTOJOS (PASO 11)
+    elif current_step == 11:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2198,47 +2689,27 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+                😋 PASO 11: EVALUACIÓN DE ANTOJOS ALIMENTARIOS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 10 de 12 - Información para Estrategias
+                Estás en el paso 11 de 13 - Información para Estrategias
             </p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso10"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso10');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-                // Focus on the first multiselect dropdown in this step
-                setTimeout(function() {
-                    const firstMultiselect = window.parent.document.querySelector('[data-testid="stMultiSelect"] input');
-                    if (firstMultiselect) {
-                        firstMultiselect.focus();
-                        firstMultiselect.click();
-                    }
-                }, 200);
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         st.markdown("""
         <div class="content-card" style="background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%); color: #FFFFFF; margin-bottom: 2rem; border: 3px solid #9B59B6;">
             <h2 style="color: #FFFFFF; text-align: center; margin-bottom: 1rem;">
-                😋 PASO 10: EVALUACIÓN DE ANTOJOS
+                😋 PASO 11: EVALUACIÓN DE ANTOJOS ALIMENTARIOS
             </h2>
-            <p style="text-align: center; margin: 0; font-weight: bold;">¡Último Paso! - Información para Estrategias</p>
+            <p style="text-align: center; margin: 0; font-weight: bold;">Información para Estrategias</p>
         </div>
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(83, text="Paso 10 de 12: Antojos alimentarios")
+        progress.progress(85, text="Paso 11 de 13: Antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2254,69 +2725,59 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown("---")
         st.markdown("### 🍫 Antojos de alimentos dulces / postres")
-        st.info("💡 **Ayuda:** Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente. Si no tienes antojos dulces, selecciona 'Ninguno'.")
-        antojos_dulces = st.multiselect(
+        antojos_dulces = create_vertical_checkboxes(
             "¿Cuáles de estos alimentos dulces se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chocolate con leche", "Chocolate amargo", "Pan dulce (conchas, donas, cuernitos)", 
              "Pastel (tres leches, chocolate, etc.)", "Galletas (Marías, Emperador, Chokis, etc.)", 
              "Helado / Nieve", "Flan / Gelatina", "Dulces tradicionales (cajeta, obleas, jamoncillo, glorias)", 
              "Cereal azucarado", "Leche condensada", "Churros", "Ninguno"],
-            key='antojos_dulces',
-            placeholder="🔽 Selecciona los alimentos dulces que se te antojan o marca 'Ninguno'",
-            help="Incluye todos los dulces que frecuentemente deseas. Si no tienes antojos dulces, selecciona 'Ninguno'."
+            "antojos_dulces",
+            "Incluye cualquier dulce, postre o alimento azucarado que se te antoje frecuentemente. Si no tienes antojos dulces, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🧂 Antojos de alimentos salados / snacks")
-        st.info("💡 **Ayuda:** Incluye botanas, frituras o alimentos salados que se te antojen. Si no tienes antojos salados, selecciona 'Ninguno'.")
-        antojos_salados = st.multiselect(
+        antojos_salados = create_vertical_checkboxes(
             "¿Cuáles de estos alimentos salados se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Papas fritas (Sabritas, Ruffles, etc.)", "Cacahuates enchilados", "Frituras (Doritos, Cheetos, Takis, etc.)", 
              "Totopos con salsa", "Galletas saladas", "Cacahuates japoneses", "Chicharrón (de cerdo o harina)", 
              "Nachos con queso", "Queso derretido o gratinado", "Ninguno"],
-            key='antojos_salados',
-            placeholder="🔽 Selecciona los alimentos salados que se te antojan o marca 'Ninguno'",
-            help="Incluye todas las botanas y snacks salados que frecuentemente deseas. Si no tienes antojos salados, selecciona 'Ninguno'."
+            "antojos_salados",
+            "Incluye botanas, frituras o alimentos salados que se te antojen. Si no tienes antojos salados, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🌮 Antojos de comidas rápidas / callejeras")
-        st.info("💡 **Ayuda:** Incluye comida rápida, platillos callejeros o preparaciones que se te antojen. Si no tienes antojos de comida rápida, selecciona 'Ninguno'.")
-        antojos_comida_rapida = st.multiselect(
+        antojos_comida_rapida = create_vertical_checkboxes(
             "¿Cuáles de estas comidas rápidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Tacos (pastor, asada, birria, etc.)", "Tortas (cubana, ahogada, etc.)", "Hamburguesas", "Hot dogs", 
              "Pizza", "Quesadillas fritas", "Tamales", "Pambazos", "Sopes / gorditas", "Elotes / esquites", 
              "Burritos", "Enchiladas", "Empanadas", "Ninguno"],
-            key='antojos_comida_rapida',
-            placeholder="🔽 Selecciona las comidas rápidas que se te antojan o marca 'Ninguno'",
-            help="Incluye toda la comida rápida o callejera que frecuentemente deseas. Si no tienes antojos de comida rápida, selecciona 'Ninguno'."
+            "antojos_comida_rapida",
+            "Incluye comida rápida, platillos callejeros o preparaciones que se te antojen. Si no tienes antojos de comida rápida, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🍹 Antojos de bebidas y postres líquidos")
-        st.info("💡 **Ayuda:** Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen. Si no tienes antojos de bebidas, selecciona 'Ninguno'.")
-        antojos_bebidas = st.multiselect(
+        antojos_bebidas = create_vertical_checkboxes(
             "¿Cuáles de estas bebidas se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Refrescos regulares (Coca-Cola, Fanta, etc.)", "Jugos industrializados (Boing, Jumex, etc.)", 
              "Malteadas / Frappés", "Agua de sabor con azúcar (jamaica, horchata, tamarindo)", 
              "Café con azúcar y leche", "Champurrado / atole", "Licuado de plátano con azúcar", 
              "Bebidas alcohólicas (cerveza, tequila, vino, etc.)", "Ninguno"],
-            key='antojos_bebidas',
-            placeholder="🔽 Selecciona las bebidas que se te antojan o marca 'Ninguno'",
-            help="Incluye todas las bebidas con calorías que frecuentemente deseas. Si no tienes antojos de bebidas, selecciona 'Ninguno'."
+            "antojos_bebidas",
+            "Incluye bebidas azucaradas, alcohólicas o postres líquidos que se te antojen. Si no tienes antojos de bebidas, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
         st.markdown("### 🔥 Antojos de alimentos con condimentos estimulantes")
-        st.info("💡 **Ayuda:** Incluye alimentos picantes, con chile o condimentos intensos que se te antojen. Si no tienes antojos picantes, selecciona 'Ninguno'.")
-        antojos_picantes = st.multiselect(
+        antojos_picantes = create_vertical_checkboxes(
             "¿Cuáles de estos alimentos picantes se te antojan frecuentemente? (Puedes seleccionar varios)",
             ["Chiles en escabeche", "Salsas picantes", "Salsa Valentina, Tajín o Chamoy", 
              "Pepinos con chile y limón", "Mangos verdes con chile", "Gomitas enchiladas", 
              "Fruta con Miguelito o chile en polvo", "Ninguno"],
-            key='antojos_picantes',
-            placeholder="🔽 Selecciona los alimentos picantes que se te antojan o marca 'Ninguno'",
-            help="Incluye todos los alimentos con chile o condimentos estimulantes que deseas. Si no tienes antojos picantes, selecciona 'Ninguno'."
+            "antojos_picantes",
+            "Incluye alimentos picantes, con chile o condimentos intensos que se te antojen. Si no tienes antojos picantes, selecciona 'Ninguno'."
         )
         
         st.markdown("---")
@@ -2364,8 +2825,12 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # PASO 11: FRECUENCIA DE COMIDAS
-    elif current_step == 11:
+    # PASO 12: FRECUENCIA DE COMIDAS
+    elif current_step == 12:
+        # CAMBIO: Limpiar antigua variable de radio button para evitar conflictos
+        if 'frecuencia_comidas' in st.session_state:
+            del st.session_state['frecuencia_comidas']
+            
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2380,30 +2845,18 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                🍽️ PASO 11: FRECUENCIA DE COMIDAS PREFERIDA
+                🍽️ PASO 12: FRECUENCIA DE COMIDAS PREFERIDA
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Estás en el paso 11 de 12 - Adaptación a tu Estilo de Vida
+                Estás en el paso 12 de 13 - Adaptación a tu Estilo de Vida
             </p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso11"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso11');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         # Actualizar progreso
-        progress.progress(92, text="Paso 11 de 12: Frecuencia de comidas preferida")
+        progress.progress(92, text="Paso 12 de 13: Frecuencia de comidas preferida")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2416,22 +2869,36 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.info("💡 **Ayuda:** Piensa en tu horario de trabajo, actividades y preferencias personales para elegir la frecuencia más conveniente.")
         
-        frecuencia_comidas = st.radio(
+        # CAMBIO: Usar checkboxes verticales en lugar de radio buttons para consistencia con otros pasos
+        # y para resolver problemas de persistencia
+        frecuencia_comidas_ck = create_vertical_checkboxes(
             "¿Cuál es la frecuencia de comidas que mejor se adapta a tu agenda diaria?",
             [
                 "Desayuno, comida y cena (3 comidas principales)",
                 "Desayuno, comida, cena y una colación",
                 "Desayuno, comida, cena y dos colaciones", 
                 "Solo dos comidas principales al día",
+                "Ayuno intermitente con dos comidas principales al día",
+                "Ayuno intermitente con tres comidas principales al día",
+                "Ayuno intermitente con tres comidas principales al día y una colación",
                 "Otro (especificar)"
             ],
-            key='frecuencia_comidas',
-            help="Selecciona la estructura de comidas que mejor se ajuste a tu rutina diaria"
+            "frecuencia_comidas_ck",
+            "Selecciona UNA SOLA opción que mejor se ajuste a tu rutina diaria. Si seleccionas más de una, se mostrará un error."
         )
+        
+        # Validación para asegurar que solo se seleccione UNA opción
+        if len(frecuencia_comidas_ck) > 1:
+            st.error("❌ **Error:** Solo puedes seleccionar UNA frecuencia de comidas. Por favor, desmarca las opciones adicionales.")
+        elif len(frecuencia_comidas_ck) == 0:
+            st.warning("⚠️ **Atención:** Debes seleccionar una frecuencia de comidas para continuar.")
+        
+        # Obtener la opción seleccionada (si hay exactamente una)
+        frecuencia_seleccionada = frecuencia_comidas_ck[0] if len(frecuencia_comidas_ck) == 1 else ""
         
         # Campo adicional si selecciona "Otro"
         otra_frecuencia = ""
-        if frecuencia_comidas == "Otro (especificar)":
+        if frecuencia_seleccionada == "Otro (especificar)":
             otra_frecuencia = st.text_input(
                 "Especifica tu frecuencia de comidas preferida:",
                 value=st.session_state.get('otra_frecuencia', ''),
@@ -2439,22 +2906,25 @@ if datos_personales_completos and st.session_state.datos_completos:
                 help="Describe tu rutina alimentaria ideal con el mayor detalle posible"
             )
             st.session_state.otra_frecuencia = otra_frecuencia
+        else:
+            # Limpiar el campo otra_frecuencia si se selecciona una opción diferente
+            st.session_state.otra_frecuencia = ""
         
         # Resumen de la selección
-        if frecuencia_comidas:
-            if frecuencia_comidas == "Otro (especificar)" and otra_frecuencia:
+        if frecuencia_seleccionada and len(frecuencia_comidas_ck) == 1:
+            if frecuencia_seleccionada == "Otro (especificar)" and otra_frecuencia:
                 st.success(f"✅ **Frecuencia seleccionada:** {otra_frecuencia}")
-            elif frecuencia_comidas != "Otro (especificar)":
-                st.success(f"✅ **Frecuencia seleccionada:** {frecuencia_comidas}")
+            elif frecuencia_seleccionada != "Otro (especificar)":
+                st.success(f"✅ **Frecuencia seleccionada:** {frecuencia_seleccionada}")
             
             # Información adicional según la selección
-            if "3 comidas principales" in frecuencia_comidas:
+            if "3 comidas principales" in frecuencia_seleccionada:
                 st.info("🍽️ **Estructura clásica:** Ideal para horarios regulares y control de porciones.")
-            elif "una colación" in frecuencia_comidas:
+            elif "una colación" in frecuencia_seleccionada:
                 st.info("🥪 **Con una colación:** Excelente para mantener energía estable durante el día.")
-            elif "dos colaciones" in frecuencia_comidas:
+            elif "dos colaciones" in frecuencia_seleccionada:
                 st.info("🍎 **Con dos colaciones:** Perfecta para personas con horarios largos o alta actividad física.")
-            elif "dos comidas principales" in frecuencia_comidas:
+            elif "dos comidas principales" in frecuencia_seleccionada:
                 st.info("⏰ **Ayuno intermitente:** Ideal para quienes prefieren ventanas de alimentación más concentradas.")
         
         st.markdown('</div>', unsafe_allow_html=True)
@@ -2468,8 +2938,8 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # PASO 12: SUGERENCIAS DE MENÚS
-    elif current_step == 12:
+    # PASO 13: SUGERENCIAS DE MENÚS
+    elif current_step == 13:
         # Add prominent visual step indicator
         st.markdown("""
         <div style="
@@ -2484,30 +2954,18 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 12: SUGERENCIAS DE MENÚS
+                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 12 de 12 - Personalización Final
+                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
             </p>
         </div>
         """, unsafe_allow_html=True)
         
-        # Add unique HTML marker for this step
-        st.markdown("""
-        <div id="paso12"></div>
-        <script>
-        // Auto-scroll to this step's marker and focus on first input for better UX
-        setTimeout(function() {
-            const stepElement = window.parent.document.getElementById('paso12');
-            if (stepElement) {
-                stepElement.scrollIntoView({behavior: 'smooth'});
-            }
-        }, 100);
-        </script>
-        """, unsafe_allow_html=True)
+
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 12 de 12: Sugerencias de menús - ¡Último paso!")
+        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2584,553 +3042,279 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("⬅️ Anterior"):
                 go_to_previous_step()
         with col3:
-            if st.button("🎉 Finalizar Evaluación"):
-                st.success("🎊 ¡Felicitaciones! Has completado toda la evaluación de patrones alimentarios.")
-                st.balloons()
-                # Marcar este paso como completado
-                st.session_state.step_completed[12] = True
-
-    # RESULTADO FINAL: Análisis completo del nuevo cuestionario
-    with st.expander("📈 **RESULTADO FINAL: Tu Perfil Alimentario Completo**", expanded=False):
-        progress.progress(100, text="Análisis completo: Generando tu perfil alimentario personalizado")
-
-        st.markdown('<div class="content-card">', unsafe_allow_html=True)
-        
-        st.markdown("### 🎯 Tu Perfil Alimentario Personalizado")
-        
-        # Crear resumen del perfil por grupos actuales
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### 👤 Información Personal")
-            st.write(f"• **Nombre:** {st.session_state.get('nombre', 'No especificado')}")
-            st.write(f"• **Edad:** {st.session_state.get('edad', 'No especificado')} años")
-            st.write(f"• **Sexo:** {st.session_state.get('sexo', 'No especificado')}")
-            st.write(f"• **Fecha evaluación:** {st.session_state.get('fecha_llenado', 'No especificado')}")
-            
-            st.markdown("#### 🥩 Grupo 1: Proteínas Grasas")
-            total_proteinas_grasas = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) + len(st.session_state.get('carnes_cerdo_grasas', [])) + len(st.session_state.get('carnes_pollo_grasas', [])) + len(st.session_state.get('organos_grasos', [])) + len(st.session_state.get('quesos_grasos', [])) + len(st.session_state.get('lacteos_enteros', [])) + len(st.session_state.get('pescados_grasos', [])) + len(st.session_state.get('mariscos_grasos', []))
-            st.write(f"• **Total alimentos seleccionados:** {total_proteinas_grasas}")
-            if st.session_state.get('huevos_embutidos'):
-                st.write(f"• **Huevos/embutidos:** {len(st.session_state.get('huevos_embutidos', []))}")
-            if st.session_state.get('carnes_res_grasas'):
-                st.write(f"• **Carnes de res grasas:** {len(st.session_state.get('carnes_res_grasas', []))}")
-            if st.session_state.get('carnes_cerdo_grasas'):
-                st.write(f"• **Carnes de cerdo grasas:** {len(st.session_state.get('carnes_cerdo_grasas', []))}")
-            if st.session_state.get('carnes_pollo_grasas'):
-                st.write(f"• **Carnes de pollo/pavo grasas:** {len(st.session_state.get('carnes_pollo_grasas', []))}")
-            
-            st.markdown("#### 🍗 Grupo 2: Proteínas Magras")
-            total_proteinas_magras = len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('carnes_cerdo_magras', [])) + len(st.session_state.get('carnes_pollo_magras', [])) + len(st.session_state.get('organos_magros', [])) + len(st.session_state.get('pescados_magros', [])) + len(st.session_state.get('mariscos_magros', [])) + len(st.session_state.get('quesos_magros', [])) + len(st.session_state.get('lacteos_light', [])) + len(st.session_state.get('huevos_embutidos_light', []))
-            st.write(f"• **Total alimentos seleccionados:** {total_proteinas_magras}")
-            if st.session_state.get('carnes_res_magras'):
-                st.write(f"• **Carnes de res magras:** {len(st.session_state.get('carnes_res_magras', []))}")
-            if st.session_state.get('pescados_magros'):
-                st.write(f"• **Pescados magros:** {len(st.session_state.get('pescados_magros', []))}")
-        
-        with col2:
-            st.markdown("#### 🥑 Grupo 3: Grasas Saludables")
-            total_grasas = len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', [])) + len(st.session_state.get('mantequillas_vegetales', []))
-            st.write(f"• **Total alimentos seleccionados:** {total_grasas}")
-            if st.session_state.get('grasas_naturales'):
-                st.write(f"• **Grasas naturales:** {len(st.session_state.get('grasas_naturales', []))}")
-            if st.session_state.get('frutos_secos_semillas'):
-                st.write(f"• **Frutos secos/semillas:** {len(st.session_state.get('frutos_secos_semillas', []))}")
-            
-            st.markdown("#### 🍞 Grupo 4: Carbohidratos")
-            total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', [])) + len(st.session_state.get('raices_tuberculos', [])) + len(st.session_state.get('leguminosas', []))
-            st.write(f"• **Total alimentos seleccionados:** {total_carbohidratos}")
-            if st.session_state.get('cereales_integrales'):
-                st.write(f"• **Cereales:** {len(st.session_state.get('cereales_integrales', []))}")
-            if st.session_state.get('tortillas_panes'):
-                st.write(f"• **Tortillas/panes:** {len(st.session_state.get('tortillas_panes', []))}")
-            
-            st.markdown("#### 🥬 Grupos 5 y 6: Vegetales y Frutas")
-            st.write(f"• **Vegetales:** {len(st.session_state.get('vegetales_lista', []))} seleccionados")
-            st.write(f"• **Frutas:** {len(st.session_state.get('frutas_lista', []))} seleccionadas")
-        
-        # Sección de información adicional
-        st.markdown("### 🍳 Información Adicional")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("#### 🧈 Aceites de Cocción")
-            if st.session_state.get('aceites_coccion'):
-                st.write(f"• **Aceites preferidos:** {len(st.session_state.get('aceites_coccion', []))} seleccionados")
-                aceites_top = st.session_state.get('aceites_coccion', [])[:3]
-                for aceite in aceites_top:
-                    st.write(f"  - {aceite}")
-            
-            st.markdown("#### 🥤 Bebidas Sin Calorías")
-            if st.session_state.get('bebidas_sin_calorias'):
-                st.write(f"• **Bebidas preferidas:** {len(st.session_state.get('bebidas_sin_calorias', []))} seleccionadas")
-                bebidas_top = st.session_state.get('bebidas_sin_calorias', [])[:3]
-                for bebida in bebidas_top:
-                    st.write(f"  - {bebida}")
-        
-        with col2:
-            st.markdown("#### 👨‍🍳 Métodos de Cocción")
-            if st.session_state.get('metodos_coccion_accesibles'):
-                st.write(f"• **Métodos preferidos:** {len(st.session_state.get('metodos_coccion_accesibles', []))} seleccionados")
-                metodos_top = st.session_state.get('metodos_coccion_accesibles', [])[:3]
-                for metodo in metodos_top:
-                    st.write(f"  - {metodo}")
-            
-            if st.session_state.get('otro_metodo_coccion'):
-                st.write(f"• **Otro método:** {st.session_state.get('otro_metodo_coccion', 'No especificado')}")
-
-        # Restricciones importantes
-        if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
-            st.markdown("### ⚠️ Restricciones Importantes")
-            if st.session_state.get('alergias_alimentarias'):
-                st.warning(f"**Alergias alimentarias:** {', '.join(st.session_state.get('alergias_alimentarias', []))}")
-                if st.session_state.get('otra_alergia'):
-                    st.write(f"• **Otra alergia:** {st.session_state.get('otra_alergia')}")
-            
-            if st.session_state.get('intolerancias_digestivas'):
-                st.info(f"**Intolerancias digestivas:** {', '.join(st.session_state.get('intolerancias_digestivas', []))}")
-                if st.session_state.get('otra_intolerancia'):
-                    st.write(f"• **Otra intolerancia:** {st.session_state.get('otra_intolerancia')}")
-
-        # Antojos alimentarios
-        st.markdown("### 😋 Patrones de Antojos Alimentarios")
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if st.session_state.get('antojos_dulces'):
-                st.write(f"• **Antojos dulces:** {len(st.session_state.get('antojos_dulces', []))} tipos")
-            if st.session_state.get('antojos_salados'):
-                st.write(f"• **Antojos salados:** {len(st.session_state.get('antojos_salados', []))} tipos")
-            if st.session_state.get('antojos_comida_rapida'):
-                st.write(f"• **Comida rápida:** {len(st.session_state.get('antojos_comida_rapida', []))} tipos")
-        
-        with col2:
-            if st.session_state.get('antojos_bebidas'):
-                st.write(f"• **Bebidas con calorías:** {len(st.session_state.get('antojos_bebidas', []))} tipos")
-            if st.session_state.get('antojos_picantes'):
-                st.write(f"• **Condimentos picantes:** {len(st.session_state.get('antojos_picantes', []))} tipos")
-            if st.session_state.get('otros_antojos'):
-                st.write(f"• **Otros antojos especificados:** Sí")
-
-        # Información adicional especificada
-        if st.session_state.get('alimento_adicional'):
-            st.markdown("### ➕ Alimentos Adicionales Especificados")
-            st.info(f"**Alimentos mencionados:** {st.session_state.get('alimento_adicional', 'No especificado')}")
-
-        # Información de frecuencia de comidas
-        if st.session_state.get('frecuencia_comidas'):
-            st.markdown("### 🍽️ Frecuencia de Comidas Preferida")
-            frecuencia = st.session_state.get('frecuencia_comidas', 'No especificado')
-            if frecuencia == "Otro (especificar)" and st.session_state.get('otra_frecuencia'):
-                st.info(f"**Frecuencia personalizada:** {st.session_state.get('otra_frecuencia')}")
+            # Botón obligatorio para terminar y enviar email
+            if not st.session_state.get("correo_enviado", False):
+                if st.button("📧 Terminar y enviar mi evaluación por email", key="finalizar_con_email"):
+                    faltantes = datos_completos_para_email()
+                    grupos_incompletos = verificar_grupos_obligatorios_completos()
+                    
+                    if faltantes:
+                        st.error(f"❌ No se puede finalizar. Faltan datos personales: {', '.join(faltantes)}")
+                    elif grupos_incompletos:
+                        st.error(f"""
+                        ❌ **No se puede finalizar. Grupos alimentarios incompletos:**
+                        
+                        Los siguientes grupos requieren al menos una selección (puedes marcar 'Ninguno' si no consumes ninguno):
+                        
+                        {chr(10).join([f'• {grupo}' for grupo in grupos_incompletos])}
+                        
+                        Por favor, completa estos grupos antes de finalizar la evaluación.
+                        """)
+                    else:
+                        with st.spinner("📧 Finalizando evaluación y enviando resumen por email..."):
+                            resumen_completo = crear_resumen_email()
+                            ok = enviar_email_resumen(
+                                resumen_completo, 
+                                st.session_state.get('nombre', ''), 
+                                st.session_state.get('email_cliente', ''), 
+                                st.session_state.get('fecha_llenado', ''), 
+                                st.session_state.get('edad', ''), 
+                                st.session_state.get('telefono', '')
+                            )
+                            if ok:
+                                st.session_state["correo_enviado"] = True
+                                st.session_state.step_completed[12] = True
+                                st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
+                                st.balloons()
+                            else:
+                                st.error("❌ Error al enviar email. No se puede finalizar hasta que el envío sea exitoso. Contacta a soporte técnico si el problema persiste.")
             else:
-                st.info(f"**Frecuencia seleccionada:** {frecuencia}")
-
-        # Sugerencias de menús
-        if st.session_state.get('sugerencias_menus'):
-            st.markdown("### 📝 Sugerencias de Menús")
-            sugerencias = st.session_state.get('sugerencias_menus', '')
-            palabra_count = len(sugerencias.split()) if sugerencias else 0
-            st.info(f"**Sugerencias del cliente:** {sugerencias[:200]}{'...' if len(sugerencias) > 200 else ''}")
-            if palabra_count > 0:
-                st.success(f"**Detalle:** {palabra_count} palabras de sugerencias específicas proporcionadas")
-
-        # Recomendaciones personalizadas basadas en datos reales
-        st.markdown("### 💡 Recomendaciones Personalizadas Iniciales")
-        
-        # Análisis básico basado en las respuestas actuales
-        recomendaciones = []
-        
-        # Verificar diversidad de alimentos por grupo
-        total_grupos_completos = 0
-        if len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) > 0:
-            total_grupos_completos += 1
-        if len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('pescados_magros', [])) > 0:
-            total_grupos_completos += 1
-        if len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', [])) > 0:
-            total_grupos_completos += 1
-        if len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', [])) > 0:
-            total_grupos_completos += 1
-        if len(st.session_state.get('vegetales_lista', [])) > 5:
-            total_grupos_completos += 1
-        if len(st.session_state.get('frutas_lista', [])) > 5:
-            total_grupos_completos += 1
-        
-        if total_grupos_completos >= 5:
-            recomendaciones.append("✅ **Diversidad nutricional excelente:** Tienes una buena variedad de alimentos en la mayoría de grupos alimentarios.")
-        elif total_grupos_completos >= 3:
-            recomendaciones.append("🔄 **Diversidad nutricional moderada:** Considera ampliar la variedad en algunos grupos alimentarios.")
-        else:
-            recomendaciones.append("📈 **Oportunidad de mejora:** Ampliar la variedad de alimentos puede enriquecer tu plan nutricional.")
-        
-        # Verificar métodos de cocción
-        if len(st.session_state.get('metodos_coccion_accesibles', [])) >= 4:
-            recomendaciones.append("👨‍🍳 **Versatilidad culinaria:** Tienes múltiples métodos de cocción disponibles, ideal para variedad en preparaciones.")
-        elif len(st.session_state.get('metodos_coccion_accesibles', [])) >= 2:
-            recomendaciones.append("🔧 **Métodos básicos:** Con tus métodos de cocción actuales puedes crear preparaciones nutritivas y variadas.")
-        
-        # Verificar restricciones
-        if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
-            recomendaciones.append("⚠️ **Plan especializado:** Tus restricciones alimentarias requerirán un plan personalizado cuidadoso.")
-        
-        # Verificar antojos
-        total_antojos = len(st.session_state.get('antojos_dulces', [])) + len(st.session_state.get('antojos_salados', [])) + len(st.session_state.get('antojos_comida_rapida', []))
-        if total_antojos > 10:
-            recomendaciones.append("🧠 **Manejo de antojos:** Se recomienda desarrollar estrategias específicas para controlar los antojos identificados.")
-        elif total_antojos > 5:
-            recomendaciones.append("⚖️ **Equilibrio:** Incluir alternativas saludables para satisfacer antojos ocasionales.")
-        
-        if not recomendaciones:
-            recomendaciones.append("📋 **Perfil base establecido:** Se requiere más información para recomendaciones específicas.")
-        
-        for i, rec in enumerate(recomendaciones, 1):
-            st.write(f"{i}. {rec}")
-
-        st.success(f"""
-        ### ✅ Análisis de patrones alimentarios completado exitosamente
-        
-        **Tu perfil nutricional personalizado está listo** y incluye información detallada sobre:
-        - 6 grupos alimentarios principales evaluados
-        - Métodos de cocción disponibles y preferidos  
-        - Restricciones, alergias e intolerancias específicas
-        - Patrones de antojos alimentarios identificados
-        - Aceites de cocción y bebidas sin calorías preferidas
-        
-        **Este análisis integral permitirá crear un plan nutricional completamente adaptado** 
-        a tus gustos, tolerancias y necesidades específicas.
-        
-        La información será enviada a nuestro equipo de nutrición para desarrollar tu plan personalizado.
-        """)
-
-        st.markdown('</div>', unsafe_allow_html=True)
-
-# Construir resumen completo para email
-def crear_resumen_email():
-    resumen = f"""
-=====================================
-CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA - MUPAI
-=====================================
-Generado: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-Sistema: MUPAI v2.0 - Muscle Up Performance Assessment Intelligence
-
-=====================================
-DATOS DEL CLIENTE:
-=====================================
-- Nombre completo: {st.session_state.get('nombre', 'No especificado')}
-- Edad: {st.session_state.get('edad', 'No especificado')} años
-- Sexo: {st.session_state.get('sexo', 'No especificado')}
-- Teléfono: {st.session_state.get('telefono', 'No especificado')}
-- Email: {st.session_state.get('email_cliente', 'No especificado')}
-- Fecha evaluación: {st.session_state.get('fecha_llenado', 'No especificado')}
-
-=====================================
-🥩 GRUPO 1: PROTEÍNA ANIMAL CON MÁS CONTENIDO GRASO
-=====================================
-🍳 Huevos y embutidos:
-- {', '.join(st.session_state.get('huevos_embutidos', [])) if st.session_state.get('huevos_embutidos') else 'No especificado'}
-
-🐄 Carnes de res grasas:
-- {', '.join(st.session_state.get('carnes_res_grasas', [])) if st.session_state.get('carnes_res_grasas') else 'No especificado'}
-
-🐷 Carnes de cerdo grasas:
-- {', '.join(st.session_state.get('carnes_cerdo_grasas', [])) if st.session_state.get('carnes_cerdo_grasas') else 'No especificado'}
-
-🐔 Carnes de pollo/pavo grasas:
-- {', '.join(st.session_state.get('carnes_pollo_grasas', [])) if st.session_state.get('carnes_pollo_grasas') else 'No especificado'}
-
-🫀 Órganos y vísceras grasas:
-- {', '.join(st.session_state.get('organos_grasos', [])) if st.session_state.get('organos_grasos') else 'No especificado'}
-
-🐟 Pescados grasos:
-- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
-
-🦐 Mariscos/comida marina grasos:
-- {', '.join(st.session_state.get('mariscos_grasos', [])) if st.session_state.get('mariscos_grasos') else 'No especificado'}
-
-🧀 Quesos altos en grasa:
-- {', '.join(st.session_state.get('quesos_grasos', [])) if st.session_state.get('quesos_grasos') else 'No especificado'}
-
-🥛 Lácteos enteros:
-- {', '.join(st.session_state.get('lacteos_enteros', [])) if st.session_state.get('lacteos_enteros') else 'No especificado'}
-
-🐟 Pescados grasos:
-- {', '.join(st.session_state.get('pescados_grasos', [])) if st.session_state.get('pescados_grasos') else 'No especificado'}
-
-=====================================
-🍗 GRUPO 2: PROTEÍNA ANIMAL MAGRA
-=====================================
-🐄 Carnes de res magras:
-- {', '.join(st.session_state.get('carnes_res_magras', [])) if st.session_state.get('carnes_res_magras') else 'No especificado'}
-
-🐷 Carnes de cerdo magras:
-- {', '.join(st.session_state.get('carnes_cerdo_magras', [])) if st.session_state.get('carnes_cerdo_magras') else 'No especificado'}
-
-🐔 Carnes de pollo/pavo magras:
-- {', '.join(st.session_state.get('carnes_pollo_magras', [])) if st.session_state.get('carnes_pollo_magras') else 'No especificado'}
-
-🫀 Órganos y vísceras magros:
-- {', '.join(st.session_state.get('organos_magros', [])) if st.session_state.get('organos_magros') else 'No especificado'}
-
-🐟 Pescados magros:
-- {', '.join(st.session_state.get('pescados_magros', [])) if st.session_state.get('pescados_magros') else 'No especificado'}
-
-🦐 Mariscos/comida marina magros:
-- {', '.join(st.session_state.get('mariscos_magros', [])) if st.session_state.get('mariscos_magros') else 'No especificado'}
-
-🧀 Quesos magros:
-- {', '.join(st.session_state.get('quesos_magros', [])) if st.session_state.get('quesos_magros') else 'No especificado'}
-
-🥛 Lácteos light o reducidos:
-- {', '.join(st.session_state.get('lacteos_light', [])) if st.session_state.get('lacteos_light') else 'No especificado'}
-
-🥚 Huevos y embutidos light:
-- {', '.join(st.session_state.get('huevos_embutidos_light', [])) if st.session_state.get('huevos_embutidos_light') else 'No especificado'}
-
-=====================================
-🥑 GRUPO 3: FUENTES DE GRASA SALUDABLE
-=====================================
-🥑 Grasas naturales de alimentos:
-- {', '.join(st.session_state.get('grasas_naturales', [])) if st.session_state.get('grasas_naturales') else 'No especificado'}
-
-🌰 Frutos secos y semillas:
-- {', '.join(st.session_state.get('frutos_secos_semillas', [])) if st.session_state.get('frutos_secos_semillas') else 'No especificado'}
-
-🧈 Mantequillas y pastas vegetales:
-- {', '.join(st.session_state.get('mantequillas_vegetales', [])) if st.session_state.get('mantequillas_vegetales') else 'No especificado'}
-
-=====================================
-🍞 GRUPO 4: CARBOHIDRATOS COMPLEJOS Y CEREALES
-=====================================
-🌾 Cereales y granos integrales:
-- {', '.join(st.session_state.get('cereales_integrales', [])) if st.session_state.get('cereales_integrales') else 'No especificado'}
-
-🍝 Pastas:
-- {', '.join(st.session_state.get('pastas', [])) if st.session_state.get('pastas') else 'No especificado'}
-
-🌽 Tortillas y panes:
-- {', '.join(st.session_state.get('tortillas_panes', [])) if st.session_state.get('tortillas_panes') else 'No especificado'}
-
-🥔 Raíces y tubérculos (forma base):
-- {', '.join(st.session_state.get('raices_tuberculos', [])) if st.session_state.get('raices_tuberculos') else 'No especificado'}
-
-🫘 Leguminosas:
-- {', '.join(st.session_state.get('leguminosas', [])) if st.session_state.get('leguminosas') else 'No especificado'}
-
-=====================================
-🥬 GRUPO 5: VEGETALES
-=====================================
-- {', '.join(st.session_state.get('vegetales_lista', [])) if st.session_state.get('vegetales_lista') else 'No especificado'}
-
-=====================================
-🍎 GRUPO 6: FRUTAS
-=====================================
-- {', '.join(st.session_state.get('frutas_lista', [])) if st.session_state.get('frutas_lista') else 'No especificado'}
-
-=====================================
-🍳 APARTADO EXTRA: GRASA/ACEITE DE COCCIÓN FAVORITA
-=====================================
-- {', '.join(st.session_state.get('aceites_coccion', [])) if st.session_state.get('aceites_coccion') else 'No especificado'}
-
-=====================================
-🥤 BEBIDAS SIN CALORÍAS PARA HIDRATACIÓN
-=====================================
-- {', '.join(st.session_state.get('bebidas_sin_calorias', [])) if st.session_state.get('bebidas_sin_calorias') else 'No especificado'}
-
-=====================================
-🚨 SECCIÓN FINAL: ALERGIAS, INTOLERANCIAS Y PREFERENCIAS
-=====================================
-❗ 1. Alergias alimentarias:
-- {', '.join(st.session_state.get('alergias_alimentarias', [])) if st.session_state.get('alergias_alimentarias') else 'No especificado'}
-- Otra alergia especificada: {st.session_state.get('otra_alergia', 'No especificado')}
-
-⚠️ 2. Intolerancias o malestar digestivo:
-- {', '.join(st.session_state.get('intolerancias_digestivas', [])) if st.session_state.get('intolerancias_digestivas') else 'No especificado'}
-- Otra intolerancia especificada: {st.session_state.get('otra_intolerancia', 'No especificado')}
-
-➕ 3. Alimentos o bebidas adicionales deseados:
-- {st.session_state.get('alimento_adicional', 'No especificado')}
-
-➕ 4. Métodos de cocción más accesibles para el día a día:
-- {', '.join(st.session_state.get('metodos_coccion_accesibles', [])) if st.session_state.get('metodos_coccion_accesibles') else 'No especificado'}
-- Otro método especificado: {st.session_state.get('otro_metodo_coccion', 'No especificado')}
-
-=====================================
-😋 SECCIÓN DE ANTOJOS ALIMENTARIOS
-=====================================
-🍫 Alimentos dulces / postres:
-- {', '.join(st.session_state.get('antojos_dulces', [])) if st.session_state.get('antojos_dulces') else 'No especificado'}
-
-🧂 Alimentos salados / snacks:
-- {', '.join(st.session_state.get('antojos_salados', [])) if st.session_state.get('antojos_salados') else 'No especificado'}
-
-🌮 Comidas rápidas / callejeras:
-- {', '.join(st.session_state.get('antojos_comida_rapida', [])) if st.session_state.get('antojos_comida_rapida') else 'No especificado'}
-
-🍹 Bebidas y postres líquidos:
-- {', '.join(st.session_state.get('antojos_bebidas', [])) if st.session_state.get('antojos_bebidas') else 'No especificado'}
-
-🔥 Alimentos con condimentos estimulantes:
-- {', '.join(st.session_state.get('antojos_picantes', [])) if st.session_state.get('antojos_picantes') else 'No especificado'}
-
-❓ Otros antojos especificados:
-- {st.session_state.get('otros_antojos', 'No especificado')}
-
-=====================================
-🍽️ FRECUENCIA DE COMIDAS PREFERIDA
-=====================================
-- Frecuencia seleccionada: {st.session_state.get('frecuencia_comidas', 'No especificado')}
-- Especificación adicional: {st.session_state.get('otra_frecuencia', 'No especificado')}
-
-=====================================
-📝 SUGERENCIAS DE MENÚS Y PREFERENCIAS
-=====================================
-- Sugerencias del cliente: {st.session_state.get('sugerencias_menus', 'No especificado')}
-- Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
-
-=====================================
-RESUMEN DE ANÁLISIS IDENTIFICADO:
-=====================================
-Este cuestionario completo de patrones alimentarios proporciona una base integral 
-para el desarrollo de recomendaciones nutricionales altamente personalizadas basadas en:
-
-1. 6 grupos alimentarios principales evaluados
-2. Métodos de cocción disponibles y preferidos
-3. Restricciones específicas (alergias e intolerancias)  
-4. Patrones de preferencias detallados
-5. Análisis de antojos y alimentación emocional
-6. Frecuencia de comidas preferida del cliente
-7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
-
-RECOMENDACIONES PARA SEGUIMIENTO:
-- Desarrollar plan nutricional personalizado basado en estos patrones
-- Considerar restricciones y alergias como prioridad absoluta
-- Aprovechar métodos de cocción preferidos y disponibles
-- Integrar estrategias para manejo de antojos identificados
-- Estructurar la frecuencia de comidas según la preferencia del cliente
-- Incorporar sugerencias específicas de menús proporcionadas por el cliente
-- Adaptar recomendaciones al contexto personal y familiar específico
-
-=====================================
-© 2025 MUPAI - Muscle up GYM
-Alimentary Pattern Assessment Intelligence
-=====================================
-"""
-    return resumen
-
-# RESUMEN FINAL Y ENVÍO DE EMAIL
-st.markdown("---")
-st.markdown('<div class="content-card" style="background: linear-gradient(135deg, #F4C430 0%, #DAA520 100%); color: #1E1E1E;">', unsafe_allow_html=True)
-st.markdown("## 🎯 **Resumen Final de tu Evaluación de Patrones Alimentarios**")
-st.markdown(f"*Fecha: {st.session_state.get('fecha_llenado', 'No especificado')} | Cliente: {st.session_state.get('nombre', 'No especificado')}*")
-
-# Mostrar métricas finales basadas en los datos reales del formulario
-col1, col2, col3 = st.columns(3)
-with col1:
-    total_alimentos_grupo1 = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) + len(st.session_state.get('quesos_grasos', []))
-    total_alimentos_grupo2 = len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('pescados_magros', [])) + len(st.session_state.get('quesos_magros', []))
-    st.markdown(f"""
-    ### 🥩 Proteínas
-    - **Grupo 1 (grasas):** {total_alimentos_grupo1} alimentos
-    - **Grupo 2 (magras):** {total_alimentos_grupo2} alimentos
-    - **Restricciones:** {'Sí' if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas') else 'No'}
-    """)
-
-with col2:
-    total_grasas = len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', []))
-    total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', []))
-    st.markdown(f"""
-    ### 🥑 Macronutrientes  
-    - **Grasas saludables:** {total_grasas} alimentos
-    - **Carbohidratos:** {total_carbohidratos} alimentos
-    - **Vegetales:** {len(st.session_state.get('vegetales_lista', []))} seleccionados
-    """)
-
-with col3:
-    total_antojos = len(st.session_state.get('antojos_dulces', [])) + len(st.session_state.get('antojos_salados', []))
-    st.markdown(f"""
-    ### 😋 Patrones y Hábitos
-    - **Frutas:** {len(st.session_state.get('frutas_lista', []))} seleccionadas
-    - **Métodos cocción:** {len(st.session_state.get('metodos_coccion_accesibles', []))} disponibles
-    - **Antojos:** {total_antojos} tipos identificados
-    """)
-
-st.success(f"""
-### ✅ Evaluación de patrones alimentarios completada exitosamente
-
-Tu perfil alimentario ha sido analizado considerando todos los grupos alimentarios evaluados: 
-proteínas (grasas y magras), grasas saludables, carbohidratos complejos, vegetales, frutas, 
-métodos de cocción, restricciones alimentarias y patrones de antojos.
-
-**Este análisis proporciona la base para desarrollar recomendaciones nutricionales personalizadas** 
-que se ajusten a tus gustos, tolerancias y necesidades específicas.
-
-Se recomienda consulta con nutricionista especializado para desarrollar plan específico basado en estos patrones.
-""")
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Función para verificar datos completos
-def datos_completos_para_email():
-    obligatorios = {
-        "Nombre": st.session_state.get('nombre'),
-        "Email": st.session_state.get('email_cliente'), 
-        "Teléfono": st.session_state.get('telefono'),
-        "Edad": st.session_state.get('edad')
-    }
-    faltantes = [campo for campo, valor in obligatorios.items() if not valor]
-    return faltantes
-
-def verificar_grupos_obligatorios_completos():
-    """Verifica que los grupos obligatorios (1-6) estén completados"""
-    grupos_incompletos = []
-    
-    # Grupo 1: Proteínas grasas
-    if not validate_step_1():
-        grupos_incompletos.append("Proteínas con más contenido graso")
-    
-    # Grupo 2: Proteínas magras  
-    if not validate_step_2():
-        grupos_incompletos.append("Proteínas magras")
-        
-    # Grupo 3: Grasas saludables
-    if not validate_step_3():
-        grupos_incompletos.append("Fuentes de grasa saludable")
-        
-    # Grupo 4: Carbohidratos
-    if not validate_step_4():
-        grupos_incompletos.append("Carbohidratos complejos")
-        
-    # Grupo 5: Vegetales
-    if not validate_step_5():
-        grupos_incompletos.append("Vegetales")
-        
-    # Grupo 6: Frutas
-    if not validate_step_6():
-        grupos_incompletos.append("Frutas")
-        
-    return grupos_incompletos
-
-# Botón para enviar email
-if not st.session_state.get("correo_enviado", False):
-    if st.button("📧 Terminar cuestionario y enviar resumen por email", key="enviar_email"):
+                st.success("🎊 ¡Felicitaciones! Has completado toda la evaluación de patrones alimentarios.")
+                st.info("✅ Tu evaluación ya fue enviada por email exitosamente.")
+
+    # RESULTADO FINAL: Solo mostrar después de enviar email exitosamente
+    if st.session_state.get("correo_enviado", False):
+        with st.expander("📈 **RESULTADO FINAL: Tu Perfil Alimentario Completo**", expanded=True):
+            progress.progress(100, text="Análisis completo: Generando tu perfil alimentario personalizado")
+
+            st.markdown('<div class="content-card">', unsafe_allow_html=True)
+            
+            st.markdown("### 🎯 Tu Perfil Alimentario Personalizado")
+            
+            # Crear resumen del perfil por grupos actuales
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### 👤 Información Personal")
+                st.write(f"• **Nombre:** {st.session_state.get('nombre', 'No especificado')}")
+                st.write(f"• **Edad:** {st.session_state.get('edad', 'No especificado')} años")
+                st.write(f"• **Sexo:** {st.session_state.get('sexo', 'No especificado')}")
+                st.write(f"• **Fecha evaluación:** {st.session_state.get('fecha_llenado', 'No especificado')}")
+                
+                st.markdown("#### 🥩 Grupo 1: Proteínas Grasas")
+                total_proteinas_grasas = len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) + len(st.session_state.get('carnes_cerdo_grasas', [])) + len(st.session_state.get('carnes_pollo_grasas', [])) + len(st.session_state.get('organos_grasos', [])) + len(st.session_state.get('quesos_grasos', [])) + len(st.session_state.get('lacteos_enteros', [])) + len(st.session_state.get('pescados_grasos', [])) + len(st.session_state.get('mariscos_grasos', []))
+                st.write(f"• **Total alimentos seleccionados:** {total_proteinas_grasas}")
+                if st.session_state.get('huevos_embutidos'):
+                    st.write(f"• **Huevos/embutidos:** {len(st.session_state.get('huevos_embutidos', []))}")
+                if st.session_state.get('carnes_res_grasas'):
+                    st.write(f"• **Carnes de res grasas:** {len(st.session_state.get('carnes_res_grasas', []))}")
+                if st.session_state.get('carnes_cerdo_grasas'):
+                    st.write(f"• **Carnes de cerdo grasas:** {len(st.session_state.get('carnes_cerdo_grasas', []))}")
+                if st.session_state.get('carnes_pollo_grasas'):
+                    st.write(f"• **Carnes de pollo/pavo grasas:** {len(st.session_state.get('carnes_pollo_grasas', []))}")
+                
+                st.markdown("#### 🍗 Grupo 2: Proteínas Magras")
+                total_proteinas_magras = len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('carnes_cerdo_magras', [])) + len(st.session_state.get('carnes_pollo_magras', [])) + len(st.session_state.get('organos_magros', [])) + len(st.session_state.get('pescados_magros', [])) + len(st.session_state.get('mariscos_magros', [])) + len(st.session_state.get('quesos_magros', [])) + len(st.session_state.get('lacteos_light', [])) + len(st.session_state.get('huevos_embutidos_light', []))
+                st.write(f"• **Total alimentos seleccionados:** {total_proteinas_magras}")
+                if st.session_state.get('carnes_res_magras'):
+                    st.write(f"• **Carnes de res magras:** {len(st.session_state.get('carnes_res_magras', []))}")
+                if st.session_state.get('pescados_magros'):
+                    st.write(f"• **Pescados magros:** {len(st.session_state.get('pescados_magros', []))}")
+            
+            with col2:
+                st.markdown("#### 🥑 Grupo 3: Grasas Saludables")
+                total_grasas = len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', [])) + len(st.session_state.get('mantequillas_vegetales', []))
+                st.write(f"• **Total alimentos seleccionados:** {total_grasas}")
+                if st.session_state.get('grasas_naturales'):
+                    st.write(f"• **Grasas naturales:** {len(st.session_state.get('grasas_naturales', []))}")
+                if st.session_state.get('frutos_secos_semillas'):
+                    st.write(f"• **Frutos secos/semillas:** {len(st.session_state.get('frutos_secos_semillas', []))}")
+                
+                st.markdown("#### 🍞 Grupo 4: Carbohidratos")
+                total_carbohidratos = len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', [])) + len(st.session_state.get('raices_tuberculos', [])) + len(st.session_state.get('leguminosas', []))
+                st.write(f"• **Total alimentos seleccionados:** {total_carbohidratos}")
+                if st.session_state.get('cereales_integrales'):
+                    st.write(f"• **Cereales:** {len(st.session_state.get('cereales_integrales', []))}")
+                if st.session_state.get('tortillas_panes'):
+                    st.write(f"• **Tortillas/panes:** {len(st.session_state.get('tortillas_panes', []))}")
+                
+                st.markdown("#### 🥬 Grupos 5 y 6: Vegetales y Frutas")
+                st.write(f"• **Vegetales:** {len(st.session_state.get('vegetales_lista', []))} seleccionados")
+                st.write(f"• **Frutas:** {len(st.session_state.get('frutas_lista', []))} seleccionadas")
+            
+            # Sección de información adicional
+            st.markdown("### 🍳 Información Adicional")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("#### 🧈 Aceites de Cocción")
+                if st.session_state.get('aceites_coccion'):
+                    st.write(f"• **Aceites preferidos:** {len(st.session_state.get('aceites_coccion', []))} seleccionados")
+                    aceites_top = st.session_state.get('aceites_coccion', [])[:3]
+                    for aceite in aceites_top:
+                        st.write(f"  - {aceite}")
+                
+                st.markdown("#### 🥤 Bebidas Sin Calorías")
+                if st.session_state.get('bebidas_sin_calorias'):
+                    st.write(f"• **Bebidas preferidas:** {len(st.session_state.get('bebidas_sin_calorias', []))} seleccionadas")
+                    bebidas_top = st.session_state.get('bebidas_sin_calorias', [])[:3]
+                    for bebida in bebidas_top:
+                        st.write(f"  - {bebida}")
+            
+            with col2:
+                st.markdown("#### 👨‍🍳 Métodos de Cocción")
+                if st.session_state.get('metodos_coccion_accesibles'):
+                    st.write(f"• **Métodos preferidos:** {len(st.session_state.get('metodos_coccion_accesibles', []))} seleccionados")
+                    metodos_top = st.session_state.get('metodos_coccion_accesibles', [])[:3]
+                    for metodo in metodos_top:
+                        st.write(f"  - {metodo}")
+                
+                if st.session_state.get('otro_metodo_coccion'):
+                    st.write(f"• **Otro método:** {st.session_state.get('otro_metodo_coccion', 'No especificado')}")
+
+            # Restricciones importantes
+            if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
+                st.markdown("### ⚠️ Restricciones Importantes")
+                if st.session_state.get('alergias_alimentarias'):
+                    st.warning(f"**Alergias alimentarias:** {', '.join(st.session_state.get('alergias_alimentarias', []))}")
+                    if st.session_state.get('otra_alergia'):
+                        st.write(f"• **Otra alergia:** {st.session_state.get('otra_alergia')}")
+                
+                if st.session_state.get('intolerancias_digestivas'):
+                    st.info(f"**Intolerancias digestivas:** {', '.join(st.session_state.get('intolerancias_digestivas', []))}")
+                    if st.session_state.get('otra_intolerancia'):
+                        st.write(f"• **Otra intolerancia:** {st.session_state.get('otra_intolerancia')}")
+
+            # Antojos alimentarios
+            st.markdown("### 😋 Patrones de Antojos Alimentarios")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if st.session_state.get('antojos_dulces'):
+                    st.write(f"• **Antojos dulces:** {len(st.session_state.get('antojos_dulces', []))} tipos")
+                if st.session_state.get('antojos_salados'):
+                    st.write(f"• **Antojos salados:** {len(st.session_state.get('antojos_salados', []))} tipos")
+                if st.session_state.get('antojos_comida_rapida'):
+                    st.write(f"• **Comida rápida:** {len(st.session_state.get('antojos_comida_rapida', []))} tipos")
+            
+            with col2:
+                if st.session_state.get('antojos_bebidas'):
+                    st.write(f"• **Bebidas con calorías:** {len(st.session_state.get('antojos_bebidas', []))} tipos")
+                if st.session_state.get('antojos_picantes'):
+                    st.write(f"• **Condimentos picantes:** {len(st.session_state.get('antojos_picantes', []))} tipos")
+                if st.session_state.get('otros_antojos'):
+                    st.write(f"• **Otros antojos especificados:** Sí")
+
+            # Información de frecuencia de comidas
+            # CAMBIO: Usar nueva variable de checkboxes
+            frecuencia_list = st.session_state.get('frecuencia_comidas_ck', [])
+            if frecuencia_list and len(frecuencia_list) > 0:
+                st.markdown("### 🍽️ Frecuencia de Comidas Preferida")
+                frecuencia = frecuencia_list[0]  # Tomar la primera (debería ser la única)
+                if frecuencia == "Otro (especificar)" and st.session_state.get('otra_frecuencia'):
+                    st.info(f"**Frecuencia personalizada:** {st.session_state.get('otra_frecuencia')}")
+                else:
+                    st.info(f"**Frecuencia seleccionada:** {frecuencia}")
+
+            # Sugerencias de menús
+            if st.session_state.get('sugerencias_menus'):
+                st.markdown("### 📝 Sugerencias de Menús")
+                sugerencias = st.session_state.get('sugerencias_menus', '')
+                palabra_count = len(sugerencias.split()) if sugerencias else 0
+                st.info(f"**Sugerencias del cliente:** {sugerencias[:200]}{'...' if len(sugerencias) > 200 else ''}")
+                if palabra_count > 0:
+                    st.success(f"**Detalle:** {palabra_count} palabras de sugerencias específicas proporcionadas")
+
+            # Recomendaciones personalizadas basadas en datos reales
+            st.markdown("### 💡 Recomendaciones Personalizadas Iniciales")
+            
+            # Análisis básico basado en las respuestas actuales
+            recomendaciones = []
+            
+            # Verificar diversidad de alimentos por grupo
+            total_grupos_completos = 0
+            if len(st.session_state.get('huevos_embutidos', [])) + len(st.session_state.get('carnes_res_grasas', [])) > 0:
+                total_grupos_completos += 1
+            if len(st.session_state.get('carnes_res_magras', [])) + len(st.session_state.get('pescados_magros', [])) > 0:
+                total_grupos_completos += 1
+            if len(st.session_state.get('grasas_naturales', [])) + len(st.session_state.get('frutos_secos_semillas', [])) > 0:
+                total_grupos_completos += 1
+            if len(st.session_state.get('cereales_integrales', [])) + len(st.session_state.get('pastas', [])) + len(st.session_state.get('tortillas_panes', [])) > 0:
+                total_grupos_completos += 1
+            if len(st.session_state.get('vegetales_lista', [])) > 5:
+                total_grupos_completos += 1
+            if len(st.session_state.get('frutas_lista', [])) > 5:
+                total_grupos_completos += 1
+            
+            if total_grupos_completos >= 5:
+                recomendaciones.append("✅ **Diversidad nutricional excelente:** Tienes una buena variedad de alimentos en la mayoría de grupos alimentarios.")
+            elif total_grupos_completos >= 3:
+                recomendaciones.append("🔄 **Diversidad nutricional moderada:** Considera ampliar la variedad en algunos grupos alimentarios.")
+            else:
+                recomendaciones.append("📈 **Oportunidad de mejora:** Ampliar la variedad de alimentos puede enriquecer tu plan nutricional.")
+            
+            # Verificar métodos de cocción
+            if len(st.session_state.get('metodos_coccion_accesibles', [])) >= 4:
+                recomendaciones.append("👨‍🍳 **Versatilidad culinaria:** Tienes múltiples métodos de cocción disponibles, ideal para variedad en preparaciones.")
+            elif len(st.session_state.get('metodos_coccion_accesibles', [])) >= 2:
+                recomendaciones.append("🔧 **Métodos básicos:** Con tus métodos de cocción actuales puedes crear preparaciones nutritivas y variadas.")
+            
+            # Verificar restricciones
+            if st.session_state.get('alergias_alimentarias') or st.session_state.get('intolerancias_digestivas'):
+                recomendaciones.append("⚠️ **Plan especializado:** Tus restricciones alimentarias requerirán un plan personalizado cuidadoso.")
+            
+            # Verificar antojos
+            total_antojos = len(st.session_state.get('antojos_dulces', [])) + len(st.session_state.get('antojos_salados', [])) + len(st.session_state.get('antojos_comida_rapida', []))
+            if total_antojos > 10:
+                recomendaciones.append("🧠 **Manejo de antojos:** Se recomienda desarrollar estrategias específicas para controlar los antojos identificados.")
+            elif total_antojos > 5:
+                recomendaciones.append("⚖️ **Equilibrio:** Incluir alternativas saludables para satisfacer antojos ocasionales.")
+            
+            if not recomendaciones:
+                recomendaciones.append("📋 **Perfil base establecido:** Se requiere más información para recomendaciones específicas.")
+            
+            for i, rec in enumerate(recomendaciones, 1):
+                st.write(f"{i}. {rec}")
+
+            st.success(f"""
+            ### ✅ Análisis de patrones alimentarios completado exitosamente
+            
+            **Tu perfil nutricional personalizado está listo** y incluye información detallada sobre:
+            - 6 grupos alimentarios principales evaluados
+            - Métodos de cocción disponibles y preferidos  
+            - Restricciones, alergias e intolerancias específicas
+            - Patrones de antojos alimentarios identificados
+            - Aceites de cocción y bebidas sin calorías preferidas
+            
+            **Este análisis integral permitirá crear un plan nutricional completamente adaptado** 
+            a tus gustos, tolerancias y necesidades específicas.
+            
+            La información será enviada a nuestro equipo de nutrición para desarrollar tu plan personalizado.
+            """)
+
+            st.markdown('</div>', unsafe_allow_html=True)
+
+
+# Opción para reenviar manualmente (solo si ya se envió)
+if st.session_state.get("correo_enviado", False):
+    st.markdown("---")
+    st.markdown("### 📧 Opciones de Email")
+    if st.button("📧 Reenviar Email", key="reenviar_email"):
         faltantes = datos_completos_para_email()
         grupos_incompletos = verificar_grupos_obligatorios_completos()
         
         if faltantes:
-            st.error(f"❌ No se puede enviar el email. Faltan datos personales: {', '.join(faltantes)}")
+            st.error(f"❌ No se puede reenviar el email. Faltan datos personales: {', '.join(faltantes)}")
         elif grupos_incompletos:
             st.error(f"""
-            ❌ **No se puede enviar el email. Grupos incompletos:**
+            ❌ **No se puede reenviar el email. Grupos incompletos:**
             
-            Los siguientes grupos alimentarios requieren al menos una selección (puedes marcar 'Ninguno' si no consumes ninguno):
+            Los siguientes grupos alimentarios requieren al menos una selección:
             
             {chr(10).join([f'• {grupo}' for grupo in grupos_incompletos])}
-            
-            Por favor, completa estos grupos antes de enviar el resumen.
             """)
         else:
-            with st.spinner("📧 Enviando resumen de patrones alimentarios por email..."):
+            with st.spinner("📧 Reenviando resumen por email..."):
                 resumen_completo = crear_resumen_email()
                 ok = enviar_email_resumen(
                     resumen_completo, 
@@ -3142,43 +3326,9 @@ if not st.session_state.get("correo_enviado", False):
                 )
                 if ok:
                     st.session_state["correo_enviado"] = True
-                    st.success("✅ Email enviado exitosamente a administración")
+                    st.success("✅ Email reenviado exitosamente a administración")
                 else:
-                    st.error("❌ Error al enviar email. Contacta a soporte técnico.")
-else:
-    st.info("✅ El resumen ya fue enviado por email. Si requieres reenviarlo, usa el botón de 'Reenviar Email'.")
-
-# Opción para reenviar manualmente
-if st.button("📧 Reenviar Email", key="reenviar_email"):
-    faltantes = datos_completos_para_email()
-    grupos_incompletos = verificar_grupos_obligatorios_completos()
-    
-    if faltantes:
-        st.error(f"❌ No se puede reenviar el email. Faltan datos personales: {', '.join(faltantes)}")
-    elif grupos_incompletos:
-        st.error(f"""
-        ❌ **No se puede reenviar el email. Grupos incompletos:**
-        
-        Los siguientes grupos alimentarios requieren al menos una selección:
-        
-        {chr(10).join([f'• {grupo}' for grupo in grupos_incompletos])}
-        """)
-    else:
-        with st.spinner("📧 Reenviando resumen por email..."):
-            resumen_completo = crear_resumen_email()
-            ok = enviar_email_resumen(
-                resumen_completo, 
-                st.session_state.get('nombre', ''), 
-                st.session_state.get('email_cliente', ''), 
-                st.session_state.get('fecha_llenado', ''), 
-                st.session_state.get('edad', ''), 
-                st.session_state.get('telefono', '')
-            )
-            if ok:
-                st.session_state["correo_enviado"] = True
-                st.success("✅ Email reenviado exitosamente a administración")
-            else:
-                st.error("❌ Error al reenviar email. Contacta a soporte técnico.")
+                    st.error("❌ Error al reenviar email. Contacta a soporte técnico.")
 
 # Limpieza de sesión y botón de nueva evaluación
 if st.button("🔄 Nueva Evaluación", key="nueva"):
