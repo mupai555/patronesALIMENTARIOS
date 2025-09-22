@@ -651,11 +651,11 @@ def enviar_email_solicitud_acceso(nombre, email, whatsapp, codigo):
         email_destino = "administracion@muscleupgym.fitness"
         password = st.secrets.get("zoho_password", "TU_PASSWORD_AQUI")
         
-        # Para testing, si no hay contraseña configurada, simular envío exitoso
+        # Para desarrollo/testing, si no hay contraseña configurada, simular envío exitoso
         if password == "TU_PASSWORD_AQUI":
             import time
             time.sleep(1)  # Simular tiempo de envío
-            st.info(f"ℹ️ **Modo de prueba:** Email simulado (no se envía realmente por falta de configuración de secrets). Código generado: **{codigo}**")
+            st.warning("⚠️ **Modo de desarrollo:** Email simulado - configurar secrets para envío real")
             return True
 
         msg = MIMEMultipart()
@@ -1401,6 +1401,13 @@ if not st.session_state.authenticated:
             </p>
         </div>
         """, unsafe_allow_html=True)
+        
+        # Mostrar código generado en modo testing (solo si secrets no está configurado)
+        # NOTA: En producción, este código no se muestra y solo se envía por email
+        if st.secrets.get("zoho_password", "TU_PASSWORD_AQUI") == "TU_PASSWORD_AQUI":
+            generated_code = st.session_state.get("generated_code", "")
+            if generated_code:
+                st.warning(f"⚠️ **Modo de desarrollo:** Código para testing: **{generated_code}** (En producción este código solo se envía por email)")
         
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
