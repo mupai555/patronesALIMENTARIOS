@@ -7,6 +7,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import time
 import re
+import uuid
+import hashlib
 
 # ==================== FUNCIÓN PARA CREAR RESUMEN DE EMAIL ====================
 
@@ -222,6 +224,139 @@ Alimentary Pattern Assessment Intelligence
 =====================================
 """
     return resumen
+
+# ==================== SISTEMA DE CÓDIGOS DE ACCESO ====================
+
+def generar_codigo_acceso():
+    """Genera un código único de acceso de 8 caracteres"""
+    timestamp = str(int(time.time()))
+    random_part = str(uuid.uuid4())[:8].upper()
+    # Combinar timestamp y parte aleatoria, luego tomar hash
+    combined = timestamp + random_part
+    hash_object = hashlib.md5(combined.encode())
+    codigo = hash_object.hexdigest()[:8].upper()
+    return f"MUPAI{codigo}"
+
+def enviar_solicitud_acceso(nombre, email_solicitante):
+    """Envía email al administrador con la solicitud de acceso y código generado"""
+    try:
+        # Generar código único
+        codigo_acceso = generar_codigo_acceso()
+        
+        # Guardar el código en session_state para validación posterior
+        if 'codigos_pendientes' not in st.session_state:
+            st.session_state.codigos_pendientes = {}
+        
+        st.session_state.codigos_pendientes[email_solicitante] = {
+            'codigo': codigo_acceso,
+            'nombre': nombre,
+            'fecha_solicitud': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'usado': False
+        }
+
+        # Verificar si tenemos configuración de email
+        try:
+            password = st.secrets.get("zoho_password", None)
+            if not password or password == "TU_PASSWORD_AQUI":
+                # Modo de desarrollo/prueba - simular envío exitoso
+                st.success("✅ Solicitud enviada exitosamente")
+                st.info(f"""
+                🧪 **Modo de Desarrollo - Email Simulado**
+                
+                **Código de acceso generado: {codigo_acceso}**
+                
+                En producción, este código se enviaría por email al administrador.
+                Para pruebas, puedes usar este código directamente.
+                """)
+                return True, codigo_acceso
+        except:
+            # Si no hay secrets configurados, usar modo de desarrollo
+            st.success("✅ Solicitud enviada exitosamente")
+            st.info(f"""
+            🧪 **Modo de Desarrollo - Email Simulado**
+            
+            **Código de acceso generado: {codigo_acceso}**
+            
+            En producción, este código se enviaría por email al administrador.
+            Para pruebas, puedes usar este código directamente.
+            """)
+            return True, codigo_acceso
+
+        # Configuración del email para producción
+        email_origen = "administracion@muscleupgym.fitness"
+        email_destino = "administracion@muscleupgym.fitness"
+
+        # Crear contenido del email
+        contenido = f"""
+=====================================
+SOLICITUD DE ACCESO AL SISTEMA MUPAI
+=====================================
+
+DATOS DEL SOLICITANTE:
+- Nombre: {nombre}
+- Email: {email_solicitante}
+- Fecha de solicitud: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+
+CÓDIGO DE ACCESO GENERADO:
+{codigo_acceso}
+
+=====================================
+INSTRUCCIONES PARA EL ADMINISTRADOR:
+=====================================
+
+Si aprueba esta solicitud de acceso:
+1. Envíe el código de acceso "{codigo_acceso}" al solicitante
+2. El usuario podrá acceder usando su email y este código
+3. El código se desactivará automáticamente después del primer uso
+
+El solicitante deberá usar:
+- Email: {email_solicitante}
+- Código: {codigo_acceso}
+
+=====================================
+Sistema MUPAI - Control de Acceso Automatizado
+© 2025 Muscle Up GYM
+=====================================
+        """
+
+        # Configurar y enviar email
+        msg = MIMEMultipart()
+        msg['From'] = email_origen
+        msg['To'] = email_destino
+        msg['Subject'] = f"Solicitud de Acceso MUPAI - {nombre}"
+
+        msg.attach(MIMEText(contenido, 'plain'))
+
+        server = smtplib.SMTP('smtp.zoho.com', 587)
+        server.starttls()
+        server.login(email_origen, password)
+        server.send_message(msg)
+        server.quit()
+
+        return True, codigo_acceso
+    except Exception as e:
+        st.error(f"Error al enviar solicitud de acceso: {str(e)}")
+        return False, None
+
+def validar_codigo_acceso(email, codigo):
+    """Valida si el código de acceso es correcto y no ha sido usado"""
+    if 'codigos_pendientes' not in st.session_state:
+        return False, "No hay códigos registrados"
+    
+    if email not in st.session_state.codigos_pendientes:
+        return False, "Email no encontrado en las solicitudes"
+    
+    codigo_info = st.session_state.codigos_pendientes[email]
+    
+    if codigo_info['usado']:
+        return False, "Este código ya ha sido utilizado"
+    
+    if codigo_info['codigo'] != codigo:
+        return False, "Código de acceso incorrecto"
+    
+    # Marcar código como usado
+    st.session_state.codigos_pendientes[email]['usado'] = True
+    return True, "Acceso autorizado"
 
 # ==================== FUNCIONES DE VALIDACIÓN PROGRESIVA ====================
 
@@ -1170,7 +1305,9 @@ defaults = {
     "sexo": "Hombre",
     "fecha_llenado": datetime.now().strftime("%Y-%m-%d"),
     "acepto_terminos": False,
-    "authenticated": False,  # Nueva variable para controlar el login
+    "authenticated": False,  # Variable para controlar el acceso autenticado
+    "access_requested": False,  # Variable para controlar si ya se solicitó acceso
+    "codigos_pendientes": {},  # Diccionario para almacenar códigos de acceso
     # Variables para el flujo progresivo
     "current_step": 1,
     "step_completed": {
@@ -1194,41 +1331,135 @@ for k, v in defaults.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
-# ==================== SISTEMA DE AUTENTICACIÓN ====================
-ADMIN_PASSWORD = "MUPAI2025"  # Contraseña predefinida
+# ==================== SISTEMA DE AUTENTICACIÓN MEJORADO ====================
 
-# Si no está autenticado, mostrar login
+# Si no está autenticado, mostrar el flujo de acceso
 if not st.session_state.authenticated:
-    st.markdown("""
-    <div class="content-card" style="max-width: 500px; margin: 2rem auto; text-align: center;">
-        <h2 style="color: var(--mupai-yellow); margin-bottom: 1.5rem;">
-            🔐 Acceso Exclusivo
-        </h2>
-        <p style="margin-bottom: 2rem; color: #CCCCCC;">
-            Ingresa la contraseña para acceder al sistema de evaluación de patrones alimentarios MUPAI
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
     
-    # Container centrado para el formulario de login
-    login_container = st.container()
-    with login_container:
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            password_input = st.text_input(
-                "Contraseña", 
-                type="password", 
-                placeholder="Ingresa la contraseña de acceso",
-                key="password_input"
-            )
-            
-            if st.button("🚀 Acceder al Sistema", use_container_width=True):
-                if password_input == ADMIN_PASSWORD:
-                    st.session_state.authenticated = True
-                    st.success("✅ Acceso autorizado. Bienvenido al sistema MUPAI de patrones alimentarios.")
-                    st.rerun()
-                else:
-                    st.error("❌ Contraseña incorrecta. Acceso denegado.")
+    # Mostrar solicitud de acceso si aún no se ha solicitado
+    if not st.session_state.access_requested:
+        st.markdown("""
+        <div class="content-card" style="max-width: 600px; margin: 2rem auto; text-align: center;">
+            <h2 style="color: var(--mupai-yellow); margin-bottom: 1.5rem;">
+                📋 Solicitud de Acceso al Sistema MUPAI
+            </h2>
+            <p style="margin-bottom: 2rem; color: #CCCCCC;">
+                Para acceder al sistema de evaluación de patrones alimentarios, necesitas solicitar un código de acceso único.
+                Completa el formulario y recibirás el código por email una vez aprobada tu solicitud.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Container centrado para el formulario de solicitud
+        request_container = st.container()
+        with request_container:
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                st.markdown("### 📝 Datos para la Solicitud")
+                
+                nombre_solicitante = st.text_input(
+                    "Nombre completo *", 
+                    placeholder="Ingresa tu nombre completo",
+                    key="nombre_solicitante"
+                )
+                
+                email_solicitante = st.text_input(
+                    "Correo electrónico *", 
+                    placeholder="tu.email@ejemplo.com",
+                    key="email_solicitante"
+                )
+                
+                st.markdown("---")
+                
+                if st.button("📧 Enviar Solicitud de Acceso", use_container_width=True):
+                    # Validar campos
+                    if not nombre_solicitante or not nombre_solicitante.strip():
+                        st.error("❌ El nombre es obligatorio")
+                    elif not email_solicitante or not email_solicitante.strip():
+                        st.error("❌ El email es obligatorio")
+                    elif not re.match(r'^[^@]+@[^@]+\.[^@]+$', email_solicitante.strip()):
+                        st.error("❌ El formato del email no es válido")
+                    else:
+                        with st.spinner("📧 Enviando solicitud de acceso..."):
+                            exito, codigo = enviar_solicitud_acceso(
+                                nombre_solicitante.strip(), 
+                                email_solicitante.strip()
+                            )
+                            if exito:
+                                st.session_state.access_requested = True
+                                st.session_state.solicitante_nombre = nombre_solicitante.strip()
+                                st.session_state.solicitante_email = email_solicitante.strip()
+                                st.success("✅ Solicitud enviada exitosamente")
+                                st.info("""
+                                📬 **Tu solicitud ha sido enviada al administrador**
+                                
+                                En breve recibirás tu código de acceso por email si tu solicitud es aprobada.
+                                Una vez que tengas el código, podrás acceder al sistema usando tu email y el código proporcionado.
+                                """)
+                                st.rerun()
+                            else:
+                                st.error("❌ Error al enviar la solicitud. Inténtalo nuevamente.")
+    
+    # Mostrar login con email y código si ya se solicitó acceso
+    else:
+        st.markdown("""
+        <div class="content-card" style="max-width: 500px; margin: 2rem auto; text-align: center;">
+            <h2 style="color: var(--mupai-yellow); margin-bottom: 1.5rem;">
+                🔐 Acceso al Sistema MUPAI
+            </h2>
+            <p style="margin-bottom: 2rem; color: #CCCCCC;">
+                Ingresa tu email y el código de acceso que recibiste para acceder al sistema de evaluación
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Container centrado para el formulario de login
+        login_container = st.container()
+        with login_container:
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                email_login = st.text_input(
+                    "Correo electrónico", 
+                    value=st.session_state.get('solicitante_email', ''),
+                    placeholder="tu.email@ejemplo.com",
+                    key="email_login"
+                )
+                
+                codigo_login = st.text_input(
+                    "Código de acceso", 
+                    type="password",
+                    placeholder="Ingresa el código que recibiste",
+                    key="codigo_login"
+                )
+                
+                col_btn1, col_btn2 = st.columns(2)
+                
+                with col_btn1:
+                    if st.button("🚀 Acceder", use_container_width=True):
+                        if not email_login or not codigo_login:
+                            st.error("❌ Completa todos los campos")
+                        else:
+                            valido, mensaje = validar_codigo_acceso(
+                                email_login.strip(), 
+                                codigo_login.strip()
+                            )
+                            if valido:
+                                st.session_state.authenticated = True
+                                st.session_state.user_email = email_login.strip()
+                                st.success("✅ Acceso autorizado. Bienvenido al sistema MUPAI.")
+                                st.rerun()
+                            else:
+                                st.error(f"❌ {mensaje}")
+                
+                with col_btn2:
+                    if st.button("📋 Nueva Solicitud", use_container_width=True):
+                        # Reset para hacer una nueva solicitud
+                        st.session_state.access_requested = False
+                        if 'solicitante_nombre' in st.session_state:
+                            del st.session_state.solicitante_nombre
+                        if 'solicitante_email' in st.session_state:
+                            del st.session_state.solicitante_email
+                        st.rerun()
     
     # Mostrar información mientras no esté autenticado
     st.markdown("""
@@ -1239,8 +1470,8 @@ if not st.session_state.authenticated:
             personalizados, preferencias dietéticas y crear planes nutricionales adaptativos.
         </p>
         <p style="color: #999999; font-size: 0.9rem; margin-top: 1.5rem;">
-            © 2025 MUPAI - Muscle up GYM 
-            Digital Nutrition Science
+            © 2025 MUPAI - Muscle up GYM<br>
+            Digital Nutrition Science<br>
             Alimentary Pattern Assessment Intelligence
         </p>
     </div>
