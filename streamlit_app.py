@@ -943,13 +943,6 @@ div[data-testid="stInfo"] p {
     opacity: 1 !important;
     font-size: 1.05rem;
 }
-/* Enhanced styling for food item checkbox labels - bright yellow, bold and fully opaque */
-.stCheckbox label span,
-.stCheckbox span {
-    color: #FFD600 !important;
-    font-weight: bold !important;
-    opacity: 1 !important;
-}
 .stProgress > div > div > div {
     background: linear-gradient(135deg, var(--mupai-yellow) 0%, var(--mupai-dark-yellow) 100%)!important;
     border-radius: 10px;
@@ -2127,7 +2120,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🥛 Lácteos light o reducidos")
         lacteos_light = create_vertical_checkboxes(
             "¿Cuáles de estos lácteos light o reducidos consumes?",
-            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Proteína en polvo (whey, caseína, aislada, hidrolizada, sin azúcar)", "Ninguno"],
+            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
             "lacteos_light",
             "Marca todos los lácteos light que uses. Si no consumes ninguno, marca 'Ninguno'."
         )
