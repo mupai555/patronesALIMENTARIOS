@@ -1244,15 +1244,16 @@ defaults = {
     "sexo": "Hombre",
     "fecha_llenado": datetime.now().strftime("%Y-%m-%d"),
     "acepto_terminos": False,
-    "authenticated": False,  # Nueva variable para controlar el login
-    # Variables para el flujo de solicitud de acceso
-    "access_mode": "initial",  # "initial", "form", "login"
-    "access_requested": False,
-    "access_name": "",
-    "access_email": "",
-    "access_whatsapp": "",
-    "generated_code": "",
-    "code_verified": False,
+    # ============ NUEVA AUTENTICACIÓN SIMPLIFICADA - Variables ============
+    "authenticated": False,  # Usuario autenticado para acceder al cuestionario
+    "access_request_sent": False,  # Solicitud de acceso enviada
+    "access_code": "",  # Código único generado
+    "access_user_name": "",  # Nombre del usuario que solicita acceso
+    "access_user_email": "",  # Email del usuario que solicita acceso
+    "access_user_whatsapp": "",  # WhatsApp del usuario que solicita acceso
+    "code_used": False,  # Código ya utilizado
+    "access_stage": "request",  # Etapa actual: "request", "form", "code_sent", "authenticated"
+    # ============ FIN NUEVA AUTENTICACIÓN SIMPLIFICADA - Variables ============
     # Variables para el flujo progresivo
     "current_step": 1,
     "step_completed": {
@@ -1276,18 +1277,16 @@ for k, v in defaults.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
-# ==================== SISTEMA DE AUTENTICACIÓN Y SOLICITUD DE ACCESO ====================
-ADMIN_PASSWORD = "MUPAI2025"  # Contraseña predefinida
+# ==================== NUEVA AUTENTICACIÓN SIMPLIFICADA ====================
+# Sistema de autenticación basado en flujo por etapas (access_stage)
+# Etapas: request → form → code_sent → authenticated
+# Bloquea el acceso al cuestionario hasta completar autenticación exitosamente
 
-# Inicializar variables para el nuevo flujo si no existen
-if "used_codes" not in st.session_state:
-    st.session_state.used_codes = set()  # Para rastrear códigos usados
-
-# Si no está autenticado, mostrar el nuevo flujo de acceso
+# Si no está autenticado, mostrar el flujo de acceso basado en access_stage
 if not st.session_state.authenticated:
     
-    # PANTALLA 1: Solo botón "Solicitar acceso"
-    if st.session_state.access_mode == "initial":
+    # ETAPA 1: "request" - Botón "Solicitar acceso"
+    if st.session_state.access_stage == "request":
         st.markdown("""
         <div class="content-card" style="max-width: 500px; margin: 2rem auto; text-align: center;">
             <h2 style="color: var(--mupai-yellow); margin-bottom: 1.5rem;">
@@ -1303,11 +1302,11 @@ if not st.session_state.authenticated:
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             if st.button("📝 Solicitar Acceso", use_container_width=True, key="btn_solicitar_acceso"):
-                st.session_state.access_mode = "form"
+                st.session_state.access_stage = "form"
                 st.rerun()
     
-    # PANTALLA 2: Formulario de datos
-    elif st.session_state.access_mode == "form":
+    # ETAPA 2: "form" - Formulario de datos y generación/envío de código
+    elif st.session_state.access_stage == "form":
         st.markdown("""
         <div class="content-card" style="max-width: 600px; margin: 2rem auto; text-align: center;">
             <h2 style="color: var(--mupai-yellow); margin-bottom: 1.5rem;">
@@ -1347,7 +1346,7 @@ if not st.session_state.authenticated:
                     cancel = st.form_submit_button("❌ Cancelar", use_container_width=True)
                 
                 if cancel:
-                    st.session_state.access_mode = "initial"
+                    st.session_state.access_stage = "request"
                     st.rerun()
                 
                 if submitted:
@@ -1371,25 +1370,25 @@ if not st.session_state.authenticated:
                         # Generar código único
                         codigo = generate_unique_code()
                         
-                        # Guardar datos en session state
-                        st.session_state.access_name = nombre
-                        st.session_state.access_email = email
-                        st.session_state.access_whatsapp = whatsapp
-                        st.session_state.generated_code = codigo
+                        # Guardar datos en session state con nuevos nombres de variables
+                        st.session_state.access_user_name = nombre
+                        st.session_state.access_user_email = email
+                        st.session_state.access_user_whatsapp = whatsapp
+                        st.session_state.access_code = codigo
                         
                         # Enviar email
                         with st.spinner("📧 Enviando solicitud de acceso..."):
                             if enviar_email_solicitud_acceso(nombre, email, whatsapp, codigo):
-                                st.session_state.access_requested = True
-                                st.session_state.access_mode = "login"
+                                st.session_state.access_request_sent = True
+                                st.session_state.access_stage = "code_sent"
                                 st.success("✅ **Solicitud enviada exitosamente**\n\nTe redirigimos al formulario de acceso. El administrador debe proporcionarte el código de acceso.")
                                 time.sleep(2)  # Dar tiempo para que el usuario lea el mensaje
                                 st.rerun()
                             else:
                                 st.error("❌ Error al enviar la solicitud. Por favor, intenta nuevamente.")
     
-    # PANTALLA 3: Formulario de ingreso con email y código
-    elif st.session_state.access_mode == "login":
+    # ETAPA 3: "code_sent" - Ingreso de código y validación
+    elif st.session_state.access_stage == "code_sent":
         st.markdown("""
         <div class="content-card" style="max-width: 500px; margin: 2rem auto; text-align: center;">
             <h2 style="color: var(--mupai-yellow); margin-bottom: 1.5rem;">
@@ -1405,7 +1404,7 @@ if not st.session_state.authenticated:
         # Mostrar código generado en modo testing (solo si secrets no está configurado)
         # NOTA: En producción, este código no se muestra y solo se envía por email
         if st.secrets.get("zoho_password", "TU_PASSWORD_AQUI") == "TU_PASSWORD_AQUI":
-            generated_code = st.session_state.get("generated_code", "")
+            generated_code = st.session_state.get("access_code", "")
             if generated_code:
                 st.warning(f"⚠️ **Modo de desarrollo:** Código para testing: **{generated_code}** (En producción este código solo se envía por email)")
         
@@ -1414,7 +1413,7 @@ if not st.session_state.authenticated:
             with st.form("login_access"):
                 email_login = st.text_input(
                     "Correo electrónico *", 
-                    value=st.session_state.get("access_email", ""),
+                    value=st.session_state.get("access_user_email", ""),
                     placeholder="Ej: juan@ejemplo.com",
                     help="El correo que usaste en tu solicitud"
                 )
@@ -1434,13 +1433,13 @@ if not st.session_state.authenticated:
                 
                 if new_request:
                     # Resetear estado para nueva solicitud
-                    st.session_state.access_mode = "initial"
-                    st.session_state.access_requested = False
-                    st.session_state.access_name = ""
-                    st.session_state.access_email = ""
-                    st.session_state.access_whatsapp = ""
-                    st.session_state.generated_code = ""
-                    st.session_state.code_verified = False
+                    st.session_state.access_stage = "request"
+                    st.session_state.access_request_sent = False
+                    st.session_state.access_user_name = ""
+                    st.session_state.access_user_email = ""
+                    st.session_state.access_user_whatsapp = ""
+                    st.session_state.access_code = ""
+                    st.session_state.code_used = False
                     st.rerun()
                 
                 if login_submit:
@@ -1451,20 +1450,20 @@ if not st.session_state.authenticated:
                         st.error("❌ Debes ingresar el código de acceso.")
                     else:
                         # Verificar que el email coincida con el registrado
-                        stored_email = st.session_state.get("access_email", "")
-                        stored_code = st.session_state.get("generated_code", "")
+                        stored_email = st.session_state.get("access_user_email", "")
+                        stored_code = st.session_state.get("access_code", "")
                         
                         if email_login.lower().strip() != stored_email.lower().strip():
                             st.error("❌ El correo electrónico no coincide con el registrado en la solicitud.")
                         elif codigo_input.upper() != stored_code:
                             st.error("❌ Código incorrecto. Verifica el código proporcionado por el administrador.")
-                        elif stored_code in st.session_state.used_codes:
+                        elif st.session_state.code_used:
                             st.error("❌ Este código ya ha sido utilizado. Solicita un nuevo código.")
                         else:
-                            # Acceso autorizado
+                            # Acceso autorizado - Si el código es correcto, marcar como autenticado y código usado
                             st.session_state.authenticated = True
-                            st.session_state.code_verified = True
-                            st.session_state.used_codes.add(stored_code)  # Marcar código como usado
+                            st.session_state.code_used = True
+                            st.session_state.access_stage = "authenticated"
                             st.success("✅ Acceso autorizado. ¡Bienvenido al sistema MUPAI!")
                             st.rerun()
     
@@ -1484,7 +1483,10 @@ if not st.session_state.authenticated:
     </div>
     """, unsafe_allow_html=True)
     
-    st.stop()  # Detener la ejecución hasta que se autentique
+    # Bloquear acceso al cuestionario hasta que se autentique
+    st.stop()
+
+# ==================== FIN NUEVA AUTENTICACIÓN SIMPLIFICADA ====================
 
 # Tarjetas visuales robustas
 def crear_tarjeta(titulo, contenido, tipo="info"):
