@@ -195,6 +195,16 @@ DATOS DEL CLIENTE:
 - Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
 
 =====================================
+💊 MICRONUTRIENTES Y NUTRIENTES ESENCIALES
+=====================================
+- Micronutrientes seleccionados: {', '.join(st.session_state.get('micronutrientes_esenciales', [])) if st.session_state.get('micronutrientes_esenciales') else 'No especificado'}
+
+=====================================
+⚡ SUPLEMENTOS ERGOGÉNICOS Y FUNCIONALES
+=====================================
+- Suplementos seleccionados: {', '.join(st.session_state.get('suplementos_ergogenicos', [])) if st.session_state.get('suplementos_ergogenicos') else 'No especificado'}
+
+=====================================
 RESUMEN DE ANÁLISIS IDENTIFICADO:
 =====================================
 Este cuestionario completo de patrones alimentarios proporciona una base integral 
@@ -207,7 +217,9 @@ para el desarrollo de recomendaciones nutricionales altamente personalizadas bas
 5. Análisis de antojos y alimentación emocional
 6. Frecuencia de comidas preferida del cliente
 7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
+8. Micronutrientes y nutrientes esenciales (evaluación profesional)
+9. Suplementos ergogénicos y funcionales (evaluación profesional)
+10. Contexto personal, familiar y social completo
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
@@ -216,6 +228,8 @@ RECOMENDACIONES PARA SEGUIMIENTO:
 - Integrar estrategias para manejo de antojos identificados
 - Estructurar la frecuencia de comidas según la preferencia del cliente
 - Incorporar sugerencias específicas de menús proporcionadas por el cliente
+- Evaluar protocolo de micronutrientes según deficiencias identificadas
+- Diseñar estrategia de suplementación ergogénica basada en objetivos específicos
 - Adaptar recomendaciones al contexto personal y familiar específico
 
 =====================================
@@ -447,6 +461,20 @@ def validate_step_13():
         return False, missing_items
     return True, []
 
+def validate_step_14():
+    """Valida que se haya seleccionado al menos una opción en micronutrientes"""
+    selections = st.session_state.get('micronutrientes_esenciales', [])
+    if len(selections) == 0:
+        return False, ['Micronutrientes y nutrientes esenciales (selecciona al menos uno, o "Ninguno" si no tomas ninguno)']
+    return True, []
+
+def validate_step_15():
+    """Valida que se haya seleccionado al menos una opción en suplementos ergogénicos"""
+    selections = st.session_state.get('suplementos_ergogenicos', [])
+    if len(selections) == 0:
+        return False, ['Suplementos ergogénicos y funcionales (selecciona al menos uno, o "Ninguno" si no tomas ninguno)']
+    return True, []
+
 def create_vertical_checkboxes(title, options, key, help_text=""):
     """
     Create vertical checkboxes for short option lists.
@@ -518,7 +546,9 @@ def get_step_validator(step_number):
         10: validate_step_10,
         11: validate_step_11,
         12: validate_step_12,
-        13: validate_step_13
+        13: validate_step_13,
+        14: validate_step_14,
+        15: validate_step_15
     }
     return validators.get(step_number, lambda: (True, []))
 
@@ -539,7 +569,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 13:
+        if current_step < 15:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
@@ -1269,7 +1299,9 @@ defaults = {
         10: False,  # Alergias/intolerancias
         11: False,  # Antojos
         12: False,  # Frecuencia de comidas
-        13: False   # Sugerencias de menús
+        13: False,  # Sugerencias de menús
+        14: False,  # Micronutrientes y nutrientes esenciales
+        15: False   # Suplementos ergogénicos y funcionales
     },
     "max_unlocked_step": 1
 }
@@ -3194,10 +3226,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
+                📝 PASO 13: SUGERENCIAS DE MENÚS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
+                Paso 13 de 15 - Personalización de Menús
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -3205,12 +3237,12 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
+        progress.progress(87, text="Paso 13 de 15: Sugerencias de menús - Personalización")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
         ### 💭 Sugerencias de Menús y Preferencias Adicionales
-        Para finalizar tu evaluación, nos gustaría conocer si tienes **sugerencias específicas de menús** que te gustaría que adaptemos a tu plan nutricional, o si prefieres que nuestro equipo de nutrición se encargue de crear las propuestas basándose en toda la información que has proporcionado.
+        Ahora que hemos evaluado tus grupos alimentarios básicos, nos gustaría conocer si tienes **sugerencias específicas de menús** que te gustaría que adaptemos a tu plan nutricional, o si prefieres que nuestro equipo de nutrición se encargue de crear las propuestas basándose en toda la información que has proporcionado.
         
         **💡 Instrucción:** Puedes escribir menús específicos, platos favoritos, recetas que te gustan, o simplemente indicar que confías en nuestro criterio profesional.
         """)
@@ -3276,7 +3308,199 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Botones de navegación - En el último paso solo mostrar anterior y finalizar
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 14: MICRONUTRIENTES Y NUTRIENTES ESENCIALES
+    elif current_step == 14:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.3);
+            border: 3px solid #9C27B0;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                💊 PASO 14: MICRONUTRIENTES Y NUTRIENTES ESENCIALES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Paso 14 de 15 - Evaluación Profesional de Micronutrientes
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(93, text="Paso 14 de 15: Micronutrientes y nutrientes esenciales")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🧬 Micronutrientes y Nutrientes Esenciales
+
+        Los **micronutrientes y nutrientes esenciales** son fundamentales para el funcionamiento óptimo del organismo, especialmente cuando se busca mejorar el rendimiento, la composición corporal y la salud general. Estos nutrientes actúan como cofactores en procesos metabólicos cruciales, síntesis de hormonas, función inmunológica y recuperación muscular.
+
+        **🔬 Importancia Científica:**
+        - **Vitamina D3**: Esencial para la salud ósea, función inmune y síntesis de testosterona
+        - **Magnesio**: Cofactor en más de 300 reacciones enzimáticas, crucial para la función muscular y neurológica  
+        - **Omega-3 (EPA/DHA)**: Antiinflamatorios naturales, fundamentales para la salud cardiovascular y cerebral
+        - **Zinc**: Esencial para la síntesis proteica, función inmune y producción hormonal
+        - **Vitamina B12**: Fundamental para la síntesis de ADN, función neurológica y metabolismo energético
+
+        **💡 Instrucción:** Selecciona los micronutrientes que actualmente suplementas o que consideras importante incluir en tu protocolo nutricional. Si no tomas ninguno, selecciona "Ninguno".
+        """)
+        
+        # Lista de micronutrientes
+        micronutrientes_options = [
+            "Vitamina D3",
+            "Magnesio", 
+            "Omega-3 (EPA/DHA)",
+            "Zinc",
+            "Vitamina B12",
+            "Ninguno"
+        ]
+        
+        micronutrientes_seleccionados = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos micronutrientes y nutrientes esenciales tomas actualmente o te interesa incluir?",
+            micronutrientes_options,
+            "micronutrientes_esenciales",
+            "Selecciona todos los que apliquen. Si no tomas ninguno, marca 'Ninguno'."
+        )
+        
+        # Mostrar resumen de selección
+        if micronutrientes_seleccionados:
+            micronutrientes_count = len([item for item in micronutrientes_seleccionados if item != "Ninguno"])
+            if "Ninguno" in micronutrientes_seleccionados:
+                st.info("ℹ️ **Registrado:** No consumes micronutrientes suplementarios actualmente. Esta información nos ayudará a considerar posibles recomendaciones.")
+            elif micronutrientes_count > 0:
+                st.success(f"✅ **Excelente!** Has seleccionado {micronutrientes_count} micronutrientes. Esta información nos permite optimizar tu protocolo nutricional con base científica.")
+        else:
+            st.info("ℹ️ **Nota:** Selecciona al menos una opción para continuar. Si no tomas ningún micronutriente, marca 'Ninguno'.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 15: SUPLEMENTOS ERGOGÉNICOS Y FUNCIONALES  
+    elif current_step == 15:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+            border: 3px solid #FF9800;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                ⚡ PASO 15: SUPLEMENTOS ERGOGÉNICOS Y FUNCIONALES
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                ¡Último Paso! Paso 15 de 15 - Evaluación Profesional de Suplementación
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(100, text="Paso 15 de 15: Suplementos ergogénicos y funcionales - ¡Último paso!")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        st.markdown("""
+        ### 🚀 Suplementos Ergogénicos y Funcionales
+
+        Los **suplementos ergogénicos y funcionales** son herramientas nutricionales basadas en evidencia científica que pueden optimizar el rendimiento, la composición corporal, la salud y el bienestar general cuando se utilizan estratégicamente como parte de un protocolo integral.
+
+        **🎯 Categorización por Objetivos:**
+
+        **💪 Fuerza y Masa Muscular:** Creatina, Proteína en polvo, Beta-alanina
+        **🔥 Pérdida de Grasa Corporal:** Cafeína, Omega-3, L-Teanina  
+        **🛡️ Salud Inmunológica y Recuperación:** Vitamina D3, Zinc, Glutamina
+        **⚖️ Salud Hormonal y Regulación:** Ashwagandha, Magnesio, Zinc
+        **❤️ Salud Cardiovascular y Metabólica:** Omega-3, Coenzima Q10, Nitratos
+        **🧠 Función Cognitiva y Enfoque:** L-Teanina, Rhodiola Rosea, Cafeína
+        **😌 Estrés y Regulación del Estado de Ánimo:** Ashwagandha, Rhodiola Rosea, Magnesio
+        **💤 Sueño y Recuperación Nocturna:** Melatonina, Glicina, Magnesio
+        **⚡ Energía Física y Mental:** Cafeína, Coenzima Q10, Rhodiola Rosea
+
+        **💡 Instrucción:** Selecciona los suplementos que actualmente utilizas o que consideras relevantes para tus objetivos. Si no usas ninguno, selecciona "Ninguno".
+        """)
+        
+        # Lista completa de suplementos ergogénicos
+        suplementos_options = [
+            "Creatina",
+            "Proteína en polvo", 
+            "Beta-alanina",
+            "Cafeína",
+            "Omega-3",
+            "Vitamina D3",
+            "Glutamina",
+            "Zinc",
+            "Ashwagandha",
+            "Nitratos",
+            "Coenzima Q10",
+            "L-Teanina",
+            "Magnesio",
+            "Melatonina",
+            "Glicina",
+            "Rhodiola Rosea",
+            "Ninguno"
+        ]
+        
+        suplementos_seleccionados = create_multiselect_with_bullet_list(
+            "¿Cuáles de estos suplementos ergogénicos y funcionales utilizas actualmente o te interesa incluir?",
+            suplementos_options,
+            "suplementos_ergogenicos",
+            "Selecciona todos los que apliquen. Si no usas ninguno, marca 'Ninguno'."
+        )
+        
+        # Mostrar resumen de selección
+        if suplementos_seleccionados:
+            suplementos_count = len([item for item in suplementos_seleccionados if item != "Ninguno"])
+            if "Ninguno" in suplementos_seleccionados:
+                st.info("ℹ️ **Registrado:** No utilizas suplementos ergogénicos actualmente. Esta información nos ayudará a evaluar posibles protocolos de suplementación estratégica.")
+            elif suplementos_count > 0:
+                st.success(f"✅ **Excelente!** Has seleccionado {suplementos_count} suplementos. Esta información nos permite crear recomendaciones de timing, dosificación y sinergia con base científica.")
+                
+                # Análisis rápido por categorías
+                categoria_analisis = []
+                if any(item in suplementos_seleccionados for item in ["Creatina", "Proteína en polvo", "Beta-alanina"]):
+                    categoria_analisis.append("💪 Fuerza/Masa Muscular")
+                if any(item in suplementos_seleccionados for item in ["Cafeína", "L-Teanina"]):
+                    categoria_analisis.append("🔥 Pérdida de Grasa/Energía") 
+                if any(item in suplementos_seleccionados for item in ["Ashwagandha", "Rhodiola Rosea"]):
+                    categoria_analisis.append("😌 Adaptógenos/Estrés")
+                if any(item in suplementos_seleccionados for item in ["Melatonina", "Glicina", "Magnesio"]):
+                    categoria_analisis.append("💤 Sueño/Recuperación")
+                    
+                if categoria_analisis:
+                    st.info(f"🎯 **Categorías identificadas:** {', '.join(categoria_analisis)}")
+        else:
+            st.info("ℹ️ **Nota:** Selecciona al menos una opción para continuar. Si no usas ningún suplemento, marca 'Ninguno'.")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación - En el último paso mostrar anterior y finalizar
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
             if st.button("⬅️ Anterior"):
@@ -3313,7 +3537,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                             )
                             if ok:
                                 st.session_state["correo_enviado"] = True
-                                st.session_state.step_completed[12] = True
+                                st.session_state.step_completed[15] = True
                                 st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
                                 st.balloons()
                             else:
