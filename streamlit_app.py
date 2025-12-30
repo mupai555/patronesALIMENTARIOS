@@ -2122,7 +2122,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🥛 Lácteos light o reducidos")
         lacteos_light = create_vertical_checkboxes(
             "¿Cuáles de estos lácteos light o reducidos consumes?",
-            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Ninguno"],
+            ["Leche descremada", "Leche deslactosada light", "Leche de almendra sin azúcar", "Leche de coco sin azúcar", "Leche de soya sin azúcar", "Yogur griego natural sin azúcar", "Yogur griego light", "Yogur bebible bajo en grasa", "Yogur sin azúcar añadida", "Yogur de frutas bajo en grasa y sin azúcar añadida", "Queso crema light", "Crema light", "Ninguno"],
             "lacteos_light",
             "Marca todos los lácteos light que uses. Si no consumes ninguno, marca 'Ninguno'."
         )
