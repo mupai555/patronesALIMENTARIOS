@@ -1977,7 +1977,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🐟 Pescados grasos")
         pescados_grasos = create_vertical_checkboxes(
             "¿Cuáles de estos pescados grasos consumes?",
-            ["Atún en aceite", "Salmón", "Sardinas", "Macarela", "Trucha", "Arenque", "Anchovetas", "Pez espada", "Anguila", "Ninguno"],
+            ["Atún en aceite", "Salmón", "Salmón en agua (enlatado)","Sardinas en aceite (enlatadas, escurridas)","Sardinas en agua (enlatadas, escurridas)","Sardinas en salsa de tomate (enlatadas, escurridas)", "Macarela", "Trucha", "Arenque", "Anchovetas", "Pez espada", "Anguila", "Ninguno"],
             "pescados_grasos",
             "Marca todos los pescados grasos que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
@@ -1985,7 +1985,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🦐 Mariscos/comida marina grasos")
         mariscos_grasos = create_vertical_checkboxes(
             "¿Cuáles de estos mariscos/comida marina grasos consumes?",
-            ["Pulpo", "Calamar", "Mejillones", "Ostras", "Cangrejo", "Langosta", "Caracol de mar", "Ninguno"],
+            ["Pulpo", "Pulpo al ajillo (lata, escurrido)", "Calamar", "Calamar en su tinta (lata, escurrido)", "Mejillones", "Mejillones en escabeche (lata, escurrido)", "Ostras", "Ostiones ahumados en aceite (lata, escurrido)", "Cangrejo", "Langosta", "Caracol de mar", "Ninguno"],
             "mariscos_grasos",
             "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
@@ -2074,7 +2074,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🐷 Carnes de cerdo magras")
         carnes_cerdo_magras = create_vertical_checkboxes(
             "¿Cuáles de estas carnes de cerdo magras consumes?",
-            ["Lomo de cerdo", "Filete de cerdo", "Chuleta magra sin grasa", "Solomillo de cerdo", "Tenderloin", "Ninguno"],
+            ["Lomo de cerdo", "Filete de cerdo", "Chuleta magra sin grasa", "Solomillo de cerdo", "Tenderloin", "Pierna de cerdo magra (pulpa, sin grasa visible)", "Ninguno"],
             "carnes_cerdo_magras",
             "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
@@ -2082,7 +2082,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🐔 Carnes de pollo/pavo magras")
         carnes_pollo_magras = create_vertical_checkboxes(
             "¿Cuáles de estas carnes de pollo/pavo magras consumes?",
-            ["Pechuga de pollo sin piel", "Pechuga de pavo sin piel", "Muslo de pollo sin piel", "Pierna de pavo sin piel", "Ninguno"],
+            ["Pechuga de pollo sin piel", "Pechuga de pavo sin piel", "Muslo de pollo sin piel","Pierna de pollo sin piel", "Pierna de pavo sin piel","Molida de pollo magra", "Molida de pechuga de pavo", "Ninguno"],
             "carnes_pollo_magras",
             "Marca todas las que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
@@ -2098,7 +2098,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🐟 Pescados magros")
         pescados_magros = create_vertical_checkboxes(
             "¿Cuáles de estos pescados magros consumes?",
-            ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Atún en agua", "Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
+            ["Tilapia", "Basa", "Huachinango", "Merluza", "Robalo", "Corvina", "Cazón","Atún fresco (filete/medallón)", "Atún en agua (enlatado, escurrido)","Bacalao", "Lenguado", "Mero", "Dorado", "Pargo", "Ninguno"],
             "pescados_magros",
             "Marca todos los pescados magros que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
@@ -2114,7 +2114,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🧀 Quesos magros")
         quesos_magros = create_vertical_checkboxes(
             "¿Cuáles de estos quesos magros consumes?",
-            ["Queso panela", "Queso cottage", "Queso ricotta light", "Queso oaxaca reducido en grasa", "Queso mozzarella light", "Queso fresco bajo en grasa", "Queso de cabra magro", "Ninguno"],
+            ["Queso panela regular","Queso panela light", "requesón", "Queso cottage regular", "Queso cottage light","Queso ricotta", "Queso oaxaca reducido en grasa", "Queso mozzarella light", "Ninguno"],
             "quesos_magros",
             "Marca todos los que consumes. Si no consumes ninguno, marca 'Ninguno'."
         )
@@ -2212,7 +2212,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🥑 Grasas naturales de alimentos")
         grasas_naturales = create_vertical_checkboxes(
             "¿Cuáles de estas grasas naturales consumes?",
-            ["Aguacate", "Yema de huevo", "Aceitunas (negras, verdes)", "Coco rallado natural", "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
+            ["Aguacate","Aceitunas (negras, verdes)", "Coco rallado natural", "Coco fresco", "Leche de coco sin azúcar", "Ninguno"],
             "grasas_naturales",
             "Marca todas las grasas naturales que consumes. Si no consumes ninguna, marca 'Ninguno'."
         )
@@ -2312,9 +2312,22 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🌾 Cereales y granos integrales")
         cereales_integrales = create_vertical_checkboxes(
             "¿Cuáles de estos cereales y granos integrales consumes? (Puedes seleccionar varios)",
-            ["Avena tradicional", "Avena instantánea sin azúcar", "Arroz integral", "Arroz blanco", 
-             "Arroz jazmín", "Arroz basmati", "Trigo bulgur", "Cuscús", "Quinoa", "Amaranto", 
-             "Trigo inflado natural", "Cereal de maíz sin azúcar", "Cereal integral bajo en azúcar", "Galleta de arroz inflado","Ninguno"],
+            [ "Avena (hojuelas/tradicional)",
+        "Avena instantánea natural sin azúcar",
+        "Arroz integral (crudo)",
+        "Arroz blanco (crudo)",
+        "Arroz precocido (marca, preparación rápida)",
+        "Arroz jazmín (crudo)",
+        "Arroz basmati (crudo)",
+        "Trigo bulgur (seco)",
+        "Cuscús (seco)",
+        "Quinoa (cruda)",
+        "Amaranto (crudo)",
+        "Cereal de maíz sin azúcar",
+        "Cereal integral alto en fibra",
+        "Granola sin azúcar añadida",
+        "Galletas de arroz integrales",
+        "Ninguno"],
             "cereales_integrales",
             "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
@@ -2322,7 +2335,21 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🍝 Pastas")
         pastas = create_vertical_checkboxes(
             "¿Cuáles de estas pastas consumes? (Puedes seleccionar varios)",
-            ["Pasta integral", "Pasta de trigo regular", "Pasta de arroz", "Pasta de quinoa", "Pasta de legumbres (lentejas, garbanzos)", "Fideos de arroz", "Fideos chinos", "Spaguetti", "Macarrones", "Lasaña", "Ninguno"],
+            ["Espagueti (pasta de trigo regular)",
+        "Macarrones (pasta de trigo regular)",
+        "Pluma/Penne (pasta de trigo regular)",
+        "Coditos (pasta de trigo regular)",
+        "Lasaña (pasta de trigo regular)",
+        "Espagueti integral (pasta)",
+        "Pluma/Penne integral (pasta)",
+        "Pasta sin gluten (maíz/arroz)",
+        "Pasta de legumbres (lenteja roja)",
+        "Pasta de legumbres (garbanzo)",
+        "Fideos de arroz (secos)",
+        "Ramen (seco)",
+        "Konjac (fideos shirataki)",
+        "Pasta de palmito (Palmini)",
+        "Ninguno"],
             "pastas",
             "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
@@ -2330,9 +2357,23 @@ if datos_personales_completos and st.session_state.datos_completos:
         st.markdown("#### 🌽 Tortillas y panes")
         tortillas_panes = create_vertical_checkboxes(
             "¿Cuáles de estas tortillas y panes consumes? (Puedes seleccionar varios)",
-            ["Tortilla de maíz", "Tortilla de nopal", "Tortilla integral", "Tortilla de harina", 
-             "Tortilla de avena", "Pan integral", "Pan multigrano", "Pan de centeno", 
-             "Pan de caja sin azúcar añadida", "Pan pita integral", "Pan tipo Ezekiel (germinado)", "Ninguno"],
+            [ "Tortilla de maíz (regular, empacada)",
+        "Tortilla de maíz ligera (light/delgada)",
+        "Tortilla de maíz con nopal",
+        "Tortilla de nopal (hecha con nopal fresco)",
+        "Tortilla de harina (regular)",
+        "Tortilla de harina integral",
+        "Tortilla de harina con avena",
+        "Pan rebanado sin azúcar añadida",
+        "Pan rebanado multigrano (sin azúcar)",
+        "Pan pita integral / pan árabe integral",
+        "Pan para hamburguesa regular",
+        "Pan para hamburguesa sin azúcar añadida",
+        "Pan para hot dog regular",
+        "Pan para hot dog sin azúcar añadida",
+        "Tostadas horneadas",
+        "Totopos",
+        "Ninguno"],
             "tortillas_panes",
             "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
@@ -2349,7 +2390,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         leguminosas = create_vertical_checkboxes(
             "¿Cuáles de estas leguminosas consumes? (Puedes seleccionar varios)",
             ["Frijoles negros", "Frijoles bayos", "Frijoles pintos", "Lentejas", "Garbanzos", 
-             "Habas cocidas", "Soya texturizada", "Edamames (vainas de soya)", "Hummus (puré de garbanzo)", "Ninguno"],
+             "Habas cocidas", "Soya texturizada", "Edamames (grano de soya)", "Hummus (puré de garbanzo)", "Ninguno"],
             "leguminosas",
             "Preferentemente elige al menos uno de esta lista. Se pueden seleccionar más de uno. Si no consumes ninguno, selecciona 'Ninguno'."
         )
@@ -2437,9 +2478,9 @@ if datos_personales_completos and st.session_state.datos_completos:
             ["Espinaca", "Acelga", "Kale", "Lechuga (romana, italiana, orejona, iceberg)", 
              "Col morada", "Col verde", "Repollo", "Brócoli", "Coliflor", "Ejote", "Chayote", 
              "Calabacita", "Nopal", "Betabel", "Zanahoria", "Jitomate saladet", "Jitomate bola", 
-             "Tomate verde", "Cebolla blanca", "Cebolla morada", "Pimiento morrón (rojo, verde, amarillo, naranja)", 
-             "Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
-             "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza", "Ninguno"],
+             "Tomate verde", "Cebolla blanca", "Cebolla morada", "Cebollín", "Puerro (poro)","Pimiento morrón (rojo, verde, amarillo, naranja)", 
+             "Chile jalapeño", "Chile serrano", "Chile poblano", "Chile habanero","Pepino", "Apio", "Rábano", "Ajo", "Berenjena", "Champiñones", "Guisantes (chícharos)", 
+             "Verdolaga", "Habas tiernas", "Germen de alfalfa", "Germen de soya", "Flor de calabaza","Jícama", "Espárragos", "Rúcula (arúgula)", "Berros", "Cilantro", "Perejil", "Epazote", "Ninguno"],
             "vegetales_lista",
             "Incluye vegetales que consumas crudos, cocidos, al vapor, salteados o en cualquier preparación. Entre más vegetales selecciones, más variado será tu plan."
         )
@@ -2526,12 +2567,47 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         frutas_lista = create_vertical_checkboxes(
             "¿Cuáles de estas frutas disfrutas o toleras bien? (Puedes seleccionar varios)",
-            ["Manzana (roja, verde, gala, fuji)", "Naranja", "Mandarina", "Mango (petacón, ataulfo)", 
-             "Papaya", "Sandía", "Melón", "Piña", "Plátano (tabasco, dominico, macho)", "Uvas", 
-             "Fresas", "Arándanos", "Zarzamoras", "Frambuesas", "Higo", "Kiwi", "Pera", "Durazno", 
-             "Ciruela", "Granada", "Cereza", "Chabacano", "Lima", "Limón", "Guayaba", "Tuna", 
-             "Níspero", "Mamey", "Pitahaya (dragon fruit)", "Tamarindo", "Coco (carne, rallado)", 
-             "Caqui (persimón)", "Maracuyá", "Manzana en puré sin azúcar", "Fruta en almíbar light", "Ninguno"],
+            ["Manzana (roja/verde/gala/fuji)",
+        "Pera",
+        "Naranja",
+        "Mandarina",
+        "Toronja",
+        "Mango (petacón/ataulfo)",
+        "Papaya",
+        "Sandía",
+        "Melón",
+        "Piña",
+        "Plátano (tabasco/dominico/macho)",
+        "Uvas",
+        "Fresas",
+        "Arándano azul (blueberry)",
+        "Zarzamoras",
+        "Frambuesas",
+        "Higo",
+        "Kiwi",
+        "Durazno",
+        "Nectarina",
+        "Ciruela",
+        "Granada",
+        "Cereza",
+        "Chabacano",
+        "Guayaba",
+        "Tuna",
+        "Níspero",
+        "Mamey",
+        "Pitahaya (dragon fruit)",
+        "Guanábana",
+        "Maracuyá",
+        "Caqui (persimón)",
+        "Tamarindo (pulpa natural, sin azúcar)",
+        "Coco (pulpa fresca)",
+        "Coco rallado sin azúcar",
+        "Lima",
+        "Limón",
+        "Puré de manzana sin azúcar",
+        "Fruta enlatada en agua/jugo",
+        "Fruta enlatada en almíbar (escurrida)",
+        "Ninguno"],
             "frutas_lista",
             "Incluye frutas que consumas solas, en licuados, ensaladas, postres naturales o cualquier preparación. La variedad de frutas enriquecerá tu plan nutricional."
         )
