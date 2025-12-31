@@ -13,6 +13,11 @@ import string
 # ==================== FUNCIÓN PARA CREAR RESUMEN DE EMAIL ====================
 
 def crear_resumen_email():
+    # Extract variables for complex conditionals
+    preferencia_marca = st.session_state.get('preferencia_marca_proteina', [])
+    tiene_preferencia_si = preferencia_marca and len(preferencia_marca) > 0 and preferencia_marca[0] == 'Sí'
+    marca_preferida = st.session_state.get('nombre_marca_proteina', 'No aplica') if tiene_preferencia_si else 'No aplica'
+    
     resumen = f"""
 =====================================
 CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA - MUPAI
@@ -204,7 +209,7 @@ DATOS DEL CLIENTE:
 - {st.session_state.get('preferencia_marca_proteina', ['No especificado'])[0] if st.session_state.get('preferencia_marca_proteina') else 'No especificado'}
 
 ✍️ Marca preferida:
-- {st.session_state.get('nombre_marca_proteina', 'No aplica') if st.session_state.get('preferencia_marca_proteina', []) and len(st.session_state.get('preferencia_marca_proteina', [])) > 0 and st.session_state.get('preferencia_marca_proteina', [])[0] == 'Sí' else 'No aplica'}
+- {marca_preferida}
 
 =====================================
 RESUMEN DE ANÁLISIS IDENTIFICADO:
@@ -213,13 +218,14 @@ Este cuestionario completo de patrones alimentarios proporciona una base integra
 para el desarrollo de recomendaciones nutricionales altamente personalizadas basadas en:
 
 1. 6 grupos alimentarios principales evaluados
-2. Métodos de cocción disponibles y preferidos
-3. Restricciones específicas (alergias e intolerancias)  
-4. Patrones de preferencias detallados
-5. Análisis de antojos y alimentación emocional
-6. Frecuencia de comidas preferida del cliente
-7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
+2. Suplementación con proteína en polvo (tipos y marcas preferidas)
+3. Métodos de cocción disponibles y preferidos
+4. Restricciones específicas (alergias e intolerancias)  
+5. Patrones de preferencias detallados
+6. Análisis de antojos y alimentación emocional
+7. Frecuencia de comidas preferida del cliente
+8. Sugerencias específicas de menús y preferencias adicionales
+9. Contexto personal, familiar y social completo
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
@@ -467,6 +473,10 @@ def validate_step_14():
     tipos_proteina = st.session_state.get('proteina_polvo_tipos', [])
     if len(tipos_proteina) == 0:
         missing_items.append('Tipos de proteína en polvo (debe seleccionar al menos uno, o "Ninguno")')
+    else:
+        # Validar que "Ninguno" sea mutuamente excluyente con otras opciones
+        if "Ninguno (no consumo proteína en polvo)" in tipos_proteina and len(tipos_proteina) > 1:
+            missing_items.append('Si seleccionas "Ninguno", no puedes seleccionar otros tipos de proteína. Por favor, desmarca "Ninguno" o desmarca las otras opciones.')
     
     # Validar preferencia de marca
     preferencia_marca = st.session_state.get('preferencia_marca_proteina', [])
@@ -3484,6 +3494,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             "Marca todas las opciones que apliquen. Si no consumes proteína en polvo, marca 'Ninguno'."
         )
         
+        # Validación UI: "Ninguno" es mutuamente excluyente
+        if "Ninguno (no consumo proteína en polvo)" in proteina_polvo_tipos and len(proteina_polvo_tipos) > 1:
+            st.error("⚠️ **Error:** Si seleccionas 'Ninguno', no puedes seleccionar otros tipos de proteína. Por favor, desmarca 'Ninguno' o desmarca las otras opciones.")
+        
         st.markdown("---")
         
         # Sección de preferencia de marca
@@ -3799,6 +3813,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             
             **Tu perfil nutricional personalizado está listo** y incluye información detallada sobre:
             - 6 grupos alimentarios principales evaluados
+            - Suplementación con proteína en polvo (tipos y marcas preferidas)
             - Métodos de cocción disponibles y preferidos  
             - Restricciones, alergias e intolerancias específicas
             - Patrones de antojos alimentarios identificados
