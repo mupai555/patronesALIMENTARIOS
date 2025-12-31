@@ -200,7 +200,7 @@ DATOS DEL CLIENTE:
 - Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
 
 =====================================
-💪 PROTEÍNA EN POLVO
+💪 Proteína en Polvo
 =====================================
 🥤 Tipos de proteína en polvo consumidos:
 - {', '.join(st.session_state.get('proteina_polvo_tipos', [])) if st.session_state.get('proteina_polvo_tipos') else 'No especificado'}
@@ -3411,7 +3411,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             if st.button("Siguiente ➡️"):
                 advance_to_next_step()
 
-    # PASO 14: PROTEÍNA EN POLVO
+    # PASO 14: Proteína en Polvo
     elif current_step == 14:
         # Add prominent visual step indicator with pink/magenta gradient
         st.markdown("""
@@ -3427,7 +3427,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                💪 PASO 14: PROTEÍNA EN POLVO
+                💪 PASO 14: Proteína en Polvo
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
                 Paso 14 de 14 en tu evaluación personalizada - ¡Último paso!
