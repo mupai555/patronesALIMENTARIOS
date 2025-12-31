@@ -13,6 +13,11 @@ import string
 # ==================== FUNCIÓN PARA CREAR RESUMEN DE EMAIL ====================
 
 def crear_resumen_email():
+    # Extract variables for complex conditionals
+    preferencia_marca = st.session_state.get('preferencia_marca_proteina', [])
+    tiene_preferencia_si = preferencia_marca and len(preferencia_marca) > 0 and preferencia_marca[0] == 'Sí'
+    marca_preferida = st.session_state.get('nombre_marca_proteina', 'No aplica') if tiene_preferencia_si else 'No aplica'
+    
     resumen = f"""
 =====================================
 CUESTIONARIO DE SELECCIÓN ALIMENTARIA PERSONALIZADA - MUPAI
@@ -195,19 +200,32 @@ DATOS DEL CLIENTE:
 - Opción rápida seleccionada: {st.session_state.get('opcion_rapida_menu', 'No especificado')}
 
 =====================================
+💪 PROTEÍNA EN POLVO
+=====================================
+🥤 Tipos de proteína en polvo consumidos:
+- {', '.join(st.session_state.get('proteina_polvo_tipos', [])) if st.session_state.get('proteina_polvo_tipos') else 'No especificado'}
+
+🏷️ ¿Tiene preferencia por alguna marca?
+- {st.session_state.get('preferencia_marca_proteina', ['No especificado'])[0] if st.session_state.get('preferencia_marca_proteina') else 'No especificado'}
+
+✍️ Marca preferida:
+- {marca_preferida}
+
+=====================================
 RESUMEN DE ANÁLISIS IDENTIFICADO:
 =====================================
 Este cuestionario completo de patrones alimentarios proporciona una base integral 
 para el desarrollo de recomendaciones nutricionales altamente personalizadas basadas en:
 
 1. 6 grupos alimentarios principales evaluados
-2. Métodos de cocción disponibles y preferidos
-3. Restricciones específicas (alergias e intolerancias)  
-4. Patrones de preferencias detallados
-5. Análisis de antojos y alimentación emocional
-6. Frecuencia de comidas preferida del cliente
-7. Sugerencias específicas de menús y preferencias adicionales
-8. Contexto personal, familiar y social completo
+2. Suplementación con proteína en polvo (tipos y marcas preferidas)
+3. Métodos de cocción disponibles y preferidos
+4. Restricciones específicas (alergias e intolerancias)  
+5. Patrones de preferencias detallados
+6. Análisis de antojos y alimentación emocional
+7. Frecuencia de comidas preferida del cliente
+8. Sugerencias específicas de menús y preferencias adicionales
+9. Contexto personal, familiar y social completo
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
@@ -447,6 +465,35 @@ def validate_step_13():
         return False, missing_items
     return True, []
 
+def validate_step_14():
+    """Valida que se haya completado la sección de proteína en polvo"""
+    missing_items = []
+    
+    # Validar que haya al menos una selección de tipos de proteína
+    tipos_proteina = st.session_state.get('proteina_polvo_tipos', [])
+    if len(tipos_proteina) == 0:
+        missing_items.append('Tipos de proteína en polvo (debe seleccionar al menos uno, o "Ninguno")')
+    else:
+        # Validar que "Ninguno" sea mutuamente excluyente con otras opciones
+        if "Ninguno (no consumo proteína en polvo)" in tipos_proteina and len(tipos_proteina) > 1:
+            missing_items.append('Si seleccionas "Ninguno", no puedes seleccionar otros tipos de proteína. Por favor, desmarca "Ninguno" o desmarca las otras opciones.')
+    
+    # Validar preferencia de marca
+    preferencia_marca = st.session_state.get('preferencia_marca_proteina', [])
+    if len(preferencia_marca) == 0:
+        missing_items.append('Preferencia de marca (debe seleccionar "Sí" o "No")')
+    elif len(preferencia_marca) > 1:
+        missing_items.append('Solo puedes seleccionar UNA opción en preferencia de marca (tienes seleccionadas varias)')
+    elif len(preferencia_marca) == 1 and preferencia_marca[0] == "Sí":
+        # Si seleccionó "Sí", el campo de marca debe tener contenido
+        nombre_marca = st.session_state.get('nombre_marca_proteina', '').strip()
+        if not nombre_marca:
+            missing_items.append('Nombre de la marca preferida (campo de texto obligatorio si seleccionaste "Sí")')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
 def create_vertical_checkboxes(title, options, key, help_text=""):
     """
     Create vertical checkboxes for short option lists.
@@ -518,7 +565,8 @@ def get_step_validator(step_number):
         10: validate_step_10,
         11: validate_step_11,
         12: validate_step_12,
-        13: validate_step_13
+        13: validate_step_13,
+        14: validate_step_14
     }
     return validators.get(step_number, lambda: (True, []))
 
@@ -539,7 +587,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 13:
+        if current_step < 14:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
@@ -1269,7 +1317,8 @@ defaults = {
         10: False,  # Alergias/intolerancias
         11: False,  # Antojos
         12: False,  # Frecuencia de comidas
-        13: False   # Sugerencias de menús
+        13: False,  # Sugerencias de menús
+        14: False   # Proteína en polvo
     },
     "max_unlocked_step": 1
 }
@@ -1820,7 +1869,8 @@ if datos_personales_completos and st.session_state.datos_completos:
         10: validate_step_legacy(10),
         11: validate_step_legacy(11),
         12: validate_step_legacy(12),
-        13: validate_step_legacy(13)
+        13: validate_step_legacy(13),
+        14: validate_step_legacy(14)
     }
     
     st.markdown(f"""
@@ -1853,7 +1903,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             </div>
         </div>
         <div style="text-align: center; margin-top: 1rem; color: #CCCCCC;">
-            <small>Paso {current_step} de 13 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
+            <small>Paso {current_step} de 14 - {'✅ Completado' if step_validators.get(current_step, False) else '⏳ En progreso'}</small>
         </div>
         <div style="text-align: center; margin-top: 0.5rem; font-size: 0.9rem;">
             <span style="color: #27AE60;">● Completo</span> | 
@@ -1914,7 +1964,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
 
         # Actualizar progreso
-        progress.progress(8, text="Paso 1 de 12: Proteínas con más contenido graso")
+        progress.progress(7, text="Paso 1 de 14: Proteínas con más contenido graso")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2059,7 +2109,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         **💡 Consejo:** Es mejor marcar más opciones que menos. Si ocasionalmente comes algo, inclúyelo.
         """)
         # Actualizar progreso
-        progress.progress(17, text="Paso 2 de 12: Proteínas animales magras")
+        progress.progress(14, text="Paso 2 de 14: Proteínas animales magras")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2205,7 +2255,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         
 
         # Actualizar progreso
-        progress.progress(25, text="Paso 3 de 12: Fuentes de grasa saludable")
+        progress.progress(21, text="Paso 3 de 14: Fuentes de grasa saludable")
 
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -2286,7 +2336,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(33, text="Paso 4 de 12: Carbohidratos complejos y cereales")
+        progress.progress(28, text="Paso 4 de 14: Carbohidratos complejos y cereales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2450,7 +2500,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(42, text="Paso 5 de 12: Vegetales")
+        progress.progress(36, text="Paso 5 de 14: Vegetales")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2542,7 +2592,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(50, text="Paso 6 de 12: Frutas - ¡Completando grupos principales!")
+        progress.progress(43, text="Paso 6 de 14: Frutas - ¡Completando grupos principales!")
         
         # Actualizar indicador visual
         st.markdown("""
@@ -2678,7 +2728,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(58, text="Paso 7 de 12: Aceites de cocción (Opcional)")
+        progress.progress(50, text="Paso 7 de 14: Aceites de cocción (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2752,7 +2802,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(67, text="Paso 8 de 12: Bebidas para hidratación (Opcional)")
+        progress.progress(57, text="Paso 8 de 14: Bebidas para hidratación (Opcional)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2824,7 +2874,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(69, text="Paso 9 de 13: Métodos de cocción disponibles")
+        progress.progress(64, text="Paso 9 de 14: Métodos de cocción disponibles")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -2913,7 +2963,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(77, text="Paso 10 de 13: Alergias e intolerancias (Crítico)")
+        progress.progress(71, text="Paso 10 de 14: Alergias e intolerancias (Crítico)")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         
@@ -3025,7 +3075,7 @@ if datos_personales_completos and st.session_state.datos_completos:
         """, unsafe_allow_html=True)
         
         # Actualizar progreso
-        progress.progress(85, text="Paso 11 de 13: Antojos alimentarios")
+        progress.progress(79, text="Paso 11 de 14: Antojos alimentarios")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3172,7 +3222,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(92, text="Paso 12 de 13: Frecuencia de comidas preferida")
+        progress.progress(86, text="Paso 12 de 14: Frecuencia de comidas preferida")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3270,10 +3320,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 13: SUGERENCIAS DE MENÚS Y FINALIZACIÓN
+                📝 PASO 13: SUGERENCIAS DE MENÚS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                ¡Último Paso! Estás en el paso 13 de 13 - Personalización Final
+                Paso 13 de 14 en tu evaluación personalizada
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -3281,7 +3331,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 13 de 13: Sugerencias de menús y finalización - ¡Último paso!")
+        progress.progress(93, text="Paso 13 de 14: Sugerencias de menús")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3352,7 +3402,156 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Botones de navegación - En el último paso solo mostrar anterior y finalizar
+        # Botones de navegación
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 14: PROTEÍNA EN POLVO
+    elif current_step == 14:
+        # Add prominent visual step indicator with pink/magenta gradient
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3);
+            border: 3px solid #E91E63;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                💪 PASO 14: PROTEÍNA EN POLVO
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Paso 14 de 14 en tu evaluación personalizada - ¡Último paso!
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Información importante
+        st.info("""
+### 📋 Información importante para este paso:
+
+**¿Por qué evaluamos esto?**
+- Las proteínas en polvo son suplementos nutricionales para complementar la dieta
+- Cada tipo tiene características específicas (absorción, perfil de aminoácidos, digestibilidad)
+- Conocer tus preferencias nos permite considerar su aporte en tu plan alimentario
+
+**¿Cómo completar este paso?**
+- Marca TODOS los tipos de proteína en polvo que consumes
+- Si no consumes ninguna, marca "Ninguno"
+- Indica si tienes preferencia por alguna marca específica
+
+**💡 Consejo:** Si consumes proteína ocasionalmente, inclúyela también.
+        """)
+        
+        # Actualizar progreso
+        progress.progress(100, text="Paso 14 de 14: Proteína en polvo - ¡Último paso!")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
+        # Sección de tipos de proteína
+        st.markdown("### 🥤 Tipos de Proteína en Polvo")
+        
+        # Preparar todas las opciones de proteínas
+        opciones_proteinas = [
+            # Proteínas de Suero de Leche (Whey)
+            "Whey Protein Concentrate / Concentrado de suero (WPC 80)",
+            "Whey Protein Isolate / Aislado de suero (WPI 90+)",
+            "Whey Protein Hydrolyzed / Hidrolizado de suero (WPH)",
+            "Whey Blend / Mezcla de concentrado + aislado",
+            # Proteínas de Caseína
+            "Caseína Micelar",
+            "Caseinato de Calcio",
+            "Caseína Hidrolizada",
+            # Proteínas Vegetales
+            "Proteína de Soya Aislada",
+            "Proteína de Guisante (Pea Protein Isolate)",
+            "Proteína de Arroz Integral",
+            "Proteína de Cáñamo (Hemp Protein)",
+            "Proteína de Semilla de Calabaza",
+            "Blend Vegetal (mezcla de varias plantas)",
+            # Proteínas de Otras Fuentes
+            "Proteína de Carne (Beef Protein Isolate)",
+            "Proteína de Claras de Huevo",
+            "Albúmina de Huevo",
+            "Proteína de Colágeno Hidrolizado",
+            # Opción especial
+            "Ninguno (no consumo proteína en polvo)"
+        ]
+        
+        proteina_polvo_tipos = create_vertical_checkboxes(
+            "Selecciona TODOS los tipos de proteína en polvo que consumes:",
+            opciones_proteinas,
+            "proteina_polvo_tipos",
+            "Marca todas las opciones que apliquen. Si no consumes proteína en polvo, marca 'Ninguno'."
+        )
+        
+        # Validación UI: "Ninguno" es mutuamente excluyente
+        if "Ninguno (no consumo proteína en polvo)" in proteina_polvo_tipos and len(proteina_polvo_tipos) > 1:
+            st.error("⚠️ **Error:** Si seleccionas 'Ninguno', no puedes seleccionar otros tipos de proteína. Por favor, desmarca 'Ninguno' o desmarca las otras opciones.")
+        
+        st.markdown("---")
+        
+        # Sección de preferencia de marca
+        st.markdown("### 🏷️ Preferencia de Marca")
+        
+        preferencia_marca_proteina = create_vertical_checkboxes(
+            "¿Tienes preferencia por alguna marca específica?",
+            ["Sí", "No"],
+            "preferencia_marca_proteina",
+            "Selecciona SOLO UNA opción"
+        )
+        
+        # Validación: solo una opción en preferencia de marca
+        if len(preferencia_marca_proteina) > 1:
+            st.error("⚠️ **Error:** Solo puedes seleccionar UNA opción (Sí o No). Por favor, desmarca una de las opciones.")
+        
+        # Campo de texto condicional para nombre de marca
+        if preferencia_marca_proteina and len(preferencia_marca_proteina) == 1:
+            if preferencia_marca_proteina[0] == "Sí":
+                nombre_marca_proteina = st.text_input(
+                    "✍️ ¿Cuál es tu marca preferida?",
+                    value=st.session_state.get('nombre_marca_proteina', ''),
+                    placeholder="Ej: Optimum Nutrition, Dymatize, MyProtein, Isopure, Vega, Muscletech, BSN, etc.",
+                    help="Escribe el nombre de la marca de proteína en polvo que prefieres"
+                )
+                st.session_state.nombre_marca_proteina = nombre_marca_proteina
+            else:
+                # Si seleccionó "No", limpiar automáticamente el campo de marca
+                st.session_state.nombre_marca_proteina = ""
+        
+        # Resumen del paso
+        st.markdown("### 📊 Resumen de tu selección")
+        
+        if proteina_polvo_tipos:
+            if "Ninguno (no consumo proteína en polvo)" in proteina_polvo_tipos:
+                st.info("ℹ️ **No consumes proteína en polvo**")
+            else:
+                st.success(f"✅ **Tipos de proteína seleccionados:** {len(proteina_polvo_tipos)}")
+                for tipo in proteina_polvo_tipos:
+                    st.write(f"  • {tipo}")
+        
+        if preferencia_marca_proteina and len(preferencia_marca_proteina) == 1:
+            if preferencia_marca_proteina[0] == "Sí":
+                marca = st.session_state.get('nombre_marca_proteina', '').strip()
+                if marca:
+                    st.success(f"🏷️ **Marca preferida:** {marca}")
+                else:
+                    st.warning("⚠️ **Recuerda:** Debes escribir el nombre de tu marca preferida")
+            else:
+                st.info("ℹ️ **Sin preferencia de marca específica**")
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación - En el último paso mostrar anterior y finalizar
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
             if st.button("⬅️ Anterior"):
@@ -3389,7 +3588,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                             )
                             if ok:
                                 st.session_state["correo_enviado"] = True
-                                st.session_state.step_completed[12] = True
+                                st.session_state.step_completed[13] = True
                                 st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
                                 st.balloons()
                             else:
@@ -3541,6 +3740,23 @@ if datos_personales_completos and st.session_state.datos_completos:
                 if palabra_count > 0:
                     st.success(f"**Detalle:** {palabra_count} palabras de sugerencias específicas proporcionadas")
 
+            # Proteína en Polvo
+            st.markdown("### 💪 Proteína en Polvo")
+            if st.session_state.get('proteina_polvo_tipos'):
+                tipos_proteina = st.session_state.get('proteina_polvo_tipos', [])
+                if "Ninguno (no consumo proteína en polvo)" in tipos_proteina:
+                    st.info("ℹ️ **No consume proteína en polvo**")
+                else:
+                    st.write(f"• **Tipos consumidos:** {len(tipos_proteina)} seleccionados")
+                    for tipo in tipos_proteina:
+                        st.write(f"  - {tipo}")
+                    
+                    # Mostrar preferencia de marca
+                    preferencia = st.session_state.get('preferencia_marca_proteina', [])
+                    if preferencia and len(preferencia) > 0 and preferencia[0] == "Sí":
+                        marca = st.session_state.get('nombre_marca_proteina', 'No especificada')
+                        st.success(f"🏷️ **Marca preferida:** {marca}")
+
             # Recomendaciones personalizadas basadas en datos reales
             st.markdown("### 💡 Recomendaciones Personalizadas Iniciales")
             
@@ -3597,6 +3813,7 @@ if datos_personales_completos and st.session_state.datos_completos:
             
             **Tu perfil nutricional personalizado está listo** y incluye información detallada sobre:
             - 6 grupos alimentarios principales evaluados
+            - Suplementación con proteína en polvo (tipos y marcas preferidas)
             - Métodos de cocción disponibles y preferidos  
             - Restricciones, alergias e intolerancias específicas
             - Patrones de antojos alimentarios identificados
