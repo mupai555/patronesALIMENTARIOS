@@ -3469,10 +3469,10 @@ if datos_personales_completos and st.session_state.datos_completos:
             animation: slideIn 0.5s ease-out;
         ">
             <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
-                📝 PASO 13: SUGERENCIAS DE MENÚS
+                📝 PASO 14: SUGERENCIAS DE MENÚS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Paso 13 de 14 en tu evaluación personalizada
+                Paso 14 de 14 en tu evaluación personalizada
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -3551,14 +3551,51 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Botones de navegación
+        # Botones de navegación - En el último paso mostrar anterior y finalizar
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
             if st.button("⬅️ Anterior"):
                 go_to_previous_step()
         with col3:
-            if st.button("Siguiente ➡️"):
-                advance_to_next_step()
+            # Botón obligatorio para terminar y enviar email
+            if not st.session_state.get("correo_enviado", False):
+                if st.button("📧 Terminar y enviar mi evaluación por email", key="finalizar_con_email"):
+                    faltantes = datos_completos_para_email()
+                    grupos_incompletos = verificar_grupos_obligatorios_completos()
+                    
+                    if faltantes:
+                        st.error(f"❌ No se puede finalizar. Faltan datos personales: {', '.join(faltantes)}")
+                    elif grupos_incompletos:
+                        st.error(f"""
+                        ❌ **No se puede finalizar. Grupos alimentarios incompletos:**
+                        
+                        Los siguientes grupos requieren al menos una selección (puedes marcar 'Ninguno' si no consumes ninguno):
+                        
+                        {chr(10).join([f'• {grupo}' for grupo in grupos_incompletos])}
+                        
+                        Por favor, completa estos grupos antes de finalizar la evaluación.
+                        """)
+                    else:
+                        with st.spinner("📧 Finalizando evaluación y enviando resumen por email..."):
+                            resumen_completo = crear_resumen_email()
+                            ok = enviar_email_resumen(
+                                resumen_completo, 
+                                st.session_state.get('nombre', ''), 
+                                st.session_state.get('email_cliente', ''), 
+                                st.session_state.get('fecha_llenado', ''), 
+                                st.session_state.get('edad', ''), 
+                                st.session_state.get('telefono', '')
+                            )
+                            if ok:
+                                st.session_state["correo_enviado"] = True
+                                st.session_state.step_completed[14] = True
+                                st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
+                                st.balloons()
+                            else:
+                                st.error("❌ Error al enviar email. No se puede finalizar hasta que el envío sea exitoso. Contacta a soporte técnico si el problema persiste.")
+            else:
+                st.success("🎊 ¡Felicitaciones! Has completado toda la evaluación de patrones alimentarios.")
+                st.info("✅ Tu evaluación ya fue enviada por email exitosamente.")
 
     # RESULTADO FINAL: Solo mostrar después de enviar email exitosamente
     if st.session_state.get("correo_enviado", False):
