@@ -212,6 +212,22 @@ DATOS DEL CLIENTE:
 - {marca_preferida}
 
 =====================================
+🩺 INFORMACIÓN MÉDICA Y FARMACOLÓGICA
+=====================================
+
+📋 Condiciones Médicas y Fisiológicas Actuales:
+- {', '.join(st.session_state.get('condiciones_medicas', [])) if st.session_state.get('condiciones_medicas') else 'No especificado'}
+- Otra condición especificada: {st.session_state.get('condiciones_otras', 'No especificado')}
+
+💊 Medicamentos de Uso Frecuente:
+- Consume medicamentos: {st.session_state.get('consume_medicamentos', ['No especificado'])[0] if st.session_state.get('consume_medicamentos') else 'No especificado'}
+- Lista de medicamentos detallada: {st.session_state.get('medicamentos_lista', 'No especificado')}
+
+💊 Suplementos Nutricionales Adicionales:
+- Consume suplementos: {st.session_state.get('consume_suplementos', ['No especificado'])[0] if st.session_state.get('consume_suplementos') else 'No especificado'}
+- Lista de suplementos detallada: {st.session_state.get('suplementos_lista', 'No especificado')}
+
+=====================================
 RESUMEN DE ANÁLISIS IDENTIFICADO:
 =====================================
 Este cuestionario completo de patrones alimentarios proporciona una base integral 
@@ -226,6 +242,9 @@ para el desarrollo de recomendaciones nutricionales altamente personalizadas bas
 7. Frecuencia de comidas preferida del cliente
 8. Sugerencias específicas de menús y preferencias adicionales
 9. Contexto personal, familiar y social completo
+10. Condiciones médicas y farmacológicas actuales (CRÍTICO)
+11. Medicamentos de uso frecuente y posibles interacciones
+12. Suplementos nutricionales adicionales
 
 RECOMENDACIONES PARA SEGUIMIENTO:
 - Desarrollar plan nutricional personalizado basado en estos patrones
@@ -235,6 +254,9 @@ RECOMENDACIONES PARA SEGUIMIENTO:
 - Estructurar la frecuencia de comidas según la preferencia del cliente
 - Incorporar sugerencias específicas de menús proporcionadas por el cliente
 - Adaptar recomendaciones al contexto personal y familiar específico
+- Evaluar interacciones entre medicamentos y alimentos
+- Adaptar plan nutricional a condiciones médicas específicas
+- Consultar con médico tratante si hay condiciones médicas complejas
 
 =====================================
 © 2025 MUPAI - Muscle up GYM
@@ -494,6 +516,52 @@ def validate_step_14():
         return False, missing_items
     return True, []
 
+def validate_step_15():
+    """Valida que se haya completado la sección de condiciones médicas y medicamentos"""
+    missing_items = []
+    
+    # Validar que haya al menos una selección de condiciones médicas
+    condiciones_selections = st.session_state.get('condiciones_medicas', [])
+    if len(condiciones_selections) == 0:
+        missing_items.append('Condiciones médicas (debe seleccionar al menos una, o "Ninguna de las anteriores")')
+    else:
+        # Validar que "Ninguna de las anteriores" sea mutuamente excluyente
+        if "Ninguna de las anteriores" in condiciones_selections and len(condiciones_selections) > 1:
+            missing_items.append('Si seleccionas "Ninguna de las anteriores", no puedes seleccionar otras condiciones médicas')
+    
+    # Validar campo de texto de otras condiciones
+    condiciones_otras = st.session_state.get('condiciones_otras', '').strip()
+    if not condiciones_otras:
+        missing_items.append('Otras condiciones (campo de texto) - escribir "No aplica" si no aplica')
+    
+    # Validar consumo de medicamentos
+    consume_medicamentos = st.session_state.get('consume_medicamentos', [])
+    if len(consume_medicamentos) == 0:
+        missing_items.append('Consumo de medicamentos (debe seleccionar "Sí" o "No")')
+    elif len(consume_medicamentos) > 1:
+        missing_items.append('Solo puedes seleccionar UNA opción en consumo de medicamentos')
+    elif len(consume_medicamentos) == 1 and consume_medicamentos[0] == "Sí":
+        # Si seleccionó "Sí", el campo de lista debe tener contenido
+        medicamentos_lista = st.session_state.get('medicamentos_lista', '').strip()
+        if not medicamentos_lista:
+            missing_items.append('Lista de medicamentos (campo de texto obligatorio si seleccionaste "Sí")')
+    
+    # Validar consumo de suplementos
+    consume_suplementos = st.session_state.get('consume_suplementos', [])
+    if len(consume_suplementos) == 0:
+        missing_items.append('Consumo de suplementos (debe seleccionar "Sí" o "No")')
+    elif len(consume_suplementos) > 1:
+        missing_items.append('Solo puedes seleccionar UNA opción en consumo de suplementos')
+    elif len(consume_suplementos) == 1 and consume_suplementos[0] == "Sí":
+        # Si seleccionó "Sí", el campo de lista debe tener contenido
+        suplementos_lista = st.session_state.get('suplementos_lista', '').strip()
+        if not suplementos_lista:
+            missing_items.append('Lista de suplementos (campo de texto obligatorio si seleccionaste "Sí")')
+    
+    if missing_items:
+        return False, missing_items
+    return True, []
+
 def create_vertical_checkboxes(title, options, key, help_text=""):
     """
     Create vertical checkboxes for short option lists.
@@ -566,7 +634,8 @@ def get_step_validator(step_number):
         11: validate_step_11,
         12: validate_step_12,
         13: validate_step_13,
-        14: validate_step_14
+        14: validate_step_14,
+        15: validate_step_15
     }
     return validators.get(step_number, lambda: (True, []))
 
@@ -587,7 +656,7 @@ def advance_to_next_step():
         # Marcar el paso actual como completado
         st.session_state.step_completed[current_step] = True
         # Avanzar al siguiente paso
-        if current_step < 14:
+        if current_step < 15:
             st.session_state.current_step = current_step + 1
             st.session_state.max_unlocked_step = max(st.session_state.max_unlocked_step, current_step + 1)
         return True
@@ -1318,9 +1387,17 @@ defaults = {
         11: False,  # Alergias/intolerancias (antes paso 10)
         12: False,  # Antojos (antes paso 11)
         13: False,  # Frecuencia de comidas (antes paso 12)
-        14: False   # Sugerencias de menús (antes paso 13)
+        14: False,  # Sugerencias de menús (antes paso 13)
+        15: False   # Condiciones médicas y medicamentos
     },
-    "max_unlocked_step": 1
+    "max_unlocked_step": 1,
+    # Paso 15: Condiciones médicas y medicamentos
+    "condiciones_medicas": [],
+    "condiciones_otras": "",
+    "consume_medicamentos": [],
+    "medicamentos_lista": "",
+    "consume_suplementos": [],
+    "suplementos_lista": ""
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -3472,7 +3549,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                 📝 PASO 14: SUGERENCIAS DE MENÚS
             </h2>
             <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
-                Paso 14 de 14 en tu evaluación personalizada
+                Paso 14 de 15 en tu evaluación personalizada
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -3480,7 +3557,7 @@ if datos_personales_completos and st.session_state.datos_completos:
 
         
         # Actualizar progreso
-        progress.progress(100, text="Paso 14 de 14: Sugerencias de menús")
+        progress.progress(93, text="Paso 14 de 15: Sugerencias de menús")
         
         st.markdown('<div class="content-card">', unsafe_allow_html=True)
         st.markdown("""
@@ -3551,7 +3628,270 @@ if datos_personales_completos and st.session_state.datos_completos:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Botones de navegación - En el último paso mostrar anterior y finalizar
+        # Botones de navegación - Ya no es el último paso, ahora tiene un paso más
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("⬅️ Anterior"):
+                go_to_previous_step()
+        with col3:
+            if st.button("Siguiente ➡️"):
+                advance_to_next_step()
+
+    # PASO 15: CONDICIONES MÉDICAS Y MEDICAMENTOS
+    elif current_step == 15:
+        # Add prominent visual step indicator
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(255, 87, 34, 0.3);
+            border: 3px solid #FF5722;
+            animation: slideIn 0.5s ease-out;
+        ">
+            <h2 style="margin: 0; font-size: 1.8rem; font-weight: bold; color: white;">
+                🩺 PASO 15: CONDICIONES MÉDICAS Y MEDICAMENTOS
+            </h2>
+            <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; opacity: 0.9; color: white;">
+                Paso 15 de 15 - Información Crítica para tu Seguridad
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Actualizar progreso
+        progress.progress(100, text="Paso 15 de 15: Condiciones médicas y medicamentos (CRÍTICO)")
+        
+        st.markdown('<div class="content-card">', unsafe_allow_html=True)
+        
+        st.markdown("""
+        ### 🎯 ¿Por qué necesitamos esta información?
+        Esta sección es **fundamental y crítica** para tu seguridad. Conocer tus condiciones médicas, 
+        medicamentos y suplementos nos permite:
+        
+        - 🎯 **Adaptar** el plan nutricional a tus condiciones médicas específicas
+        - ⚠️ **Evitar** interacciones negativas entre alimentos y medicamentos
+        - 🛡️ **Garantizar** que el plan sea seguro y efectivo para tu salud
+        - 💊 **Proporcionar** recomendaciones personalizadas considerando tu contexto médico completo
+        
+        **💡 Instrucción:** Por favor completa TODA esta sección con la mayor precisión posible. 
+        La información médica es confidencial y será tratada con total privacidad.
+        """)
+        
+        st.error("🚨 **IMPORTANTE:** Esta información es CRÍTICA para tu seguridad. Sé completamente honesto y específico.")
+        
+        # Sección 1: Condiciones Médicas y Fisiológicas
+        st.markdown("---")
+        st.markdown("### 📋 1. Condiciones Médicas y Fisiológicas Actuales")
+        st.warning("⚠️ **Instrucción:** Selecciona TODAS las condiciones médicas que tengas actualmente. Si no tienes ninguna, selecciona 'Ninguna de las anteriores'.")
+        
+        condiciones_medicas = create_vertical_checkboxes(
+            "¿Cuáles de estas condiciones médicas o fisiológicas tienes actualmente?",
+            [
+                "Diabetes Tipo 1",
+                "Diabetes Tipo 2",
+                "Prediabetes",
+                "Hipertensión arterial (presión alta)",
+                "Hipotensión arterial (presión baja)",
+                "Hipotiroidismo",
+                "Hipertiroidismo",
+                "Síndrome de ovario poliquístico (SOP)",
+                "Resistencia a la insulina",
+                "Síndrome metabólico",
+                "Enfermedad cardiovascular",
+                "Colesterol alto (hipercolesterolemia)",
+                "Triglicéridos altos (hipertrigliceridemia)",
+                "Enfermedad renal crónica",
+                "Hígado graso (esteatosis hepática)",
+                "Enfermedades gastrointestinales (Crohn, colitis ulcerosa, etc.)",
+                "Síndrome de intestino irritable (SII)",
+                "Reflujo gastroesofágico (ERGE)",
+                "Gota (ácido úrico elevado)",
+                "Anemia",
+                "Osteoporosis",
+                "Artritis reumatoide",
+                "Cáncer (actual o en tratamiento)",
+                "Embarazo",
+                "Lactancia",
+                "Menopausia",
+                "Trastornos de la conducta alimentaria (TCA)",
+                "Ninguna de las anteriores"
+            ],
+            "condiciones_medicas",
+            "Marca TODAS las condiciones que tengas. Si no tienes ninguna, marca 'Ninguna de las anteriores'."
+        )
+        
+        # Validar exclusividad de "Ninguna de las anteriores"
+        if "Ninguna de las anteriores" in condiciones_medicas and len(condiciones_medicas) > 1:
+            st.error("❌ **Error:** Si seleccionas 'Ninguna de las anteriores', no puedes seleccionar otras condiciones médicas. Por favor, desmarca 'Ninguna de las anteriores' o desmarca las otras opciones.")
+        
+        condiciones_otras = st.text_input(
+            "¿Otra condición médica no mencionada? Especifica aquí:",
+            value=st.session_state.get('condiciones_otras', ''),
+            placeholder="Ej: fibromialgia, lupus, etc. Si no aplica, escribe 'No aplica'",
+            help="Especifica cualquier otra condición médica que tengas. Campo obligatorio - escribe 'No aplica' si no tienes otras condiciones"
+        )
+        st.session_state.condiciones_otras = condiciones_otras
+        
+        # Sección 2: Medicamentos de Uso Frecuente
+        st.markdown("---")
+        st.markdown("### 💊 2. Medicamentos de Uso Frecuente")
+        st.info("💡 **Ayuda:** Incluye TODOS los medicamentos que tomes regularmente (recetados, de venta libre, etc.)")
+        
+        consume_medicamentos = create_vertical_checkboxes(
+            "¿Consumes medicamentos de forma regular?",
+            ["Sí", "No"],
+            "consume_medicamentos",
+            "Selecciona SOLO UNA opción: Sí o No"
+        )
+        
+        # Validar que solo se seleccione una opción
+        if len(consume_medicamentos) > 1:
+            st.error("❌ **Error:** Solo puedes seleccionar UNA opción (Sí o No). Por favor, desmarca la opción adicional.")
+        elif len(consume_medicamentos) == 0:
+            st.warning("⚠️ **Atención:** Debes seleccionar si consumes medicamentos o no.")
+        
+        # Mostrar campo de lista si selecciona "Sí"
+        medicamentos_lista = ""
+        if len(consume_medicamentos) == 1 and consume_medicamentos[0] == "Sí":
+            st.markdown("#### 📝 Lista detallada de medicamentos")
+            st.warning("⚠️ **Obligatorio:** Proporciona la lista completa de medicamentos con nombre, dosis y frecuencia.")
+            medicamentos_lista = st.text_area(
+                "Lista de medicamentos que consumes regularmente:",
+                value=st.session_state.get('medicamentos_lista', ''),
+                placeholder="""Ejemplo:
+- Metformina 850mg - 2 veces al día (desayuno y cena)
+- Levotiroxina 100mcg - 1 vez al día (en ayunas)
+- Losartán 50mg - 1 vez al día (por la mañana)
+- Omeprazol 20mg - 1 vez al día (antes del desayuno)
+- Atorvastatina 20mg - 1 vez al día (por la noche)
+
+Por favor especifica: Nombre del medicamento, dosis y frecuencia de consumo""",
+                height=150,
+                help="Especifica TODOS tus medicamentos con nombre completo, dosis y frecuencia. Esta información es crítica."
+            )
+            st.session_state.medicamentos_lista = medicamentos_lista
+            
+            if not medicamentos_lista.strip():
+                st.error("❌ **Campo obligatorio:** Si consumes medicamentos, debes especificar la lista completa.")
+        else:
+            # Limpiar el campo si selecciona "No"
+            st.session_state.medicamentos_lista = ""
+        
+        # Sección 3: Suplementos Nutricionales
+        st.markdown("---")
+        st.markdown("### 💊 3. Suplementos Nutricionales Adicionales")
+        st.info("💡 **Ayuda:** Además de la proteína en polvo que ya evaluamos, ¿consumes otros suplementos?")
+        
+        consume_suplementos = create_vertical_checkboxes(
+            "¿Consumes otros suplementos nutricionales además de proteína en polvo?",
+            ["Sí", "No"],
+            "consume_suplementos",
+            "Selecciona SOLO UNA opción: Sí o No"
+        )
+        
+        # Validar que solo se seleccione una opción
+        if len(consume_suplementos) > 1:
+            st.error("❌ **Error:** Solo puedes seleccionar UNA opción (Sí o No). Por favor, desmarca la opción adicional.")
+        elif len(consume_suplementos) == 0:
+            st.warning("⚠️ **Atención:** Debes seleccionar si consumes suplementos adicionales o no.")
+        
+        # Mostrar campo de lista si selecciona "Sí"
+        suplementos_lista = ""
+        if len(consume_suplementos) == 1 and consume_suplementos[0] == "Sí":
+            st.markdown("#### 📝 Lista de suplementos nutricionales")
+            st.info("💡 **Opcional:** Si consumes suplementos, especifica cuáles y con qué frecuencia.")
+            suplementos_lista = st.text_area(
+                "Lista de suplementos que consumes además de proteína en polvo:",
+                value=st.session_state.get('suplementos_lista', ''),
+                placeholder="""Ejemplos comunes:
+- Multivitamínico - 1 vez al día
+- Omega 3 (aceite de pescado) - 2 cápsulas al día
+- Vitamina D3 - 1000 UI al día
+- Magnesio - 400mg antes de dormir
+- Creatina monohidrato - 5g al día
+- BCAA - durante el entrenamiento
+- Cafeína - pre-entreno
+- Probióticos - 1 cápsula al día
+
+Especifica: Nombre del suplemento, dosis y frecuencia""",
+                height=150,
+                help="Lista TODOS los suplementos que consumes además de la proteína en polvo"
+            )
+            st.session_state.suplementos_lista = suplementos_lista
+            
+            if not suplementos_lista.strip():
+                st.error("❌ **Campo obligatorio:** Si consumes suplementos, debes especificar la lista.")
+        else:
+            # Limpiar el campo si selecciona "No"
+            st.session_state.suplementos_lista = ""
+        
+        # Resumen visual de la sección
+        st.markdown("---")
+        st.markdown("### 📊 Resumen de Información Médica Registrada")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Condiciones médicas
+            condiciones_count = len(st.session_state.get('condiciones_medicas', []))
+            if condiciones_count > 0:
+                if "Ninguna de las anteriores" in st.session_state.get('condiciones_medicas', []):
+                    st.success("✅ **Condiciones médicas:** Sin condiciones médicas reportadas")
+                else:
+                    st.warning(f"⚠️ **Condiciones médicas:** {condiciones_count} condiciones reportadas")
+                    st.write("**Condiciones seleccionadas:**")
+                    for condicion in st.session_state.get('condiciones_medicas', []):
+                        st.write(f"  - {condicion}")
+            
+            # Medicamentos
+            if len(consume_medicamentos) == 1:
+                if consume_medicamentos[0] == "Sí":
+                    if medicamentos_lista and medicamentos_lista.strip():
+                        med_count = len([line for line in medicamentos_lista.split('\n') if line.strip()])
+                        st.info(f"💊 **Medicamentos:** Consume medicamentos ({med_count} líneas registradas)")
+                    else:
+                        st.error("❌ **Medicamentos:** Debe completar la lista de medicamentos")
+                else:
+                    st.success("✅ **Medicamentos:** No consume medicamentos regulares")
+        
+        with col2:
+            # Otras condiciones
+            if condiciones_otras and condiciones_otras.strip() and condiciones_otras.strip().lower() != "no aplica":
+                st.info(f"📝 **Otra condición:** {condiciones_otras[:50]}{'...' if len(condiciones_otras) > 50 else ''}")
+            
+            # Suplementos
+            if len(consume_suplementos) == 1:
+                if consume_suplementos[0] == "Sí":
+                    if suplementos_lista and suplementos_lista.strip():
+                        sup_count = len([line for line in suplementos_lista.split('\n') if line.strip()])
+                        st.info(f"💊 **Suplementos:** Consume suplementos adicionales ({sup_count} líneas registradas)")
+                    else:
+                        st.error("❌ **Suplementos:** Debe completar la lista de suplementos")
+                else:
+                    st.success("✅ **Suplementos:** No consume suplementos adicionales")
+        
+        # Advertencia importante
+        st.markdown("---")
+        st.error("""
+        ### ⚠️ ADVERTENCIA IMPORTANTE
+        
+        La información médica que has proporcionado será revisada cuidadosamente por nuestro equipo de nutrición.
+        
+        **Recuerda que:**
+        - Esta evaluación NO reemplaza una consulta médica profesional
+        - Si tienes condiciones médicas complejas, te recomendamos trabajar con tu médico tratante
+        - El plan nutricional será adaptado a tu contexto médico, pero siempre bajo supervisión profesional
+        - Cualquier duda sobre interacciones medicamento-alimento, consulta con tu médico
+        
+        **🔒 Privacidad:** Tu información médica es confidencial y será tratada con la máxima seguridad.
+        """)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Botones de navegación - Último paso, mostrar anterior y finalizar
         col1, col2, col3 = st.columns([1, 2, 1])
         with col1:
             if st.button("⬅️ Anterior"):
@@ -3560,10 +3900,19 @@ if datos_personales_completos and st.session_state.datos_completos:
             # Botón obligatorio para terminar y enviar email
             if not st.session_state.get("correo_enviado", False):
                 if st.button("📧 Terminar y enviar mi evaluación por email", key="finalizar_con_email"):
+                    # Validar el paso 15 primero
+                    is_valid_15, missing_15 = validate_step_15()
                     faltantes = datos_completos_para_email()
                     grupos_incompletos = verificar_grupos_obligatorios_completos()
                     
-                    if faltantes:
+                    if not is_valid_15:
+                        if len(missing_15) == 1:
+                            st.error(f"⚠️ **No se puede finalizar. Debes completar:** {missing_15[0]}")
+                        else:
+                            missing_list = "\n".join([f"• {item}" for item in missing_15])
+                            st.error(f"⚠️ **No se puede finalizar. Completa los siguientes campos del Paso 15:**\n\n{missing_list}")
+                        st.info("💡 **Recuerda:** Todos los campos del Paso 15 son obligatorios por tu seguridad.")
+                    elif faltantes:
                         st.error(f"❌ No se puede finalizar. Faltan datos personales: {', '.join(faltantes)}")
                     elif grupos_incompletos:
                         st.error(f"""
@@ -3588,7 +3937,7 @@ if datos_personales_completos and st.session_state.datos_completos:
                             )
                             if ok:
                                 st.session_state["correo_enviado"] = True
-                                st.session_state.step_completed[14] = True
+                                st.session_state.step_completed[15] = True
                                 st.success("✅ ¡Evaluación completada exitosamente! Tu resumen fue enviado por email.")
                                 st.balloons()
                             else:
